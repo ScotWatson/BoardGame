@@ -174,7 +174,7 @@ function start( [ evtWindow ] ) {
         
       });
     });
-    btnJoinGame.addEventListener("click", function (evt) {
+    btnJoinUnjoinGame.addEventListener("click", function (evt) {
       const requestJoinGame = createRequestGET(baseURL);
       fetch(requestJoinGame).then(function (response) {
         divInfo.appendChild(document.createTextNode(response.text()));
