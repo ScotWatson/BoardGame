@@ -74,7 +74,7 @@ function start( [ evtWindow ] ) {
     }
     let objGeneralInfo;
     let token;
-    const reqInfo = createRequestGET(mainURL);
+    const reqInfo = createRequestGET(baseURL + "/info");
     fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
     const divInfo = document.getElementById("divInfo");
