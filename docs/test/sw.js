@@ -3,11 +3,54 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const mapUsers = new Map();
+function addUser(username, password) {
+  if (mapUsers.has(username)) {
+    throw "Username already exists";
+  }
+  const newUser = {
+    username: username,
+    password: password,
+  };
+  mapUsers.set(username, newUser);
+}
+
+const mapTokens = new Map();
+function loginUser(username, password) {
+  const newId = self.crypto.randomUUID(),
+  mapTokens.set(newId, username);
+}
+function logoutUser(token) {
+  mapTokens.delete(newId);
+}
+
 const mapGames = new Map();
 function addGame(title, action) {
-  
+  const newId = self.crypto.randomUUID(),
+  const newGame = {
+    title: title,
+    players: [],
+  };
+  mapGames.set(newId, newGame);
+  return newGame;
 }
+
 const mapOptions = new Map();
+function addOption(objOption) {
+  objOption.id = self.crypto.randomUUID(),
+  mapGames.set(objOption.id, objOption);
+  return newGame;
+}
+function removeOption(id, nested) {
+  if (nested) {
+    const thisOption = mapOptions.get(id);
+    for (const option of thisOption.options) {
+      removeOption(option.id, true);
+    }
+  }
+  mapOptions.delete(id);
+}
+
 const objNewGameOptions = {
   type: "select",
   description: "",
@@ -27,7 +70,7 @@ self.addEventListener("install", function (evt) {
 });
 
 self.addEventListener("activate", function (evt) {
-  evt.waitUntil(Promise.resolve());
+  evt.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", function (evt) {
@@ -35,9 +78,11 @@ self.addEventListener("fetch", function (evt) {
   // if path starts with "https://scotwatson.github.io/BoardGame/FakeGame/", invoke API
   // "index.html" should still be accessable. It forms the "server-side" interface.
   async function fetchModified(request) {
-    const requestURL = new URL(request.url);
-    if (requestURL.pathname.startsWith("https://scotwatson.github.io/BoardGame/FakeGame/")) {
-      const endpoint = requestURL.pathname.substring("https://scotwatson.github.io/BoardGame/FakeGame/".length - 1);
+    const urlRequest = new URL(request.url);
+    const urlFakeGame = self.location.path + "/FakeGame/"
+    await sendMessage(urlFakeGame);
+    if (urlRequest.pathname.startsWith(urlFakeGame)) {
+      const endpoint = requestURL.pathname.substring(urlFakeGame.length - 1);
       switch (endpoint) {
         case "/index.html":
           return await fetch(request);
@@ -46,8 +91,8 @@ self.addEventListener("fetch", function (evt) {
           const blobInfo = new Blob(jsonInfo)
           return new Response(blobInfo, {
             status: 200,
-            statusText: directResponse.statusText,
-            headers: directResponse.headers,
+            statusText: "OK",
+            headers: [],
           });
           break;
         case "/info":
@@ -55,8 +100,6 @@ self.addEventListener("fetch", function (evt) {
         default:
           break;
       }
-      await sendMessage("Modified Fetch");
-      const directResponse = await fetch("https://scotwatson.github.io/ServiceWorkerTest/test.js");
     } else {
       return await fetch(request);
     }
@@ -64,24 +107,22 @@ self.addEventListener("fetch", function (evt) {
 });
 
 self.addEventListener("message", function (evt) {
+  if (evt.source.url !== "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
+    return;
+  }
   evt.waitUntil((async function () {
     const data = evt.data;
-    if (data.action === "claim") {
-      await self.clients.claim();
-      evt.source.postMessage("done");
-    }
     if (data.action === "skipWaiting") {
       self.skipWaiting();
       evt.source.postMessage("done");
     }
-    if (data.action === "numClients") {
-      const clients = await self.clients.matchAll();
+    if (data.action === "getUsers") {
+      for (const user of mapUsers.entities()) {
+        let uuid = self.crypto.randomUUID();
+      }
       evt.source.postMessage("numClients: " + clients.length);
     }
-    if (data.action === "numFetches") {
-      evt.source.postMessage("numFetches: " + numFetches);
-    }
-    await sendMessage("Test Broadcast");
+    await sendServerMessage("ACK");
   })());
 });
 
@@ -89,5 +130,14 @@ async function sendMessage(data) {
   const clients = await self.clients.matchAll();
   for (const client of clients) {
     client.postMessage(data);
+  }
+}
+
+async function sendServerMessage(data) {
+  const clients = await self.clients.matchAll();
+  for (const client of clients) {
+    if (client.url === "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
+      client.postMessage(data);
+    }
   }
 }
