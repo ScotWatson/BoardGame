@@ -89,13 +89,13 @@ function start( [ evtWindow ] ) {
     const lblMyGames = document.getElementById("lblMyGames");
     const inpMyGames = document.getElementById("inpMyGames");
     const divGameList = document.getElementById("divGameList");
-    const btnRefresh = document.getElementById("btnRefresh");
+    const btnGameListRefresh = document.getElementById("btnGameListRefresh");
     const btnNewGame = document.getElementById("btnNewGame");
     const btnLogout = document.getElementById("btnLogout");
     const divGameInfo = document.getElementById("divGameInfo");
     const pGameTitle = document.getElementById("pGameTitle");
     const divPlayerList = document.getElementById("divPlayerList");
-    const btnRefresh = document.getElementById("btnRefresh");
+    const btnPlayerListRefresh = document.getElementById("btnPlayerListRefresh");
     const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
     const btnOpenGame = document.getElementById("btnOpenGame");
     const btnCloseGameInfo = document.getElementById("btnCloseGameInfo");
