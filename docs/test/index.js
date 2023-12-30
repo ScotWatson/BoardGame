@@ -61,9 +61,13 @@ function createRequestPOST(endpoint, body) {
 function start( [ evtWindow ] ) {
   try {
     const urlSelf = new URL(self.location);
-    console.log(urlSelf.pathname);
-    navigator.serviceWorker.register(urlSelf.pathname + "/sw.js", {
-      scope: urlSelf.pathname,
+    const urlServiceWorker = new URL("../sw.js", urlSelf);
+    const urlServiceWorkerScope = new URL("../", urlSelf);
+    console.log(urlSelf.href);
+    console.log(urlServiceWorker.href);
+    console.log(urlServiceWorkerScope.href);
+    navigator.serviceWorker.register(urlServiceWorker, {
+      scope: urlServiceWorkerScope,
     });
     navigator.serviceWorker.addEventListener("message", function (evt) {
       console.log(evt.data);
