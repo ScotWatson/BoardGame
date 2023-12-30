@@ -61,26 +61,25 @@ function createRequestPOST(endpoint, body) {
 function start( [ evtWindow ] ) {
   try {
     const urlSelf = new URL(self.location);
-    const urlServiceWorker = new URL("../sw.js", urlSelf);
-    const urlServiceWorkerScope = new URL("../", urlSelf);
+    const urlServiceWorker = new URL("/sw.js", urlSelf);
+    const urlServiceWorkerScope = new URL("/", urlSelf);
     console.log(urlSelf.href);
     console.log(urlServiceWorker.href);
     console.log(urlServiceWorkerScope.href);
-    navigator.serviceWorker.register(urlServiceWorker, {
-      scope: urlServiceWorkerScope,
+    navigator.serviceWorker.register(urlServiceWorker.href, {
+      scope: urlServiceWorkerScope.href,
     });
     navigator.serviceWorker.addEventListener("message", function (evt) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
-    const selfURL = new self.URL(window.location.href);
-    let baseURL = selfURL.searchParams.get("url");
-    while (baseURL === null) {
-      baseURL = window.prompt("Please enter URL:");
+    let hrefBase = urlSelf.searchParams.get("url");
+    while (hrefBase === null) {
+      hrefBase = window.prompt("Please enter URL:");
     }
     let objGeneralInfo;
     let token;
-    const reqInfo = createRequestGET(baseURL + "/info");
+    const reqInfo = createRequestGET(hrefBase + "/info");
     fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
     const divInfo = document.getElementById("divInfo");
@@ -117,7 +116,7 @@ function start( [ evtWindow ] ) {
       };
       const jsonLogin = JSON.serialize(objLogin);
       const blobLogin = new Blob(JSON_Login, "application/json");
-      const reqLogin = createRequest(baseURL + "/user/login", blobLogin);
+      const reqLogin = createRequest(hrefBase + "/user/login", blobLogin);
       fetch(reqLogin).then(showGames).catch(console.error);
     });
     btnCreateAccount.addEventListener("click", function (evt) {
@@ -127,7 +126,7 @@ function start( [ evtWindow ] ) {
       };
       const jsonCreate = JSON.serialize(objCreate);
       const blobCreate = new Blob(JSON_Create, "application/json");
-      const reqCreate = createRequest(baseURL + "/user/new", blobCreate);
+      const reqCreate = createRequest(hrefBase + "/user/new", blobCreate);
       fetch(reqCreate).then(showGames).catch(console.error);
     });
     function login(response) {
@@ -149,7 +148,7 @@ function start( [ evtWindow ] ) {
       divGameSelect.style.display = "block";
       const infoLogin = response.json();
       token = infoLogin.token;
-      const reqMyGames = createRequestGET(baseURL + "/games/by-user/" + token);
+      const reqMyGames = createRequestGET(hrefBase + "/games/by-user/" + token);
       fetch(reqInfo).then(populateMyGames).catch(console.error);
       function populateMyGames(response) {
         if (response.status !== 200) {
@@ -164,10 +163,10 @@ function start( [ evtWindow ] ) {
           divGame.appendChild(document.createTextNode(game.title));
         }
       }
-      const reqAllGames = createRequestGET(baseURL + "/games");
+      const reqAllGames = createRequestGET(hrefBase + "/games");
       fetch(reqInfo).then(populateAllGames).catch(console.error);
     }
-    const requestGetInfo = createRequestGET(baseURL + "/info");
+    const requestGetInfo = createRequestGET(hrefBase + "/info");
     fetch(requestGetInfo).then(function (response) {
       divInfo.appendChild(document.createTextNode(response.text()));
     });
@@ -181,7 +180,7 @@ function start( [ evtWindow ] ) {
       });
     });
     btnJoinUnjoinGame.addEventListener("click", function (evt) {
-      const requestJoinGame = createRequestGET(baseURL);
+      const requestJoinGame = createRequestGET(hrefBase);
       fetch(requestJoinGame).then(function (response) {
         divInfo.appendChild(document.createTextNode(response.text()));
       });
