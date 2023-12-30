@@ -58,160 +58,82 @@ function createRequestPOST(endpoint, body) {
   });
 }
 
-let infoGeneral;
-let token;
-
-async function start( [ evtWindow ] ) {
+function start( [ evtWindow ] ) {
   try {
     const selfURL = new self.URL(window.location.href);
     let baseURL = selfURL.searchParams.get("url");
     while (baseURL === null) {
       baseURL = window.prompt("Please enter URL:");
     }
+    let objGeneralInfo;
+    let token;
     const reqInfo = createRequestGET(mainURL);
     fetch(reqInfo).then(login).catch(console.error);
-    const divInfo = document.createElement("div");
-    divLogin.appendChild(divInfo);
-    divInfo.style.display = "block";
-    divInfo.style.position = "absolute";
-    divInfo.style.left = "0%";
-    divInfo.style.top = "0%";
-    divInfo.style.width = "100%";
-    divInfo.style.height = "20%";
-    divInfo.style.backgroundColor = "grey";
-    document.body.style.backgroundColor = "grey";
-    const divLogin = document.createElement("div");
-    divLogin.style.display = "block";
-    divLogin.style.position = "absolute";
-    divLogin.style.left = "0%";
-    divLogin.style.top = "20%";
-    divLogin.style.width = "100%";
-    divLogin.style.height = "80%";
-    divLogin.style.backgroundColor = "white";
-    const lblUsername = document.createElement("label");
-    divLogin.appendChild(inpUsername);
-    lblUsername.for = "username";
-    lblUsername.style.display = "block";
-    lblUsername.style.position = "absolute";
-    lblUsername.style.left = "0%";
-    lblUsername.style.top = "20%";
-    lblUsername.style.width = "50%";
-    lblUsername.style.height = "10%";
-    const inpUsername = document.createElement("input");
-    divLogin.appendChild(inpUsername);
-    inpUsername.type = "text";
-    inpUsername.name = "username";
-    inpUsername.style.display = "block";
-    inpUsername.style.position = "absolute";
-    inpUsername.style.left = "50%";
-    inpUsername.style.top = "20%";
-    inpUsername.style.width = "50%";
-    inpUsername.style.height = "10%";
-    const lblPassword = document.createElement("label");
-    divLogin.appendChild(inpPassword);
-    lblPassword.for = "password";
-    lblPassword.style.display = "block";
-    lblPassword.style.position = "absolute";
-    lblPassword.style.left = "0%";
-    lblPassword.style.top = "50%";
-    lblPassword.style.width = "50%";
-    lblPassword.style.height = "10%";
-    const inpPassword = document.createElement("input");
-    divLogin.appendChild(inpPassword);
-    inpPassword.type = "password";
-    inpPassword.name = "password";
-    inpPassword.style.display = "block";
-    inpPassword.style.position = "absolute";
-    inpPassword.style.left = "50%";
-    inpPassword.style.top = "50%";
-    inpPassword.style.width = "50%";
-    inpPassword.style.height = "10%";
-    const btnLogin = document.createElement("div");
-    divLogin.appendChild(btnLogin);
-    btnLogin.appendChild(document.createTextNode("Login"));
-    btnLogin.style.display = "block";
-    btnLogin.style.position = "absolute";
-    btnLogin.style.left = "50%";
-    btnLogin.style.top = "70%";
-    btnLogin.style.width = "50%";
-    btnLogin.style.height = "20%";
-    btnLogin.style.backgroundColor = "blue";
+    const divGame = document.getElementById("divGame");
+    const divInfo = document.getElementById("divInfo");
+    const divLogin = document.getElementById("divLogin");
+    const lblUsername = document.getElementById("lblUsername");
+    const inpUsername = document.getElementById("inpUsername");
+    const lblPassword = document.getElementById("lblPassword");
+    const inpPassword = document.getElementById("inpPassword");
+    const btnLogin = document.getElementById("btnLogin");
+    const btnCreateAccount = document.getElementById("btnCreateAccount");
+    const divGameSelect = document.getElementById("divGameSelect");
+    const lblMyGames = document.getElementById("lblMyGames");
+    const inpMyGames = document.getElementById("inpMyGames");
+    const divGameList = document.getElementById("divGameList");
+    const btnRefresh = document.getElementById("btnRefresh");
+    const btnNewGame = document.getElementById("btnNewGame");
+    const btnLogout = document.getElementById("btnLogout");
+    const divGameInfo = document.getElementById("divGameInfo");
+    const pGameTitle = document.getElementById("pGameTitle");
+    const divPlayerList = document.getElementById("divPlayerList");
+    const btnRefresh = document.getElementById("btnRefresh");
+    const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
+    const btnOpenGame = document.getElementById("btnOpenGame");
+    const btnCloseGameInfo = document.getElementById("btnCloseGameInfo");
+    const divNewGame = document.getElementById("divNewGame");
+    const lblNewGameTitle = document.getElementById("lblNewGameTitle");
+    const inpNewGameTitle = document.getElementById("inpNewGameTitle");
+    const divNewGameOptions = document.getElementById("divNewGameOptions");
+    const btnCancelNewGame = document.getElementById("btnCancelNewGame");
     btnLogin.addEventListener("click", function (evt) {
-      const infoLogin = {
+      const objLogin = {
         name: inpUsername.value,
         password: inpPassword.value,
       };
-      const JSON_Login = JSON.serialize(infoLogin);
+      const jsonLogin = JSON.serialize(objLogin);
       const blobLogin = new Blob(JSON_Login, "application/json");
       const reqLogin = createRequest(baseURL + "/user/login", blobLogin);
       fetch(reqLogin).then(showGames).catch(console.error);
     });
-    const btnCreateAccount = document.createElement("div");
-    divLogin.appendChild(btnCreateAccount);
-    btnCreateAccount.appendChild(document.createTextNode("Create Account"));
-    btnCreateAccount.style.display = "block";
-    btnCreateAccount.style.position = "absolute";
-    btnCreateAccount.style.left = "50%";
-    btnCreateAccount.style.top = "70%";
-    btnCreateAccount.style.width = "50%";
-    btnCreateAccount.style.height = "20%";
-    btnCreateAccount.style.backgroundColor = "blue";
     btnCreateAccount.addEventListener("click", function (evt) {
-      const infoCreate = {
+      const objCreate = {
         name: inpUsername.value,
         password: inpPassword.value,
       };
-      const JSON_Create = JSON.serialize(infoCreate);
+      const jsonCreate = JSON.serialize(objCreate);
       const blobCreate = new Blob(JSON_Create, "application/json");
       const reqCreate = createRequest(baseURL + "/user/new", blobCreate);
       fetch(reqCreate).then(showGames).catch(console.error);
     });
-    const divGameList = document.createElement("div");
-    divLogin.style.display = "block";
-    divLogin.style.position = "absolute";
-    divLogin.style.left = "0%";
-    divLogin.style.top = "20%";
-    divLogin.style.width = "100%";
-    divLogin.style.height = "80%";
-    divLogin.style.backgroundColor = "white";
-    const divGameInfo = document.createElement("div");
-    divLogin.style.display = "block";
-    divLogin.style.position = "absolute";
-    divLogin.style.left = "0%";
-    divLogin.style.top = "20%";
-    divLogin.style.width = "100%";
-    divLogin.style.height = "80%";
-    divLogin.style.backgroundColor = "white";
     function login(response) {
       if (response.status !== 200) {
         console.error("Failed to get info.");
       }
-      infoGeneral = response.json();
-      document.head.title = infoGeneral.name;
-      divInfo.appendChild(document.createElement(infoGeneral.description));
-      divInfo.style.backgroundColor = "white";
-      document.body.appendChild(divLogin);
+      objGeneralInfo = response.json();
+      divLogin.style.display = "block";
+      document.head.title = objGeneralInfo.name;
+      divInfo.innerHTML = "";
+      divInfo.appendChild(document.createElement(objGeneralInfo.description));
     }
     function showGames(response) {
       if (response.status !== 200) {
         console.error("Failed to login");
         return;
       }
-      const divGameList = document.createElement("div");
-      divGameSelect.appendChild(divGameList);
-      const chkMyGames = document.createElement("input");
-      divGameSelect.appendChild(chkMyGames);
-      chkMyGames.type = "text";
-      chkMyGames.value = "Only My Games";
-      const btnNewGame = document.createElement("div");
-      divGameSelect.appendChild(btnNewGame);
-      btnNewGame.appendChild(document.createTextNode("New Game"));
-      const btnRefreshList = document.createElement("div");
-      divGameSelect.appendChild(btnRefreshList);
-      btnRefreshList.appendChild(document.createTextNode("Refresh"));
-      const btnLogout = document.createElement("div");
-      divGameSelect.appendChild(btnLogout);
-      
+      divLogin.style.display = "none";
+      divGameSelect.style.display = "block";
       const infoLogin = response.json();
       token = infoLogin.token;
       const reqMyGames = createRequestGET(mainURL + "/games/by-user/" + token);
@@ -220,8 +142,8 @@ async function start( [ evtWindow ] ) {
         if (response.status !== 200) {
           console.error("Failed to fetch my games");
         }
-        const JSON_MyGames = response.json();
-        if (JSON_MyGames.length === 0) {
+        const arrMyGames = response.json();
+        if (arrMyGames.length === 0) {
           populateAllGames();
         }
         for (const game of JSON_MyGames) {
@@ -229,27 +151,13 @@ async function start( [ evtWindow ] ) {
           divGame.appendChild(document.createTextNode(game.title)));
         }
       }
-
       const reqAllGames = createRequestGET(mainURL + "/games");
       fetch(reqInfo).then(populateAllGames).catch(console.error);
-      const divHome
-      const btnLogout = document.
     }
-    const divGame = document.createElement("div");
-    document.body.appendChild(divGame);
     const requestGetInfo = createRequestGET(mainURL + "/info");
     fetch(requestGetInfo).then(function (response) {
       divInfo.appendChild(document.createTextNode(response.text()));
     });
-    const btnNewGame = document.createElement("div");
-    divGame.appendChild(btnNewGame);
-    btnNewGame.appendChild(document.createTextNode("New Game"));
-    btnNewGame.style.display = "block";
-    btnNewGame.style.position = "absolute";
-    btnNewGame.style.left = "40%";
-    btnNewGame.style.top = "20%";
-    btnNewGame.style.width = "20%";
-    btnNewGame.style.height = "20%";
     btnNewGame.addEventListener("click", function (evt) {
       const requestNewGame = createRequestGET(mainURL);
       fetch(requestNewGame).then(function (response) {
@@ -259,50 +167,12 @@ async function start( [ evtWindow ] ) {
         
       });
     });
-    const btnJoinGame = document.createElement("div");
-    divGame.appendChild(btnJoinGame);
-    btnJoinGame.appendChild(document.createTextNode("Join Game"));
-    btnJoinGame.style.display = "block";
-    btnJoinGame.style.position = "absolute";
-    btnJoinGame.style.left = "40%";
-    btnJoinGame.style.top = "50%";
-    btnJoinGame.style.width = "20%";
-    btnJoinGame.style.height = "20%";
     btnJoinGame.addEventListener("click", function (evt) {
       const requestJoinGame = createRequestGET(mainURL);
       fetch(requestJoinGame).then(function (response) {
         divInfo.appendChild(document.createTextNode(response.text()));
       });
     });
-    const inpJoinGameId = document.createElement("input");
-    divGame.appendChild(inpJoinGameId);
-    inpJoinGameId.type = "text";
-    inpJoinGameId.style.display = "block";
-    inpJoinGameId.style.position = "absolute";
-    inpJoinGameId.style.left = "60%";
-    inpJoinGameId.style.top = "0%";
-    inpJoinGameId.style.width = "40%";
-    inpJoinGameId.style.height = "20%";
-    const tblGameIds = document.createElement("table");
-    divGame.appendChild(tblGameIds);
-    tblGameIds.type = "text";
-    tblGameIds.style.display = "block";
-    tblGameIds.style.position = "absolute";
-    tblGameIds.style.left = "0%";
-    tblGameIds.style.top = "20%";
-    tblGameIds.style.width = "100%";
-    tblGameIds.style.height = "80%";
-    const trGameHeader = document.createElement("tr");
-    tblGameIds.appendChild(trGameHeader);
-    const thGameId = document.createElement("th");
-    trGameHeader.appendChild(thGameId);
-    thGameId.appendChild(document.createTextNode("Game ID"));
-    const thPlayerId = document.createElement("th");
-    trGameHeader.appendChild(thPlayerId);
-    thPlayerId.appendChild(document.createTextNode("Player ID"));
-    const thAction = document.createElement("th");
-    trGameHeader.appendChild(thAction);
-    thAction.appendChild(document.createTextNode("Action"));
     function addGameRow(gameId, playerId) {
       arrGames.push({
         gameId: gameId,
