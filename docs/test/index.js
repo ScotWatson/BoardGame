@@ -60,6 +60,13 @@ function createRequestPOST(endpoint, body) {
 
 function start( [ evtWindow ] ) {
   try {
+    navigator.serviceWorker.register("/ServiceWorkerTest/sw.js", {
+      scope: "/ServiceWorkerTest/",
+    });
+    navigator.serviceWorker.addEventListener("message", function (evt) {
+      console.log(evt.data);
+    });
+    navigator.serviceWorker.startMessages();
     const selfURL = new self.URL(window.location.href);
     let baseURL = selfURL.searchParams.get("url");
     while (baseURL === null) {
