@@ -155,7 +155,7 @@ function start( [ evtWindow ] ) {
         }
         for (const game of JSON_MyGames) {
           const divGame = document.createElement("div");
-          divGame.appendChild(document.createTextNode(game.title)));
+          divGame.appendChild(document.createTextNode(game.title));
         }
       }
       const reqAllGames = createRequestGET(mainURL + "/games");
