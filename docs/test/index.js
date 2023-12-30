@@ -143,7 +143,7 @@ function start( [ evtWindow ] ) {
       divGameSelect.style.display = "block";
       const infoLogin = response.json();
       token = infoLogin.token;
-      const reqMyGames = createRequestGET(mainURL + "/games/by-user/" + token);
+      const reqMyGames = createRequestGET(baseURL + "/games/by-user/" + token);
       fetch(reqInfo).then(populateMyGames).catch(console.error);
       function populateMyGames(response) {
         if (response.status !== 200) {
@@ -158,10 +158,10 @@ function start( [ evtWindow ] ) {
           divGame.appendChild(document.createTextNode(game.title));
         }
       }
-      const reqAllGames = createRequestGET(mainURL + "/games");
+      const reqAllGames = createRequestGET(baseURL + "/games");
       fetch(reqInfo).then(populateAllGames).catch(console.error);
     }
-    const requestGetInfo = createRequestGET(mainURL + "/info");
+    const requestGetInfo = createRequestGET(baseURL + "/info");
     fetch(requestGetInfo).then(function (response) {
       divInfo.appendChild(document.createTextNode(response.text()));
     });
@@ -175,7 +175,7 @@ function start( [ evtWindow ] ) {
       });
     });
     btnJoinGame.addEventListener("click", function (evt) {
-      const requestJoinGame = createRequestGET(mainURL);
+      const requestJoinGame = createRequestGET(baseURL);
       fetch(requestJoinGame).then(function (response) {
         divInfo.appendChild(document.createTextNode(response.text()));
       });
