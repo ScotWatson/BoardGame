@@ -155,8 +155,8 @@ function start( [ evtWindow ] ) {
         name: inpUsername.value,
         password: inpPassword.value,
       };
-      const jsonLogin = JSON.serialize(objLogin);
-      const blobLogin = new Blob(JSON_Login, "application/json");
+      const jsonLogin = JSON.stringify(objLogin);
+      const blobLogin = new Blob(jsonLogin, "application/json");
       const reqLogin = createRequest(hrefBase + "/user/login", blobLogin);
       fetch(reqLogin).then(showGames).catch(console.error);
     });
@@ -165,8 +165,8 @@ function start( [ evtWindow ] ) {
         name: inpUsername.value,
         password: inpPassword.value,
       };
-      const jsonCreate = JSON.serialize(objCreate);
-      const blobCreate = new Blob(JSON_Create, "application/json");
+      const jsonCreate = JSON.stringify(objCreate);
+      const blobCreate = new Blob(jsonCreate, "application/json");
       const reqCreate = createRequest(hrefBase + "/user/new", blobCreate);
       fetch(reqCreate).then(showGames).catch(console.error);
     });
