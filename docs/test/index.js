@@ -67,7 +67,6 @@ function start( [ evtWindow ] ) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
-    const divInfo = document.getElementById("divInfo");
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
@@ -79,64 +78,9 @@ function start( [ evtWindow ] ) {
       } else {
         begin();
       }
-      const btnNumClients = document.createElement("button");
-      divInfo.appendChild(btnNumClients);
-      btnNumClients.appendChild(document.createTextNode("numClients"));
-      btnNumClients.addEventListener("click", function () {
-        if (navigator.serviceWorker.controller === null) {
-          console.log("controller is null");
-        } else {
-          navigator.serviceWorker.controller.postMessage({
-            action: "numClients",
-          });
-          navigator.serviceWorker.controller.postMessage({
-            action: "getTimes",
-          });
-          console.log("Message sent to controller");
-        }
-        if (registration.installing === null) {
-          console.log("installing is null");
-        } else if (typeof registration.installing === "undefined") {
-          console.log("installing is undefined");
-        } else {
-          registration.installing.postMessage({
-            action: "numClients",
-          });
-          registration.installing.postMessage({
-            action: "getTimes",
-          });
-          console.log("Message sent to installing");
-        }
-        if (registration.waiting === null) {
-          console.log("waiting is null");
-        } else if (typeof registration.waiting === "undefined") {
-          console.log("waiting is undefined");
-        } else {
-          registration.waiting.postMessage({
-            action: "numClients",
-          });
-          registration.waiting.postMessage({
-            action: "getTimes",
-          });
-          console.log("Message sent to waiting");
-        }
-        if (registration.active === null) {
-          console.log("active is null");
-        } else if (typeof registration.active === "undefined") {
-          console.log("active is undefined");
-        } else {
-          registration.active.postMessage({
-            action: "numClients",
-          });
-          registration.active.postMessage({
-            action: "getTimes",
-          });
-          console.log("Message sent to active");
-        }
-      });
     })();
+    let hrefBase = urlSelf.searchParams.get("url");
     function begin() {
-      let hrefBase = urlSelf.searchParams.get("url");
       while (hrefBase === null) {
         hrefBase = window.prompt("Please enter URL:");
       }
@@ -148,6 +92,7 @@ function start( [ evtWindow ] ) {
       fetch(reqInfo).then(login).catch(console.error);
     }
     const divGame = document.getElementById("divGame");
+    const divInfo = document.getElementById("divInfo");
     const divLogin = document.getElementById("divLogin");
     const lblUsername = document.getElementById("lblUsername");
     const inpUsername = document.getElementById("inpUsername");
@@ -174,26 +119,6 @@ function start( [ evtWindow ] ) {
     const inpNewGameTitle = document.getElementById("inpNewGameTitle");
     const divNewGameOptions = document.getElementById("divNewGameOptions");
     const btnCancelNewGame = document.getElementById("btnCancelNewGame");
-    btnLogin.addEventListener("click", function (evt) {
-      const objLogin = {
-        name: inpUsername.value,
-        password: inpPassword.value,
-      };
-      const jsonLogin = JSON.stringify(objLogin);
-      const blobLogin = new Blob(jsonLogin, "application/json");
-      const reqLogin = createRequest(hrefBase + "/user/login", blobLogin);
-      fetch(reqLogin).then(showGames).catch(console.error);
-    });
-    btnCreateAccount.addEventListener("click", function (evt) {
-      const objCreate = {
-        name: inpUsername.value,
-        password: inpPassword.value,
-      };
-      const jsonCreate = JSON.stringify(objCreate);
-      const blobCreate = new Blob(jsonCreate, "application/json");
-      const reqCreate = createRequest(hrefBase + "/user/new", blobCreate);
-      fetch(reqCreate).then(showGames).catch(console.error);
-    });
     function login(response) {
       if (response.status !== 200) {
         console.error("Failed to get info.");
@@ -205,10 +130,32 @@ function start( [ evtWindow ] ) {
         const elemTitle = document.head.getElementsByTagName("title")[0];
         elemTitle.innerHTML = "";
         elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
-//        divInfo.innerHTML = "";
+        divInfo.innerHTML = "";
         divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       });
     }
+    btnLogin.addEventListener("click", function (evt) {
+      const objLogin = {
+        name: inpUsername.value,
+        password: inpPassword.value,
+      };
+      const jsonLogin = JSON.stringify(objLogin);
+      const blobLogin = new Blob(jsonLogin, "application/json");
+      const urlEndpointLogin = new URL("/user/login", urlBase.href);
+      const reqLogin = createRequest(urlEndpointLogin.href, blobLogin);
+      fetch(reqLogin).then(showGames).catch(console.error);
+    });
+    btnCreateAccount.addEventListener("click", function (evt) {
+      const objCreate = {
+        name: inpUsername.value,
+        password: inpPassword.value,
+      };
+      const jsonCreate = JSON.stringify(objCreate);
+      const blobCreate = new Blob(jsonCreate, "application/json");
+      const urlEndpointNewUser = new URL("/user/new", urlBase.href);
+      const reqCreate = createRequest(urlEndpointNewUser.href, blobCreate);
+      fetch(reqCreate).then(showGames).catch(console.error);
+    });
     function showGames(response) {
       if (response.status !== 200) {
         console.error("Failed to login");
@@ -218,7 +165,8 @@ function start( [ evtWindow ] ) {
       divGameSelect.style.display = "block";
       const infoLogin = response.json();
       token = infoLogin.token;
-      const reqMyGames = createRequestGET(hrefBase + "/games/by-user/" + token);
+      const urlEndpointMyGames = new URL("/games/by-user/" + token, urlBase.href);
+      const reqMyGames = createRequestGET(urlEndpointMyGames.href);
       fetch(reqInfo).then(populateMyGames).catch(console.error);
       function populateMyGames(response) {
         if (response.status !== 200) {
@@ -233,8 +181,9 @@ function start( [ evtWindow ] ) {
           divGame.appendChild(document.createTextNode(game.title));
         }
       }
-      const reqAllGames = createRequestGET(hrefBase + "/games");
-      fetch(reqInfo).then(populateAllGames).catch(console.error);
+      const urlEndpointAllGames = new URL("/games", urlBase.href);
+      const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+      fetch(reqAllGames).then(populateAllGames).catch(console.error);
     }
     btnNewGame.addEventListener("click", function (evt) {
       const requestNewGame = createRequestGET(mainURL);
