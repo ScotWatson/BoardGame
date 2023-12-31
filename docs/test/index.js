@@ -63,9 +63,6 @@ function start( [ evtWindow ] ) {
     const urlSelf = new URL(self.location);
     const urlServiceWorker = new URL("./sw.js", urlSelf);
     const urlServiceWorkerScope = new URL("./", urlSelf);
-    console.log(urlSelf.href);
-    console.log(urlServiceWorker.href);
-    console.log(urlServiceWorkerScope.href);
     const registration = navigator.serviceWorker.register(urlServiceWorker.href, {
       scope: urlServiceWorkerScope.href,
     });
@@ -77,10 +74,38 @@ function start( [ evtWindow ] ) {
     document.body.appendChild(btnNumClients);
     btnNumClients.appendChild(document.createTextNode("numClients"));
     btnNumClients.addEventListener("click", function () {
-      registration.active.postMessage({
-        action: "numClients",
-      });
-      console.log("Message sent");
+      if (navigator.serviceWorker.controller === null) {
+        console.log("controller is null");
+      } else {
+        navigator.serviceWorker.controller.postMessage({
+          action: "numClients",
+        });
+        console.log("Message sent to controller");
+      }
+      if (registration.installing === null) {
+        console.log("installing is null");
+      } else {
+        registration.installing.postMessage({
+          action: "numClients",
+        });
+        console.log("Message sent to installing");
+      }
+      if (registration.waiting === null) {
+        console.log("waiting is null");
+      } else {
+        registration.waiting.postMessage({
+          action: "numClients",
+        });
+        console.log("Message sent to waiting");
+      }
+      if (registration.active === null) {
+        console.log("active is null");
+      } else {
+        registration.active.postMessage({
+          action: "numClients",
+        });
+        console.log("Message sent to active");
+      }
     });
     let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
