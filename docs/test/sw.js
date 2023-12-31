@@ -80,11 +80,11 @@ self.addEventListener("fetch", function (evt) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
     const urlFakeGame = new URL("./FakeGame", urlSelf);
-    await sendMessage(urlRequest.href);
-    await sendMessage(urlSelf.href);
-    await sendMessage(urlFakeGame.href);
+    await sendMessage("Processing Fetch Request");
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
-      const endpoint = requestURL.pathname.substring(urlFakeGame.href.length - 1);
+      await sendMessage("Fake Game Activated");
+      const endpoint = requestURL.pathname.substring(urlFakeGame.href.length);
+      await sendMessage(endpoint);
       switch (endpoint) {
         case "/index.html":
           return await fetch(request);
@@ -96,11 +96,12 @@ self.addEventListener("fetch", function (evt) {
             statusText: "OK",
             headers: [],
           });
-          break;
-        case "/info":
-          break;
         default:
-          break;
+          return new Response("Not a configured endpoint", {
+            status: 404,
+            statusText: "Not Found",
+            headers: [],
+          });
       }
     } else {
       return await fetch(request);
