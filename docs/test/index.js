@@ -72,8 +72,9 @@ function start( [ evtWindow ] ) {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
       });
-      await navigator.serviceWorker.ready;
-      begin();
+      navigator.serviceWorker.addEventListener("controllerchange", function (evt) {
+        begin();
+      });
       const btnNumClients = document.createElement("button");
       divInfo.appendChild(btnNumClients);
       btnNumClients.appendChild(document.createTextNode("numClients"));
