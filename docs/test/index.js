@@ -61,8 +61,8 @@ function createRequestPOST(endpoint, body) {
 function start( [ evtWindow ] ) {
   try {
     const urlSelf = new URL(self.location);
-    const urlServiceWorker = new URL("/sw.js", urlSelf);
-    const urlServiceWorkerScope = new URL("/", urlSelf);
+    const urlServiceWorker = new URL("sw.js", urlSelf);
+    const urlServiceWorkerScope = new URL("", urlSelf);
     console.log(urlSelf.href);
     console.log(urlServiceWorker.href);
     console.log(urlServiceWorkerScope.href);
