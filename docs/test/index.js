@@ -67,12 +67,13 @@ function start( [ evtWindow ] ) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
+    const divInfo = document.getElementById("divInfo");
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
       });
       const btnNumClients = document.createElement("button");
-      document.body.appendChild(btnNumClients);
+      divInfo.appendChild(btnNumClients);
       btnNumClients.appendChild(document.createTextNode("numClients"));
       btnNumClients.addEventListener("click", function () {
         if (navigator.serviceWorker.controller === null) {
@@ -80,6 +81,9 @@ function start( [ evtWindow ] ) {
         } else {
           navigator.serviceWorker.controller.postMessage({
             action: "numClients",
+          });
+          navigator.serviceWorker.controller.postMessage({
+            action: "getTimes",
           });
           console.log("Message sent to controller");
         }
@@ -91,6 +95,9 @@ function start( [ evtWindow ] ) {
           registration.installing.postMessage({
             action: "numClients",
           });
+          registration.installing.postMessage({
+            action: "getTimes",
+          });
           console.log("Message sent to installing");
         }
         if (registration.waiting === null) {
@@ -101,6 +108,9 @@ function start( [ evtWindow ] ) {
           registration.waiting.postMessage({
             action: "numClients",
           });
+          registration.waiting.postMessage({
+            action: "getTimes",
+          });
           console.log("Message sent to waiting");
         }
         if (registration.active === null) {
@@ -110,6 +120,9 @@ function start( [ evtWindow ] ) {
         } else {
           registration.active.postMessage({
             action: "numClients",
+          });
+          registration.active.postMessage({
+            action: "getTimes",
           });
           console.log("Message sent to active");
         }
@@ -126,7 +139,6 @@ function start( [ evtWindow ] ) {
     const reqInfo = createRequestGET(urlEndpointInfo);
     fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
-    const divInfo = document.getElementById("divInfo");
     const divLogin = document.getElementById("divLogin");
     const lblUsername = document.getElementById("lblUsername");
     const inpUsername = document.getElementById("inpUsername");
@@ -184,7 +196,7 @@ function start( [ evtWindow ] ) {
         const elemTitle = document.head.getElementsByTagName("title")[0];
         elemTitle.innerHTML = "";
         elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
-        divInfo.innerHTML = "";
+//        divInfo.innerHTML = "";
         divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       });
     }
