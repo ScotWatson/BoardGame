@@ -177,12 +177,14 @@ function start( [ evtWindow ] ) {
       if (response.status !== 200) {
         console.error("Failed to get info.");
       }
-      objGeneralInfo = response.json();
-      console.log(objGeneralInfo);
-      divLogin.style.display = "block";
-      document.head.title = objGeneralInfo.name;
-      divInfo.innerHTML = "";
-      divInfo.appendChild(document.createElement(objGeneralInfo.description));
+      response.json().then(function (obj) {
+        objGeneralInfo = obj;
+        console.log(objGeneralInfo);
+        divLogin.style.display = "block";
+        document.head.title = objGeneralInfo.name;
+        divInfo.innerHTML = "";
+        divInfo.appendChild(document.createElement(objGeneralInfo.description));
+      });
     }
     function showGames(response) {
       if (response.status !== 200) {
