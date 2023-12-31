@@ -92,6 +92,17 @@ function start( [ evtWindow ] ) {
       fetch(reqInfo).then(login).catch(console.error);
     }
     const divGame = document.getElementById("divGame");
+    document.body.style.backgroundColor = "grey";
+    window.addEventListener("resize", function (evt) {
+      divGame.style.display = "none";
+      clearTimeout(timer);
+      let timer = setTimeout(redraw, 200);
+      function redraw() {
+        divGame.style.display = "block";
+        divGame.style.width = window.innerWidth + "px";
+        divGame.style.height = window.innerHeight + "px";
+      }
+    });
     const divInfo = document.getElementById("divInfo");
     const divLogin = document.getElementById("divLogin");
     const lblUsername = document.getElementById("lblUsername");
