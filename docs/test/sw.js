@@ -69,7 +69,11 @@ self.addEventListener("install", function (evt) {
 });
 
 self.addEventListener("activate", function (evt) {
-  evt.waitUntil(self.clients.claim());
+  async function all() {
+    await sendMessage("Activated");
+    await self.clients.claim();
+  }
+  evt.waitUntil(all());
 });
 
 self.addEventListener("fetch", function (evt) {
