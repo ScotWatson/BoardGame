@@ -66,13 +66,21 @@ function start( [ evtWindow ] ) {
     console.log(urlSelf.href);
     console.log(urlServiceWorker.href);
     console.log(urlServiceWorkerScope.href);
-    navigator.serviceWorker.register(urlServiceWorker.href, {
+    const registration = navigator.serviceWorker.register(urlServiceWorker.href, {
       scope: urlServiceWorkerScope.href,
     });
     navigator.serviceWorker.addEventListener("message", function (evt) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
+    const btnNumClients = document.createElement("button");
+    document.body.appendChild(btnNumClients);
+    btnNumClients.appendChild(document.createTextNode("numClients"));
+    btnNumClients.addEventListener("click", function () {
+      registration.active.postMessage({
+        action: "numClients",
+      });
+    });
     let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
       hrefBase = window.prompt("Please enter URL:");
