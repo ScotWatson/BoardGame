@@ -83,7 +83,7 @@ self.addEventListener("fetch", function (evt) {
     await sendMessage("Processing Fetch Request");
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
       await sendMessage("Fake Game Activated");
-      const endpoint = urlRequest.pathname.substring(urlFakeGame.href.length);
+      const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
       await sendMessage(endpoint);
       switch (endpoint) {
         case "/index.html":
