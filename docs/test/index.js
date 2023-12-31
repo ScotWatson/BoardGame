@@ -112,6 +112,7 @@ function start( [ evtWindow ] ) {
     const inpPassword = document.getElementById("inpPassword");
     const btnLogin = document.getElementById("btnLogin");
     const btnCreateAccount = document.getElementById("btnCreateAccount");
+    const btnBrowseGames = document.getElementById("btnBrowseGames");
     const divGameSelect = document.getElementById("divGameSelect");
     const lblMyGames = document.getElementById("lblMyGames");
     const inpMyGames = document.getElementById("inpMyGames");
@@ -153,85 +154,129 @@ function start( [ evtWindow ] ) {
       };
       const jsonLogin = JSON.stringify(objLogin);
       const blobLogin = new Blob(jsonLogin, "application/json");
-      const urlEndpointLogin = new URL("/user/login", urlBase.href);
-      const reqLogin = createRequest(urlEndpointLogin.href, blobLogin);
-      fetch(reqLogin).then(showGames).catch(console.error);
+      const urlEndpointLogin = new URL("./user/login", urlBase.href);
+      const reqLogin = createRequestPOST(urlEndpointLogin.href, blobLogin);
+      (async function () {
+        try {
+          const response = await fetch(reqLogin);
+          if (response.status !== 200) {
+            throw "Failed to login";
+          }
+          const objLoginInfo = await response.json();
+          token = objLoginInfo.token;
+          showGames();
+        } catch(e) {
+          console.error(e);
+        }
+      })();
     });
     btnCreateAccount.addEventListener("click", function (evt) {
-      const objCreate = {
+      const objNewUser = {
         name: inpUsername.value,
         password: inpPassword.value,
       };
-      const jsonCreate = JSON.stringify(objCreate);
-      const blobCreate = new Blob(jsonCreate, "application/json");
-      const urlEndpointNewUser = new URL("/user/new", urlBase.href);
-      const reqCreate = createRequest(urlEndpointNewUser.href, blobCreate);
-      fetch(reqCreate).then(showGames).catch(console.error);
+      const jsonNewUser = JSON.stringify(objCreate);
+      const blobNewUser = new Blob(jsonCreate, "application/json");
+      const urlEndpointNewUser = new URL("./user/new", urlBase.href);
+      const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
+      (async function () {
+        try {
+          const response = await fetch(reqNewUser);
+          if (response.status !== 200) {
+            throw "Failed to create user";
+          }
+          const objLoginInfo = await response.json();
+          token = objLoginInfo.token;
+          showGames();
+        } catch(e) {
+          console.error(e);
+        }
+      })();
     });
-    function showGames(response) {
-      if (response.status !== 200) {
-        console.error("Failed to login");
-        return;
+    btnBrowseGames.addEventListener("click", function (evt) {
+      inpMyGames.value = false;
+      inpMyGames.disabled = true;
+      showGames();
+    });
+    async function populateGameList(promiseGameList) {
+      divGameList.style.backgroundColor = "grey";
+      divGameList.innerHTML = "";
+      const arrGames = await promiseGameList;
+      for (const game of arrGames) {
+        const divGameItem = document.createElement("div");
+        divGameList.appendChild(divGameItem);
+        divGameItem.style.display = "block";
+        divGameItem.style.border = "1px solid black";
+        divGameItem.style.width = "100%";
+        divGameItem.style.height = "10%";
+        divGameItem.appendChild(document.createTextNode(game.title));
+        divGameItem.addEventListener("click", function (evt) {
+          divGameSelect.style.display = "none";
+          divGameInfo.style.display = "block";
+          showGame(game.id);
+        });
       }
+      divGameList.style.backgroundColor = "white";
+    }
+    function showGame() {
+      
+    }
+    function showGames() {
       divLogin.style.display = "none";
       divGameSelect.style.display = "block";
-      const infoLogin = response.json();
-      token = infoLogin.token;
-      const urlEndpointMyGames = new URL("/games/by-user/" + token, urlBase.href);
-      const reqMyGames = createRequestGET(urlEndpointMyGames.href);
-      fetch(reqInfo).then(populateMyGames).catch(console.error);
-      function populateMyGames(response) {
-        if (response.status !== 200) {
-          console.error("Failed to fetch my games");
-        }
-        const arrMyGames = response.json();
-        if (arrMyGames.length === 0) {
-          populateAllGames();
-        }
-        for (const game of JSON_MyGames) {
-          const divGame = document.createElement("div");
-          divGame.appendChild(document.createTextNode(game.title));
+      const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
+      const urlEndpointAllGames = new URL("./games", urlBase.href);
+      async function result() {
+        try {
+          if (inpMyGames.value === true) {
+            const reqMyGames = createRequestGET(urlEndpointMyGames.href);
+            const respMyGames = await fetch(reqMyGames);
+            const arrMyGames = await response.json();
+            if (arrMyGames.length === 0) {
+              inpMyGames.value = false;
+              const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+              const respAllGames = await fetch(reqAllGames);
+              const arrAllGames = await response.json();
+              return arrAllGames;
+            } else {
+              return arrMyGames;
+            }
+          } else {
+            const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+            const respAllGames = await fetch(reqAllGames);
+            const arrAllGames = await response.json();
+            return arrAllGames;
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
-      const urlEndpointAllGames = new URL("/games", urlBase.href);
-      const reqAllGames = createRequestGET(urlEndpointAllGames.href);
-      fetch(reqAllGames).then(populateAllGames).catch(console.error);
+      populateGameList(result());
     }
     btnNewGame.addEventListener("click", function (evt) {
-      const requestNewGame = createRequestGET(mainURL);
-      fetch(requestNewGame).then(function (response) {
+      const objNewGame = {
+        title: "",
+        action: {},
+      };
+      const jsonNewGame = JSON.stringify(objNewGame);
+      const blobNewGame = new Blob(jsonNewGame, "application/json");
+      const urlEndpointNewGame = new URL("./game/new", urlBase.href);
+      const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
+      fetch(reqNewGame).then(function (response) {
         if (response.status !== 200) {
           return;
         }
-        
       });
     });
     btnJoinUnjoinGame.addEventListener("click", function (evt) {
-      const requestJoinGame = createRequestGET(hrefBase);
-      fetch(requestJoinGame).then(function (response) {
-        divInfo.appendChild(document.createTextNode(response.text()));
+      const reqJoinGame = createRequestGET("./game/" + gameId + "/join/" + token, urlBase.href);
+      const reqUnjoinGame = createRequestGET("./game/" + gameId + "/unjoin/" + token, urlBase.href);
+      fetch(reqJoinGame).then(function (response) {
+        if (response.status !== 200) {
+          return;
+        }
       });
     });
-    function addGameRow(gameId, playerId) {
-      arrGames.push({
-        gameId: gameId,
-        playerId: playerId,
-        ready: false,
-      });
-      const trNew = document.createElement("tr");
-      tblGameIds.appendChild(trNew);
-      const tdGameId = document.createElement("td");
-      trNew.appendChild(tdGameId);
-      const tdPlayerId = document.createElement("td");
-      trNew.appendChild(tdPlayerId);
-      const tdAction = document.createElement("td");
-      trNew.appendChild(tdAction);
-      const btnReady = document.createElement("button");
-      tdAction.appendChild(btnReady);
-      btnReady.addEventListener("click", function (evt) {
-        
-      });
-    }
   } catch (e) {
     console.log(e);
   }
