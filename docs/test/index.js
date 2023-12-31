@@ -84,6 +84,8 @@ function start( [ evtWindow ] ) {
       }
       if (registration.installing === null) {
         console.log("installing is null");
+      } else if (typeof registration.installing === "undefined") {
+        console.log("installing is undefined");
       } else {
         registration.installing.postMessage({
           action: "numClients",
@@ -92,6 +94,8 @@ function start( [ evtWindow ] ) {
       }
       if (registration.waiting === null) {
         console.log("waiting is null");
+      } else if (typeof registration.waiting === "undefined") {
+        console.log("waiting is undefined");
       } else {
         registration.waiting.postMessage({
           action: "numClients",
@@ -100,6 +104,8 @@ function start( [ evtWindow ] ) {
       }
       if (registration.active === null) {
         console.log("active is null");
+      } else if (typeof registration.active === "undefined") {
+        console.log("active is undefined");
       } else {
         registration.active.postMessage({
           action: "numClients",
