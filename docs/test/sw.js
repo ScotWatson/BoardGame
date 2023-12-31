@@ -93,7 +93,7 @@ self.addEventListener("fetch", function (evt) {
         case "/index.html":
           return await fetch(request);
         case "/info":
-          const jsonInfo = JSON.serialize(objInfo);
+          const jsonInfo = JSON.stringify(objInfo);
           const blobInfo = new Blob(jsonInfo)
           return new Response(blobInfo, {
             status: 200,
