@@ -72,6 +72,8 @@ function start( [ evtWindow ] ) {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
       });
+      await navigator.serviceWorker.ready;
+      begin();
       const btnNumClients = document.createElement("button");
       divInfo.appendChild(btnNumClients);
       btnNumClients.appendChild(document.createTextNode("numClients"));
@@ -128,16 +130,18 @@ function start( [ evtWindow ] ) {
         }
       });
     })();
-    let hrefBase = urlSelf.searchParams.get("url");
-    while (hrefBase === null) {
-      hrefBase = window.prompt("Please enter URL:");
+    function begin() {
+      let hrefBase = urlSelf.searchParams.get("url");
+      while (hrefBase === null) {
+        hrefBase = window.prompt("Please enter URL:");
+      }
+      const urlBase = new URL(hrefBase);
+      let objGeneralInfo;
+      let token;
+      const urlEndpointInfo = new URL("./info", urlBase.href);
+      const reqInfo = createRequestGET(urlEndpointInfo);
+      fetch(reqInfo).then(login).catch(console.error);
     }
-    const urlBase = new URL(hrefBase);
-    let objGeneralInfo;
-    let token;
-    const urlEndpointInfo = new URL("./info", urlBase.href);
-    const reqInfo = createRequestGET(urlEndpointInfo);
-    fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
     const divLogin = document.getElementById("divLogin");
     const lblUsername = document.getElementById("lblUsername");
