@@ -17,7 +17,7 @@ function addUser(username, password) {
 
 const mapTokens = new Map();
 function loginUser(username, password) {
-  const newId = self.crypto.randomUUID(),
+  const newId = self.crypto.randomUUID();
   mapTokens.set(newId, username);
 }
 function logoutUser(token) {
@@ -26,7 +26,7 @@ function logoutUser(token) {
 
 const mapGames = new Map();
 function addGame(title, action) {
-  const newId = self.crypto.randomUUID(),
+  const newId = self.crypto.randomUUID();
   const newGame = {
     title: title,
     players: [],
@@ -37,7 +37,7 @@ function addGame(title, action) {
 
 const mapOptions = new Map();
 function addOption(objOption) {
-  objOption.id = self.crypto.randomUUID(),
+  objOption.id = self.crypto.randomUUID();
   mapGames.set(objOption.id, objOption);
   return newGame;
 }
