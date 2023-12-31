@@ -114,13 +114,16 @@ function start( [ evtWindow ] ) {
           console.log("Message sent to active");
         }
       });
-    })();    let hrefBase = urlSelf.searchParams.get("url");
+    })();
+    let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
       hrefBase = window.prompt("Please enter URL:");
     }
+    const urlBase = new URL(hrefBase);
     let objGeneralInfo;
     let token;
-    const reqInfo = createRequestGET(hrefBase + "/info");
+    const urlEndpointInfo = new URL("/info", urlBase.href);
+    const reqInfo = createRequestGET(urlEndpointInfo);
     fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
     const divInfo = document.getElementById("divInfo");
@@ -175,6 +178,7 @@ function start( [ evtWindow ] ) {
         console.error("Failed to get info.");
       }
       objGeneralInfo = response.json();
+      console.log(objGeneralInfo);
       divLogin.style.display = "block";
       document.head.title = objGeneralInfo.name;
       divInfo.innerHTML = "";
