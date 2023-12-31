@@ -79,7 +79,9 @@ self.addEventListener("fetch", function (evt) {
   async function fetchModified(request) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
-    const urlFakeGame = new URL("/FakeGame/", urlSelf);
+    const urlFakeGame = new URL("./FakeGame", urlSelf);
+    await sendMessage(urlRequest.href);
+    await sendMessage(urlSelf.href);
     await sendMessage(urlFakeGame.href);
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
       const endpoint = requestURL.pathname.substring(urlFakeGame.href.length - 1);
