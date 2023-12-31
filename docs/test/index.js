@@ -122,7 +122,7 @@ function start( [ evtWindow ] ) {
     const urlBase = new URL(hrefBase);
     let objGeneralInfo;
     let token;
-    const urlEndpointInfo = new URL("/info", urlBase.href);
+    const urlEndpointInfo = new URL("./info", urlBase.href);
     const reqInfo = createRequestGET(urlEndpointInfo);
     fetch(reqInfo).then(login).catch(console.error);
     const divGame = document.getElementById("divGame");
