@@ -181,9 +181,11 @@ function start( [ evtWindow ] ) {
         objGeneralInfo = obj;
         console.log(objGeneralInfo);
         divLogin.style.display = "block";
-        document.head.title = objGeneralInfo.name;
+        const elemTitle = document.head.getElementsByTagName("title")[0];
+        elemTitle.innerHTML = "";
+        elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
         divInfo.innerHTML = "";
-        divInfo.appendChild(document.createElement(objGeneralInfo.description));
+        divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       });
     }
     function showGames(response) {
@@ -213,10 +215,6 @@ function start( [ evtWindow ] ) {
       const reqAllGames = createRequestGET(hrefBase + "/games");
       fetch(reqInfo).then(populateAllGames).catch(console.error);
     }
-    const requestGetInfo = createRequestGET(hrefBase + "/info");
-    fetch(requestGetInfo).then(function (response) {
-      divInfo.appendChild(document.createTextNode(response.text()));
-    });
     btnNewGame.addEventListener("click", function (evt) {
       const requestNewGame = createRequestGET(mainURL);
       fetch(requestNewGame).then(function (response) {
