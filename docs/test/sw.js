@@ -3,6 +3,9 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+let lastInstallTime;
+let lastActivateTime;
+
 const mapUsers = new Map();
 function addUser(username, password) {
   if (mapUsers.has(username)) {
@@ -65,15 +68,13 @@ const objInfo = {
 }
 
 self.addEventListener("install", function (evt) {
+  lastInstallTime = new Date();
   evt.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", function (evt) {
-  async function all() {
-    await sendMessage("Activated");
-    await self.clients.claim();
-  }
-  evt.waitUntil(all());
+  lastActivateTime = new Date();
+  evt.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", function (evt) {
@@ -122,6 +123,9 @@ self.addEventListener("message", function (evt) {
     }
     if (data.action === "numClients") {
       evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
+    }
+    if (data.action === "getTimes") {
+      evt.source.postMessage({lastInstallTime, lastActivateTime});
     }
     await sendServerMessage("ACK");
   })());
