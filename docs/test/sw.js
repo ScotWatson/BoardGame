@@ -84,9 +84,7 @@ self.addEventListener("fetch", function (evt) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
     const urlFakeGame = new URL("./FakeGame", urlSelf);
-    await sendMessage("Processing Fetch Request");
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
-      await sendMessage("Fake Game Activated");
       const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
       await sendMessage(endpoint);
       switch (endpoint) {
@@ -94,7 +92,7 @@ self.addEventListener("fetch", function (evt) {
           return await fetch(request);
         case "/info":
           const jsonInfo = JSON.stringify(objInfo);
-          const blobInfo = new Blob(jsonInfo)
+          const blobInfo = new Blob( [ jsonInfo ], { type: "application/json" });
           return new Response(blobInfo, {
             status: 200,
             statusText: "OK",
