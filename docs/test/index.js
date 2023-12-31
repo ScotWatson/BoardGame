@@ -80,13 +80,13 @@ function start( [ evtWindow ] ) {
       }
     })();
     let hrefBase = urlSelf.searchParams.get("url");
+    let objGeneralInfo;
+    let token;
     function begin() {
       while (hrefBase === null) {
         hrefBase = window.prompt("Please enter URL:");
       }
       const urlBase = new URL(hrefBase);
-      let objGeneralInfo;
-      let token;
       const urlEndpointInfo = new URL("./info", urlBase.href);
       const reqInfo = createRequestGET(urlEndpointInfo);
       fetch(reqInfo).then(login).catch(console.error);
