@@ -63,57 +63,58 @@ function start( [ evtWindow ] ) {
     const urlSelf = new URL(self.location);
     const urlServiceWorker = new URL("./sw.js", urlSelf);
     const urlServiceWorkerScope = new URL("./", urlSelf);
-    const registration = navigator.serviceWorker.register(urlServiceWorker.href, {
-      scope: urlServiceWorkerScope.href,
-    });
     navigator.serviceWorker.addEventListener("message", function (evt) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
-    const btnNumClients = document.createElement("button");
-    document.body.appendChild(btnNumClients);
-    btnNumClients.appendChild(document.createTextNode("numClients"));
-    btnNumClients.addEventListener("click", function () {
-      if (navigator.serviceWorker.controller === null) {
-        console.log("controller is null");
-      } else {
-        navigator.serviceWorker.controller.postMessage({
-          action: "numClients",
-        });
-        console.log("Message sent to controller");
-      }
-      if (registration.installing === null) {
-        console.log("installing is null");
-      } else if (typeof registration.installing === "undefined") {
-        console.log("installing is undefined");
-      } else {
-        registration.installing.postMessage({
-          action: "numClients",
-        });
-        console.log("Message sent to installing");
-      }
-      if (registration.waiting === null) {
-        console.log("waiting is null");
-      } else if (typeof registration.waiting === "undefined") {
-        console.log("waiting is undefined");
-      } else {
-        registration.waiting.postMessage({
-          action: "numClients",
-        });
-        console.log("Message sent to waiting");
-      }
-      if (registration.active === null) {
-        console.log("active is null");
-      } else if (typeof registration.active === "undefined") {
-        console.log("active is undefined");
-      } else {
-        registration.active.postMessage({
-          action: "numClients",
-        });
-        console.log("Message sent to active");
-      }
-    });
-    let hrefBase = urlSelf.searchParams.get("url");
+    (async function () {
+      const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
+        scope: urlServiceWorkerScope.href,
+      });
+      const btnNumClients = document.createElement("button");
+      document.body.appendChild(btnNumClients);
+      btnNumClients.appendChild(document.createTextNode("numClients"));
+      btnNumClients.addEventListener("click", function () {
+        if (navigator.serviceWorker.controller === null) {
+          console.log("controller is null");
+        } else {
+          navigator.serviceWorker.controller.postMessage({
+            action: "numClients",
+          });
+          console.log("Message sent to controller");
+        }
+        if (registration.installing === null) {
+          console.log("installing is null");
+        } else if (typeof registration.installing === "undefined") {
+          console.log("installing is undefined");
+        } else {
+          registration.installing.postMessage({
+            action: "numClients",
+          });
+          console.log("Message sent to installing");
+        }
+        if (registration.waiting === null) {
+          console.log("waiting is null");
+        } else if (typeof registration.waiting === "undefined") {
+          console.log("waiting is undefined");
+        } else {
+          registration.waiting.postMessage({
+            action: "numClients",
+          });
+          console.log("Message sent to waiting");
+        }
+        if (registration.active === null) {
+          console.log("active is null");
+        } else if (typeof registration.active === "undefined") {
+          console.log("active is undefined");
+        } else {
+          registration.active.postMessage({
+            action: "numClients",
+          });
+          console.log("Message sent to active");
+        }
+      });
+    })();    let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
       hrefBase = window.prompt("Please enter URL:");
     }
