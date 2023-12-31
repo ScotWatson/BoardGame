@@ -108,9 +108,9 @@ self.addEventListener("fetch", function (evt) {
 });
 
 self.addEventListener("message", function (evt) {
-  if (evt.source.url !== "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
-    return;
-  }
+//  if (evt.source.url !== "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
+//    return;
+//  }
   evt.waitUntil((async function () {
     const data = evt.data;
     if (data.action === "skipWaiting") {
@@ -118,10 +118,10 @@ self.addEventListener("message", function (evt) {
       evt.source.postMessage("done");
     }
     if (data.action === "getUsers") {
-      for (const user of mapUsers.entities()) {
-        let uuid = self.crypto.randomUUID();
-      }
-      evt.source.postMessage("numClients: " + clients.length);
+      evt.source.postMessage("numUsers: " + mapUsers.size);
+    }
+    if (data.action === "numClients") {
+      evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
     }
     await sendServerMessage("ACK");
   })());
