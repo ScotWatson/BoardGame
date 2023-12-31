@@ -81,6 +81,7 @@ function start( [ evtWindow ] ) {
         action: "numClients",
       });
     });
+    return;
     let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
       hrefBase = window.prompt("Please enter URL:");
