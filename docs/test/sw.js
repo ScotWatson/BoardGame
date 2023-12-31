@@ -65,8 +65,7 @@ const objInfo = {
 }
 
 self.addEventListener("install", function (evt) {
-  // only occurs once
-  evt.waitUntil(Promise.resolve());
+  evt.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", function (evt) {
@@ -81,7 +80,7 @@ self.addEventListener("fetch", function (evt) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
     const urlFakeGame = new URL("/FakeGame/", urlSelf);
-    await sendMessage(urlFakeGame);
+    await sendMessage(urlFakeGame.href);
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
       const endpoint = requestURL.pathname.substring(urlFakeGame.href.length - 1);
       switch (endpoint) {
@@ -113,10 +112,6 @@ self.addEventListener("message", function (evt) {
 //  }
   evt.waitUntil((async function () {
     const data = evt.data;
-    if (data.action === "skipWaiting") {
-      self.skipWaiting();
-      evt.source.postMessage("done");
-    }
     if (data.action === "getUsers") {
       evt.source.postMessage("numUsers: " + mapUsers.size);
     }
