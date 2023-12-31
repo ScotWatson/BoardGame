@@ -79,10 +79,11 @@ self.addEventListener("fetch", function (evt) {
   // "index.html" should still be accessable. It forms the "server-side" interface.
   async function fetchModified(request) {
     const urlRequest = new URL(request.url);
-    const urlFakeGame = self.location.path + "/FakeGame/"
+    const urlSelf = new URL(self.location);
+    const urlFakeGame = new URL("/FakeGame/", urlSelf);
     await sendMessage(urlFakeGame);
-    if (urlRequest.pathname.startsWith(urlFakeGame)) {
-      const endpoint = requestURL.pathname.substring(urlFakeGame.length - 1);
+    if (urlRequest.href.startsWith(urlFakeGame.href)) {
+      const endpoint = requestURL.pathname.substring(urlFakeGame.href.length - 1);
       switch (endpoint) {
         case "/index.html":
           return await fetch(request);
