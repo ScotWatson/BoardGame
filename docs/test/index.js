@@ -82,7 +82,6 @@ function start( [ evtWindow ] ) {
       });
       console.log("Message sent");
     });
-    return;
     let hrefBase = urlSelf.searchParams.get("url");
     while (hrefBase === null) {
       hrefBase = window.prompt("Please enter URL:");
