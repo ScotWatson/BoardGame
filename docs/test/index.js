@@ -80,6 +80,7 @@ function start( [ evtWindow ] ) {
       registration.active.postMessage({
         action: "numClients",
       });
+      console.log("Message sent");
     });
     return;
     let hrefBase = urlSelf.searchParams.get("url");
