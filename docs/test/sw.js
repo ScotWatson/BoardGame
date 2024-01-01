@@ -84,14 +84,16 @@ self.addEventListener("fetch", function (evt) {
   async function fetchModified(request) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
-    const urlFakeGame = new URL("./FakeGame", urlSelf);
+    const urlFakeGame = new URL("./FakeGame/", urlSelf);
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
       const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
+      const arrEndpoint = endpoint.split("/");
       await sendMessage(endpoint);
-      switch (endpoint) {
-        case "/index.html":
+      switch (arrEndpoint[0]) {
+        case "index.html": {
           return await fetch(request);
-        case "/info":
+        }
+        case "info": {
           const jsonInfo = JSON.stringify(objInfo);
           const blobInfo = new Blob( [ jsonInfo ], { type: "application/json" });
           return new Response(blobInfo, {
@@ -99,12 +101,137 @@ self.addEventListener("fetch", function (evt) {
             statusText: "OK",
             headers: [],
           });
-        default:
-          return new Response("Not a configured endpoint", {
-            status: 404,
-            statusText: "Not Found",
-            headers: [],
-          });
+        }
+        case "user": {
+          switch (arrEndpoint[1]) {
+            case "new": {
+              try {
+                const objNewUser = await request.json();
+                const { username, password } = objNewUser;
+                const token = addUser(username, password);
+                const objToken = {
+                  token,
+                };
+                const jsonToken = JSON.stringify(objToken);
+                const blobToken = new Blob( [ jsonToken ], "application/json");
+                return new Response(blobToken, {
+                  status: 200,
+                  statusText: "OK",
+                  headers: [],
+                });
+              } catch (e) {
+                return new Response(e.message, {
+                  status: 404,
+                  statusText: "Not Found",
+                  headers: [],
+                });
+              }
+            }
+            case "login": {
+              try {
+                const objLogin = await request.json();
+                const { username, password } = objLogin;
+                const token = loginUser(username, password);
+                const objToken = {
+                  token,
+                };
+                const jsonToken = JSON.stringify(objToken);
+                const blobToken = new Blob( [ jsonToken ], "application/json");
+                return new Response(blobToken, {
+                  status: 200,
+                  statusText: "OK",
+                  headers: [],
+                });
+              } catch (e) {
+                return new Response(e.message, {
+                  status: 404,
+                  statusText: "Not Found",
+                  headers: [],
+                });
+              }
+            }
+            case "logout": {
+              try {
+                const objToken = await request.json();
+                const { token } = objToken;
+                logoutUser(token);
+                return new Response("", {
+                  status: 200,
+                  statusText: "OK",
+                  headers: [],
+                });
+              } catch (e) {
+                return new Response(e.message, {
+                  status: 404,
+                  statusText: "Not Found",
+                  headers: [],
+                });
+              }
+            }
+            default: {
+              return new Response("Not a configured endpoint", {
+                status: 404,
+                statusText: "Not Found",
+                headers: [],
+              });
+            }
+          }
+        }
+        case "game": {
+          switch (arrEndpoint[1]) {
+            case "new": {
+              try {
+                const objGameData = await request.json();
+                const { title, action } = objGameData;
+                addGame(title, action);
+                return new Response("", {
+                  status: 200,
+                  statusText: "OK",
+                  headers: [],
+                });
+              } catch (e) {
+                return new Response(e.message, {
+                  status: 404,
+                  statusText: "Not Found",
+                  headers: [],
+                });
+              }
+            }
+            default: {
+              const gameId = arrEndpoint[1];
+              switch (arrEndpoint[2]) {
+                case "join": {
+                  return new Response("Not a configured endpoint", {
+                    status: 404,
+                    statusText: "Not Found",
+                    headers: [],
+                  });
+                }
+                case "unjoin": {
+                  return new Response("Not a configured endpoint", {
+                    status: 404,
+                    statusText: "Not Found",
+                    headers: [],
+                  });
+                }
+                default: {
+                  return new Response("Not a configured endpoint", {
+                    status: 404,
+                    statusText: "Not Found",
+                    headers: [],
+                  });
+                }
+              }
+            }
+            default: {
+              return new Response("Not a configured endpoint", {
+                status: 404,
+                statusText: "Not Found",
+                headers: [],
+              });
+            }
+            }
+          }
       }
     } else {
       return await fetch(request);
