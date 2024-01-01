@@ -239,7 +239,7 @@ self.addEventListener("fetch", function (evt) {
             }
             default: {
               const gameId = arrEndpoint[1];
-              const thisGame = getGame(gameID);
+              const thisGame = getGame(gameId);
               switch (arrEndpoint[2]) {
                 case "info": {
                   try {
