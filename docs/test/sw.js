@@ -1,5 +1,5 @@
 /*
-(c) 2023 Scot Watson  All Rights Reserved
+(c) 2024 Scot Watson  All Rights Reserved
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
@@ -21,7 +21,7 @@ function addUser(username, password) {
 const mapTokens = new Map();
 function loginUser(username, password) {
   if (!(mapUsers.has(username))) {
-    throw "Username doen not exist.";
+    throw "Username does not exist.";
   }
   if (mapUsers.get(username).password !== password) {
     throw "Invalid password.";
@@ -30,7 +30,13 @@ function loginUser(username, password) {
   mapTokens.set(newToken, username);
 }
 function logoutUser(token) {
-  mapTokens.delete(newId);
+  mapTokens.delete(token);
+}
+function getUser(token) {
+  if (!(mapTokens.get(token))) {
+    return null;
+  }
+  return mapTokens.get(token);
 }
 
 const mapGames = new Map();
@@ -42,6 +48,9 @@ function addGame(title, action) {
   };
   mapGames.set(newId, newGame);
   return newGame;
+}
+function getGame(id) {
+  return mapGames.get(id);
 }
 
 const mapOptions = new Map();
@@ -135,7 +144,6 @@ self.addEventListener("fetch", function (evt) {
             }
             case "login": {
               try {
-                await sendMessage("Logging in...");
                 const objLogin = await request.json();
                 const { username, password } = objLogin;
                 const token = loginUser(username, password);
@@ -232,20 +240,72 @@ self.addEventListener("fetch", function (evt) {
             }
             default: {
               const gameId = arrEndpoint[1];
+              const thisGame = getGame(gameID);
               switch (arrEndpoint[2]) {
                 case "join": {
-                  return new Response("Not a configured endpoint", {
-                    status: 404,
-                    statusText: "Not Found",
-                    headers: [],
-                  });
+                  try {
+                    const token = arrEndpoint[3];
+                    const thisUser = getUser(token);
+                    if (thisUser === null) {
+                      return new Response("This user is not logged in.", {
+                        status: 404,
+                        statusText: "Not Found",
+                        headers: [],
+                      });
+                    }
+                    if (thisGame.players.includes(thisUser.username)) {
+                      return new Response("This user has already joined.", {
+                        status: 404,
+                        statusText: "Not Found",
+                        headers: [],
+                      });
+                    }
+                    thisGame.players.push(thisUser.username);
+                    return new Response("", {
+                      status: 200,
+                      statusText: "OK",
+                      headers: [],
+                    });
+                  } catch (e) {
+                    return new Response(e.message, {
+                      status: 404,
+                      statusText: "Not Found",
+                      headers: [],
+                    });
+                  }
                 }
                 case "unjoin": {
-                  return new Response("Not a configured endpoint", {
-                    status: 404,
-                    statusText: "Not Found",
-                    headers: [],
-                  });
+                  try {
+                    const token = arrEndpoint[3];
+                    const thisUser = getUser(token);
+                    if (thisUser === null) {
+                      return new Response("This user is not logged in.", {
+                        status: 404,
+                        statusText: "Not Found",
+                        headers: [],
+                      });
+                    }
+                    const playerIndex = thisGame.players.indexOf(thisUser.username);
+                    if (playerIndex === -1) {
+                      return new Response("This user has already unjoined.", {
+                        status: 404,
+                        statusText: "Not Found",
+                        headers: [],
+                      });
+                    }
+                    thisGame.players.splice(playerIndex, 1);
+                    return new Response("", {
+                      status: 200,
+                      statusText: "OK",
+                      headers: [],
+                    });
+                  } catch (e) {
+                    return new Response(e.message, {
+                      status: 404,
+                      statusText: "Not Found",
+                      headers: [],
+                    });
+                  }
                 }
                 default: {
                   return new Response("Not a configured endpoint", {
