@@ -1,5 +1,5 @@
 /*
-(c) 2023 Scot Watson  All Rights Reserved
+(c) 2024 Scot Watson  All Rights Reserved
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
@@ -141,6 +141,8 @@ class AppNavigation {
     for (const child of this.#rootMain.children) {
       child.style.display = "none";
     }
+    divLayout.style.width = "100%";
+    divLayout.style.height = "100%";
     this.#arrBreadcrumbs.push({ title, shortTitle, divLayout });
     this.#rootMain.appendChild(divLayout);
     this.#divBreadcrumbs.style.display = "block";
@@ -389,22 +391,32 @@ function start( [ evtWindow ] ) {
       });
       const divInfo = document.createElement("div");
       divLogin.appendChild(divInfo);
+      divInfo.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:20%;";
       const divLogged = document.createElement("div");
       divLogin.appendChild(divLogged);
+      divLogged.style = "display:block;position:absolute;left:0%;top:20%;width:100%;height:10%;";
       const lblUsername = document.createElement("label");
       divLogin.appendChild(lblUsername);
+      lblUsername.style = "display:block;position:absolute;left:0%;top:30%;width:100%;height:10%;";
       lblUsername.appendChild(document.createTextNode("Username: "));
       const inpUsername = document.createElement("input");
       lblUsername.appendChild(inpUsername);
+      inpUsername.type = "text";
+      inpUsername.style = "display:inline;width:80%;height:100%;";
       const lblPassword = document.createElement("label");
       divLogin.appendChild(lblPassword);
+      lblPassword.style = "display:block;position:absolute;left:0%;top:40%;width:100%;height:10%;"
       lblPassword.appendChild(document.createTextNode("Password: "));
       const inpPassword = document.createElement("input");
       lblPassword.appendChild(inpPassword);
+      inpPassword.type = "text";
+      inpPassword.style = "display:inline;width:80%;height:100%;";
       const btnLogin = document.createElement("button");
       divLogin.appendChild(btnLogin);
+      btnLogin.style = "display:block;position:absolute;left:0%;top:50%;width:50%;height:20%;";
       const btnCreateAccount = document.createElement("button");
       divLogin.appendChild(btnCreateAccount);
+      btnCreateAccount.style = "display:block;position:absolute;left:50%;top:50%;width:50%;height:20%;";
       divInfo.innerHTML = "";
       divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       btnLogin.addEventListener("click", function (evt) {
@@ -459,35 +471,62 @@ function start( [ evtWindow ] ) {
         title: "Game List",
         shortTitle: "Game List",
       });
+      const lblMyGames = document.getElementById("lblMyGames");
+      const inpMyGames = document.getElementById("inpMyGames");
+      const divGameList = document.getElementById("divGameList");
+      const btnGameListRefresh = document.getElementById("btnGameListRefresh");
+      const btnNewGame = document.getElementById("btnNewGame");
+      const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
+      const urlEndpointAllGames = new URL("./games", urlBase.href);
+      populateGameList(result());
+      async function result() {
+        try {
+          if (inpMyGames.value === true) {
+            const reqMyGames = createRequestGET(urlEndpointMyGames.href);
+            const respMyGames = await fetch(reqMyGames);
+            const arrMyGames = await response.json();
+            if (arrMyGames.length === 0) {
+              inpMyGames.value = false;
+              const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+              const respAllGames = await fetch(reqAllGames);
+              const arrAllGames = await response.json();
+              return arrAllGames;
+            } else {
+              return arrMyGames;
+            }
+          } else {
+            const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+            const respAllGames = await fetch(reqAllGames);
+            const arrAllGames = await response.json();
+            return arrAllGames;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
     }
     function drawGameInfo(strGameId) {
-      
+      const divGameInfo = myNav.addLayout({
+        title: "Game List",
+        shortTitle: "Game List",
+      });
+      const pGameTitle = document.getElementById("pGameTitle");
+      const divPlayerList = document.getElementById("divPlayerList");
+      const btnPlayerListRefresh = document.getElementById("btnPlayerListRefresh");
+      const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
+      const btnOpenGame = document.getElementById("btnOpenGame");
     }
     function drawNewGame() {
-      
+      const divNewGame = document.getElementById("divNewGame");
+      const lblNewGameTitle = document.getElementById("lblNewGameTitle");
+      const inpNewGameTitle = document.getElementById("inpNewGameTitle");
+      const divNewGameOptions = document.getElementById("divNewGameOptions");
+      const btnCancelNewGame = document.getElementById("btnCancelNewGame");
     }
 
-    const btnBrowseGames = document.getElementById("btnBrowseGames");
 
-    const divGameSelect = document.getElementById("divGameSelect");
-    const lblMyGames = document.getElementById("lblMyGames");
-    const inpMyGames = document.getElementById("inpMyGames");
-    const divGameList = document.getElementById("divGameList");
-    const btnGameListRefresh = document.getElementById("btnGameListRefresh");
-    const btnNewGame = document.getElementById("btnNewGame");
-    const btnLogout = document.getElementById("btnLogout");
-    const divGameInfo = document.getElementById("divGameInfo");
-    const pGameTitle = document.getElementById("pGameTitle");
-    const divPlayerList = document.getElementById("divPlayerList");
-    const btnPlayerListRefresh = document.getElementById("btnPlayerListRefresh");
-    const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
-    const btnOpenGame = document.getElementById("btnOpenGame");
+
     const btnCloseGameInfo = document.getElementById("btnCloseGameInfo");
-    const divNewGame = document.getElementById("divNewGame");
-    const lblNewGameTitle = document.getElementById("lblNewGameTitle");
-    const inpNewGameTitle = document.getElementById("inpNewGameTitle");
-    const divNewGameOptions = document.getElementById("divNewGameOptions");
-    const btnCancelNewGame = document.getElementById("btnCancelNewGame");
     function login(response) {
     }
 
@@ -516,40 +555,7 @@ function start( [ evtWindow ] ) {
       }
       divGameList.style.backgroundColor = "white";
     }
-    function showGame() {
-      
-    }
     function showGames() {
-      divLogin.style.display = "none";
-      divGameSelect.style.display = "block";
-      const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
-      const urlEndpointAllGames = new URL("./games", urlBase.href);
-      async function result() {
-        try {
-          if (inpMyGames.value === true) {
-            const reqMyGames = createRequestGET(urlEndpointMyGames.href);
-            const respMyGames = await fetch(reqMyGames);
-            const arrMyGames = await response.json();
-            if (arrMyGames.length === 0) {
-              inpMyGames.value = false;
-              const reqAllGames = createRequestGET(urlEndpointAllGames.href);
-              const respAllGames = await fetch(reqAllGames);
-              const arrAllGames = await response.json();
-              return arrAllGames;
-            } else {
-              return arrMyGames;
-            }
-          } else {
-            const reqAllGames = createRequestGET(urlEndpointAllGames.href);
-            const respAllGames = await fetch(reqAllGames);
-            const arrAllGames = await response.json();
-            return arrAllGames;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      populateGameList(result());
     }
     btnNewGame.addEventListener("click", function (evt) {
       const objNewGame = {
