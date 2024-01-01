@@ -174,6 +174,7 @@ class AppNavigation {
         this.#divPenultimateTitle = null;
         this.#divUltimateTitle = null;
         this.#btnHistory = null;
+        break;
       case 1:
         // Create main title element (full width)
         drawMainTitleFull();
