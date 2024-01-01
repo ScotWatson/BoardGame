@@ -340,53 +340,51 @@ function start( [ evtWindow ] ) {
       const urlBase = new URL(hrefBase);
       const urlEndpointInfo = new URL("./info", urlBase.href);
       const reqInfo = createRequestGET(urlEndpointInfo);
-      (async function () {
-        try {
-          const respInfo = await fetch(reqInfo);
-          if (response.status !== 200) {
-            throw "Failed to get info.";
-          }
-          const objInfo = reqInfo.json();
-          objGeneralInfo = objInfo;
-          console.log(objGeneralInfo);
-          // Create navigation control
-          const myNav = new AppNavigation({
-            title: objGeneralInfo.name,
-            shortTitle: objGeneralInfo.name,
-          });
-          divMain.appendChild(myNav.element);
-          myNav.element.style.width = "100%";
-          myNav.element.style.height = "100%";
-          const elemTitle = document.head.getElementsByTagName("title")[0];
-          elemTitle.innerHTML = "";
-          elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
-          const divStart = myNav.addLayout({
-            title: objInfo.name,
-            shortTitle: objInfo.name,
-          });
-          const menu = new MenuTiles();
-          divStart.appendChild(menu.element);
-          menu.element.style.width = "100%";
-          menu.element.style.height = "100%";
-          menu.addTiles([
-            {
-              text: "Login",
-              handler: function () {
-                drawLogin();
-              },
-            },
-            {
-              text: "Game Select",
-              handler: function () {
-                drawGameSelect(true);
-              },
-            }
-          ]);
-        } catch (e) {
-          console.error(e);
+      try {
+        const respInfo = await fetch(reqInfo);
+        if (response.status !== 200) {
+          throw "Failed to get info.";
         }
-      })();
-    }
+        const objInfo = reqInfo.json();
+        objGeneralInfo = objInfo;
+        console.log(objGeneralInfo);
+        // Create navigation control
+        const myNav = new AppNavigation({
+          title: objGeneralInfo.name,
+          shortTitle: objGeneralInfo.name,
+        });
+        divMain.appendChild(myNav.element);
+        myNav.element.style.width = "100%";
+        myNav.element.style.height = "100%";
+        const elemTitle = document.head.getElementsByTagName("title")[0];
+        elemTitle.innerHTML = "";
+        elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
+        const divStart = myNav.addLayout({
+          title: objInfo.name,
+          shortTitle: objInfo.name,
+        });
+        const menu = new MenuTiles();
+        divStart.appendChild(menu.element);
+        menu.element.style.width = "100%";
+        menu.element.style.height = "100%";
+        menu.addTiles([
+          {
+            text: "Login",
+            handler: function () {
+              drawLogin();
+            },
+          },
+          {
+            text: "Game Select",
+            handler: function () {
+              drawGameSelect(true);
+            },
+          }
+        ]);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
     function drawLogin() {
       const divLogin = myNav.addLayout({
         title: "Login",
