@@ -95,6 +95,7 @@ self.addEventListener("fetch", function (evt) {
       const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
       const arrEndpoint = endpoint.split("/");
       await sendMessage(endpoint);
+      await sendMessage(arrEndpoint);
       switch (arrEndpoint[0]) {
         case "index.html": {
           return await fetch(request);
