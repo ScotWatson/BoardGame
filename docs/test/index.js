@@ -65,7 +65,7 @@ class MenuTiles {
   constructor() {
     this.#elemMain = document.createElement("menu-tiles");
     this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
-    this.#elemMain.style.backgroundColor = "grey";
+    this.#elemMain.style.backgroundColor = "white";
     this.#elemMain.style.overflowX = "hidden";
     this.#elemMain.style.overflowY = "scroll";
     this.#divScrollable = document.createElement("div");
@@ -89,6 +89,7 @@ class MenuTiles {
       divNewTile.style.display = "block";
       divNewTile.style.width = "20%";
       divNewTile.style.aspectRatio = "1";
+      divNewTile.style.border = "1px solid black";
       divNewTile.appendChild(document.createTextNode(objTileInfo.text));
       divNewTile.addEventListener("click", objTileInfo.handler);
     }
@@ -147,6 +148,7 @@ class AppNavigation {
     }
     divLayout.style.width = "100%";
     divLayout.style.height = "100%";
+    divLayout.style.backgroundColor = "white";
     this.#arrBreadcrumbs.push({ title, shortTitle, divLayout });
     this.#divContent.appendChild(divLayout);
     this.#redrawBreadcrumbs();
@@ -204,14 +206,14 @@ class AppNavigation {
     }
     if (this.#divMainTitle !== null) {
       this.#divMainTitle.addEventListener("click", function (evt) {
-        while (this.#arrBreadcrumbs.length > 1) {
-          this.closeLayout();
+        while (that.#arrBreadcrumbs.length > 1) {
+          that.closeLayout();
         }
       });
     }
     if (this.#divPenultimateTitle !== null) {
       this.#divPenultimateTitle.addEventListener("click", function (evt) {
-        this.closeLayout();
+        that.closeLayout();
       });
     }
     function drawMainTitleFull() {
