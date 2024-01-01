@@ -315,30 +315,25 @@ function start( [ evtWindow ] ) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
-    // Register the service worker. If there is no controller, wait for one before proceeding
+    let hrefBase = urlSelf.searchParams.get("url");
+    let objGeneralInfo;
+    let token;
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
       });
-      if (navigator.serviceWorker.controller === null) {
+      // Register the service worker. If there is no controller, wait for one before proceeding
+      await new Promise(function (resolve, reject) {
+        if (navigator.serviceWorker.controller !== null) {
+          resolve();
+          return;
+        }
         navigator.serviceWorker.addEventListener("controllerchange", function (evt) {
-          begin();
+          resolve();
+          return;
         });
-      } else {
-        begin();
-      }
-    })();
-    let hrefBase = urlSelf.searchParams.get("url");
-    let objGeneralInfo;
-    let token;
-    // Create navigation control
-    const myNav = new AppNavigation({
-      baseElement: document.body,
-    });
-    divMain.appendChild(myNav.element);
-    myNav.element.style.width = "100%";
-    myNav.element.style.height = "100%";
-    function begin() {
+      });
+      // Get server URL
       while (hrefBase === null) {
         hrefBase = window.prompt("Please enter URL:");
       }
@@ -354,6 +349,14 @@ function start( [ evtWindow ] ) {
           const objInfo = reqInfo.json();
           objGeneralInfo = objInfo;
           console.log(objGeneralInfo);
+          // Create navigation control
+          const myNav = new AppNavigation({
+            title: objGeneralInfo.name,
+            shortTitle: objGeneralInfo.name,
+          });
+          divMain.appendChild(myNav.element);
+          myNav.element.style.width = "100%";
+          myNav.element.style.height = "100%";
           const elemTitle = document.head.getElementsByTagName("title")[0];
           elemTitle.innerHTML = "";
           elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
@@ -414,12 +417,15 @@ function start( [ evtWindow ] ) {
       const btnLogin = document.createElement("button");
       divLogin.appendChild(btnLogin);
       btnLogin.style = "display:block;position:absolute;left:0%;top:50%;width:50%;height:20%;";
+      btnLogin.appendChild(document.createTextNode("Login"));
       const btnCreateAccount = document.createElement("button");
       divLogin.appendChild(btnCreateAccount);
       btnCreateAccount.style = "display:block;position:absolute;left:50%;top:50%;width:50%;height:20%;";
+      btnCreateAccount.appendChild(document.createTextNode("Create Account"));
       const btnLogout = document.createElement("button");
       divLogin.appendChild(btnLogout);
       btnLogout.style = "display:block;position:absolute;left:70%;top:70%;width:30%;height:20%;";
+      btnLogout.appendChild(document.createTextNode("Logout"));
       divInfo.innerHTML = "";
       divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       btnLogin.addEventListener("click", function (evt) {
@@ -439,7 +445,9 @@ function start( [ evtWindow ] ) {
             }
             const objLoginInfo = await response.json();
             token = objLoginInfo.token;
-            showGames();
+            // show logged in
+            divLogged.innerHTML = "";
+            divLogged.appendChild(document.createTextNode("Logged in as " + inpUsername.value));
           } catch(e) {
             console.error(e);
           }
@@ -462,7 +470,9 @@ function start( [ evtWindow ] ) {
             }
             const objLoginInfo = await response.json();
             token = objLoginInfo.token;
-            showGames();
+            // show logged in
+            divLogged.innerHTML = "";
+            divLogged.appendChild(document.createTextNode("Logged in as " + inpUsername.value));
           } catch(e) {
             console.error(e);
           }
@@ -482,15 +492,18 @@ function start( [ evtWindow ] ) {
       inpMyGames.appendChild(document.createTextNode("My Games Only"));
       inpMyGames.type = "checkbox";
       inpMyGames.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:100%;";
-      const divGameList = document.createElement("div");
+      const gameMenu = new MenuTiles();
+      const divGameList = gameMenu.element;
       divGameSelect.appendChild(divGameList);
       divGameList.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;"
       const btnGameListRefresh = document.createElement("button");
       divGameSelect.appendChild(btnGameListRefresh);
       btnGameListRefresh.style = "display:block;position:absolute;left:35%;top:40%;width:30%;height:20%;";
+      btnGameListRefresh.appendChild(document.createTextNode("Refresh"));
       const btnNewGame = document.createElement("button");
       divGameSelect.appendChild(btnNewGame);
       btnNewGame.style = "display:block;position:absolute;left:0%;top:40%;width:30%;height:20%;";
+      btnNewGame.appendChild(document.createTextNode("New Game"));
       const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
       const urlEndpointAllGames = new URL("./games", urlBase.href);
       populateGameList(result());
@@ -520,20 +533,22 @@ function start( [ evtWindow ] ) {
         }
       }
       btnNewGame.addEventListener("click", function (evt) {
-        const objNewGame = {
-          title: "",
-          action: {},
-        };
-        const jsonNewGame = JSON.stringify(objNewGame);
-        const blobNewGame = new Blob(jsonNewGame, "application/json");
-        const urlEndpointNewGame = new URL("./game/new", urlBase.href);
-        const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
-        fetch(reqNewGame).then(function (response) {
-          if (response.status !== 200) {
-            return;
-          }
-        });
+        drawNewGame();
       });
+      async function populateGameList(promiseGameList) {
+        gameList.clearAllTiles();
+        const arrGames = await promiseGameList;
+        const arrGameTiles = [];
+        for (const game of arrGames) {
+          arrGameTiles.push({
+            text: game.title,
+            handler: function () {
+              drawGameInfo(game.id);
+            },
+          });
+        }
+        gameList.addTiles(arrGameTiles);
+      }
     }
     function drawGameInfo(strGameId) {
       const divGameInfo = myNav.addLayout({
@@ -559,55 +574,61 @@ function start( [ evtWindow ] ) {
       btnOpenGame.style="display:block;position:absolute;left:50%;top:80%;width:25%;height:20%;";
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinUnjoinGame.addEventListener("click", function (evt) {
-        const reqJoinGame = createRequestGET("./game/" + gameId + "/join/" + token, urlBase.href);
-        const reqUnjoinGame = createRequestGET("./game/" + gameId + "/unjoin/" + token, urlBase.href);
-        fetch(reqJoinGame).then(function (response) {
-          if (response.status !== 200) {
-            return;
+        const reqJoinGame = createRequestGET("./game/" + strGameId + "/join/" + token, urlBase.href);
+        const reqUnjoinGame = createRequestGET("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
+        (async function () {
+          try {
+            const response = await fetch(reqJoinGame);
+            if (response.status !== 200) {
+              return;
+            }
+          } catch (e) {
+            console.error(e);
           }
-        });
+        })();
       });
     }
     function drawNewGame() {
-      const divNewGame = document.getElementById("divNewGame");
-      const lblNewGameTitle = document.getElementById("lblNewGameTitle");
-      const inpNewGameTitle = document.getElementById("inpNewGameTitle");
-      const divNewGameOptions = document.getElementById("divNewGameOptions");
-      const btnCancelNewGame = document.getElementById("btnCancelNewGame");
-    }
-
-
-
-    const btnCloseGameInfo = document.getElementById("btnCloseGameInfo");
-    function login(response) {
-    }
-
-    btnBrowseGames.addEventListener("click", function (evt) {
-      inpMyGames.value = false;
-      inpMyGames.disabled = true;
-      showGames();
-    });
-    async function populateGameList(promiseGameList) {
-      divGameList.style.backgroundColor = "grey";
-      divGameList.innerHTML = "";
-      const arrGames = await promiseGameList;
-      for (const game of arrGames) {
-        const divGameItem = document.createElement("div");
-        divGameList.appendChild(divGameItem);
-        divGameItem.style.display = "block";
-        divGameItem.style.border = "1px solid black";
-        divGameItem.style.width = "100%";
-        divGameItem.style.height = "10%";
-        divGameItem.appendChild(document.createTextNode(game.title));
-        divGameItem.addEventListener("click", function (evt) {
-          divGameSelect.style.display = "none";
-          divGameInfo.style.display = "block";
-          showGame(game.id);
-        });
-      }
-      divGameList.style.backgroundColor = "white";
-    }
-    function showGames() {
+      const divNewGame = myNav.addLayout({
+        title: "New Game",
+        shortTitle: "New Game",
+      });
+      const lblNewGameTitle = document.createElement("label");
+      divNewGame.appendChild(lblNewGameTitle);
+      lblNewGameTitle.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
+      lblNewGameTitle.appendChild(document.createTextNode("Title: "));
+      const inpNewGameTitle = document.createElement("input");
+      lblNewGameTitle.appendChild(inpNewGameTitle);
+      inpNewGameTitle.type = "text";
+      inpNewGameTitle.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:100%;";
+      const divNewGameOptions = document.createElement("div");
+      divNewGame.appendChild(divNewGameOptions);
+      divNewGameOptions.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
+      const btnStartNewGame = document.createElement("button");
+      divNewGame.appendChild(btnStartNewGame);
+      btnStartNewGame.style = "display:block;position:absolute;left:0%;top:80%;width:100%;height:20%;";
+      btnStartNewGame.appendChild(document.createTextNode("Start"));
+      btnStartNewGame.addEventListener("click", function (evt) {
+        const objNewGame = {
+          title: "",
+          action: {},
+        };
+        const jsonNewGame = JSON.stringify(objNewGame);
+        const blobNewGame = new Blob(jsonNewGame, "application/json");
+        const urlEndpointNewGame = new URL("./game/new", urlBase.href);
+        const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
+        (async function () {
+          try {
+            const response = await fetch(reqNewGame);
+            if (response.status !== 200) {
+              throw "Failed to create new game";
+            }
+            alert("This function is yet to be implemented.");
+          } catch (e) {
+            console.error(e);
+          }
+        })();
+      });
     }
   } catch (e) {
     console.log(e);
