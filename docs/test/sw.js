@@ -28,6 +28,7 @@ function loginUser(username, password) {
   }
   const newToken = self.crypto.randomUUID();
   mapTokens.set(newToken, username);
+  return newToken;
 }
 function logoutUser(token) {
   mapTokens.delete(token);
