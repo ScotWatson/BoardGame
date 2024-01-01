@@ -148,7 +148,6 @@ class AppNavigation {
     return this.#elemMain;
   }
   addLayout({ title, shortTitle }) {
-    console.log("addLayout");
     const divLayout = document.createElement("div");
     for (const child of this.#divContent.children) {
       child.style.display = "none";
@@ -162,7 +161,6 @@ class AppNavigation {
     return divLayout;
   }
   closeLayout() {
-    console.log("closeLayout");
     const { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
     this.#redrawBreadcrumbs();
     divLayout.remove();
@@ -195,7 +193,7 @@ class AppNavigation {
         // Create main title element (short) & ultimate title element
         drawMainTitleShort();
         this.#divPenultimateTitle = null;
-        drawUltimateTitle();
+        drawUltimateTitleFull();
         this.#btnHistory = null;
         // Insert Titles
         this.#divMainTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[0].shortTitle));
@@ -205,7 +203,7 @@ class AppNavigation {
         // Create main title element (short) & ultimate title element
         drawMainTitleShort();
         drawPenultimateTitle();
-        drawUltimateTitle();
+        drawUltimateTitleShort();
         drawBtnHistory();
         // Insert Titles
         this.#divMainTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[0].shortTitle));
@@ -225,7 +223,6 @@ class AppNavigation {
       });
     }
     function drawMainTitleFull() {
-      console.log("drawMainTitleFull");
       that.#divMainTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
@@ -237,7 +234,6 @@ class AppNavigation {
       that.#divMainTitle.style.border = "1px solid black";
     }
     function drawMainTitleShort() {
-      console.log("drawMainTitleShort");
       that.#divMainTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
@@ -249,7 +245,6 @@ class AppNavigation {
       that.#divMainTitle.style.border = "1px solid black";
     }
     function drawPenultimateTitle() {
-      console.log("drawPenultimateTitle");
       that.#divPenultimateTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divPenultimateTitle);
       that.#divPenultimateTitle.style.position = "absolute";
@@ -260,14 +255,24 @@ class AppNavigation {
       that.#divPenultimateTitle.style.boxSizing = "border-box";
       that.#divPenultimateTitle.style.border = "1px solid black";
     }
-    function drawUltimateTitle() {
-      console.log("drawUltimateTitle");
+    function drawUltimateTitleFull() {
       that.#divUltimateTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divUltimateTitle);
       that.#divUltimateTitle.style.position = "absolute";
       that.#divUltimateTitle.style.left = "15%";
       that.#divUltimateTitle.style.top = "0%";
       that.#divUltimateTitle.style.width = "85%";
+      that.#divUltimateTitle.style.height = "100%";
+      that.#divUltimateTitle.style.boxSizing = "border-box";
+      that.#divUltimateTitle.style.border = "1px solid black";
+    }
+    function drawUltimateTitleShort() {
+      that.#divUltimateTitle = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(that.#divUltimateTitle);
+      that.#divUltimateTitle.style.position = "absolute";
+      that.#divUltimateTitle.style.left = "35%";
+      that.#divUltimateTitle.style.top = "0%";
+      that.#divUltimateTitle.style.width = "60%";
       that.#divUltimateTitle.style.height = "100%";
       that.#divUltimateTitle.style.boxSizing = "border-box";
       that.#divUltimateTitle.style.border = "1px solid black";
@@ -282,6 +287,7 @@ class AppNavigation {
       that.#btnHistory.style.height = "100%";
       that.#btnHistory.style.boxSizing = "border-box";
       that.#btnHistory.style.border = "1px solid black";
+      that.#btnHistory.style.backgroundColor = "green";
       that.#btnHistory.addEventListener("click", openHistory);
       function openHistory(evt) {
         function closeHistory(evt) {
@@ -627,7 +633,7 @@ function start( [ evtWindow ] ) {
       const inpNewGameTitle = document.createElement("input");
       lblNewGameTitle.appendChild(inpNewGameTitle);
       inpNewGameTitle.type = "text";
-      inpNewGameTitle.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:100%;";
+      inpNewGameTitle.style = "width:80%;height:100%;";
       const divNewGameOptions = document.createElement("div");
       divNewGame.appendChild(divNewGameOptions);
       divNewGameOptions.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
