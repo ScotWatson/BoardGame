@@ -195,7 +195,9 @@ self.addEventListener("fetch", function (evt) {
                 players: value.players,
               });
             }
+            await sendMessage(arrGameSummaries);
             const jsonGameSummaries = JSON.stringify(arrGameSummaries);
+            await sendMessage(jsonGameSummaries);
             const blobGameSummaries = new Blob( [ jsonGameSummaries ], "application/json");
             return new Response(blobGameSummaries, {
               status: 200,
