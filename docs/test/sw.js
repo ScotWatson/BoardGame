@@ -190,7 +190,7 @@ self.addEventListener("fetch", function (evt) {
               const [ id, value ] = entry;
               arrGameSummaries.push({
                 id: id,
-                title: entry[1],
+                title: value.title,
                 players: value.players,
               });
             }
