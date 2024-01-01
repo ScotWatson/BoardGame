@@ -94,7 +94,6 @@ self.addEventListener("fetch", function (evt) {
     if (urlRequest.href.startsWith(urlFakeGame.href)) {
       const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
       const arrEndpoint = endpoint.split("/");
-      await sendMessage(endpoint);
       await sendMessage(arrEndpoint);
       switch (arrEndpoint[0]) {
         case "index.html": {
@@ -214,12 +213,8 @@ self.addEventListener("fetch", function (evt) {
           switch (arrEndpoint[1]) {
             case "new": {
               try {
-                await sendMessage("Parsing");
                 const objGameData = await request.json();
-                await sendMessage(objGameData);
                 const { title, action } = objGameData;
-                await sendMessage(title);
-                await sendMessage(action);
                 addGame(title, action);
                 return new Response("", {
                   status: 200,
