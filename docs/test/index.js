@@ -112,40 +112,42 @@ class AppNavigation {
   #divUltimateTitle;
   #btnHistory;
   #arrBreadcrumbs;
-  #divTopLayout;
-  constructor({ title, shortTitle }) {
+  #divContent;
+  constructor() {
     this.#elemMain = document.createElement("app-navigation");
     this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
-    this.#elemMain.style.backgroundColor = "grey";
+    this.#elemMain.style.backgroundColor = "white";
     this.#divBreadcrumbs = document.createElement("div");
     this.#rootMain.appendChild(this.#divBreadcrumbs);
-    this.#divBreadcrumbs.style.backgroundColor = "grey";
     this.#divBreadcrumbs.style.position = "absolute";
     this.#divBreadcrumbs.style.left = "0%";
+    this.#divBreadcrumbs.style.top = "0%";
     this.#divBreadcrumbs.style.width = "100%";
     this.#divBreadcrumbs.style.height = "10%";
     this.#divMainTitle = null;
     this.#divPenultimateTitle = null;
     this.#divUltimateTitle = null;
     this.#arrBreadcrumbs = [];
-    this.#divTopLayout = this.addLayout({ title, shortTitle });
+    this.#divContent = document.createElement("div");
+    this.#divContent.style.backgroundColor = "grey";
+    this.#divContent.style.position = "absolute";
+    this.#divContent.style.left = "0%";
+    this.#divContent.style.top = "10%";
+    this.#divContent.style.width = "100%";
+    this.#divContent.style.height = "90%";
   }
   get element() {
     return this.#elemMain;
   }
-  get topLayout() {
-    return this.#divTopLayout;
-  }
   addLayout({ title, shortTitle }) {
     const divLayout = document.createElement("div");
-    for (const child of this.#rootMain.children) {
+    for (const child of this.#divContent.children) {
       child.style.display = "none";
     }
     divLayout.style.width = "100%";
     divLayout.style.height = "100%";
     this.#arrBreadcrumbs.push({ title, shortTitle, divLayout });
-    this.#rootMain.appendChild(divLayout);
-    this.#divBreadcrumbs.style.display = "block";
+    this.#divContent.appendChild(divLayout);
     this.#redrawBreadcrumbs();
     return divLayout;
   }
@@ -160,16 +162,15 @@ class AppNavigation {
     for (const child of this.#divBreadcrumbs.children) {
       child.remove();
     }
-    // Layout was just added, length cannot be 0
     switch (this.#arrBreadcrumbs.length) {
+      case 0:
+        this.#divMainTitle = null;
+        this.#divPenultimateTitle = null;
+        this.#divUltimateTitle = null;
+        this.#btnHistory = null;
       case 1:
         // Create main title element (full width)
-        this.#divMainTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divMainTitle);
-        this.#divMainTitle.style.width = "100%";
-        this.#divMainTitle.style.height = "100%";
-        this.#divMainTitle.style.boxSizing = "content-box";
-        this.#divMainTitle.style.border = "1px solid black";
+        drawMainTitleFull();
         this.#divPenultimateTitle = null;
         this.#divUltimateTitle = null;
         this.#btnHistory = null;
@@ -178,21 +179,9 @@ class AppNavigation {
         break;
       case 2:
         // Create main title element (short) & ultimate title element
-        this.#divMainTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divMainTitle);
-        this.#divMainTitle.style.width = "15%";
-        this.#divMainTitle.style.height = "100%";
-        this.#divMainTitle.style.boxSizing = "content-box";
-        this.#divMainTitle.style.border = "1px solid black";
+        drawMainTitleShort();
         this.#divPenultimateTitle = null;
-        this.#divUltimateTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
-        this.#divUltimateTitle.style.position = "absolute";
-        this.#divUltimateTitle.style.left = "15%";
-        this.#divUltimateTitle.style.width = "85%";
-        this.#divUltimateTitle.style.height = "100%";
-        this.#divUltimateTitle.style.boxSizing = "content-box";
-        this.#divUltimateTitle.style.border = "1px solid black";
+        drawUltimateTitle();
         this.#btnHistory = null;
         // Insert Titles
         this.#divMainTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[0].shortTitle));
@@ -200,31 +189,10 @@ class AppNavigation {
         break;
       default:
         // Create main title element (short) & ultimate title element
-        this.#divMainTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divMainTitle);
-        this.#divMainTitle.style.position = "absolute";
-        this.#divMainTitle.style.left = "0%";
-        this.#divMainTitle.style.width = "15%";
-        this.#divMainTitle.style.height = "100%";
-        this.#divMainTitle.style.boxSizing = "content-box";
-        this.#divMainTitle.style.border = "1px solid black";
-        this.#divPenultimateTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divPenultimateTitle);
-        this.#divPenultimateTitle.style.position = "absolute";
-        this.#divPenultimateTitle.style.left = "20%";
-        this.#divPenultimateTitle.style.width = "15%";
-        this.#divPenultimateTitle.style.height = "100%";
-        this.#divPenultimateTitle.style.boxSizing = "content-box";
-        this.#divPenultimateTitle.style.border = "1px solid black";
-        this.#divUltimateTitle = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
-        this.#divUltimateTitle.style.position = "absolute";
-        this.#divUltimateTitle.style.left = "35%";
-        this.#divUltimateTitle.style.width = "60%";
-        this.#divUltimateTitle.style.height = "100%";
-        this.#divUltimateTitle.style.boxSizing = "content-box";
-        this.#divUltimateTitle.style.border = "1px solid black";
-        createBtnHistory();
+        drawMainTitleShort();
+        drawPenultimateTitle();
+        drawUltimateTitle();
+        drawBtnHistory();
         // Insert Titles
         this.#divMainTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[0].shortTitle));
         this.#divPenultimateTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 2].shortTitle));
@@ -242,14 +210,59 @@ class AppNavigation {
         this.closeLayout();
       });
     }
-    function createBtnHistory() {
+    function drawMainTitleFull() {
+      this.#divMainTitle = document.createElement("div");
+      this.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      this.#divMainTitle.style.position = "absolute";
+      this.#divMainTitle.style.left = "0%";
+      this.#divMainTitle.style.top = "0%";
+      this.#divMainTitle.style.width = "100%";
+      this.#divMainTitle.style.height = "100%";
+      this.#divMainTitle.style.boxSizing = "border-box";
+      this.#divMainTitle.style.border = "1px solid black";
+    }
+    function drawMainTitleShort() {
+      this.#divMainTitle = document.createElement("div");
+      this.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      this.#divMainTitle.style.position = "absolute";
+      this.#divMainTitle.style.left = "0%";
+      this.#divMainTitle.style.top = "0%";
+      this.#divMainTitle.style.width = "15%";
+      this.#divMainTitle.style.height = "100%";
+      this.#divMainTitle.style.boxSizing = "border-box";
+      this.#divMainTitle.style.border = "1px solid black";
+    }
+    function drawPenultimateTitle() {
+      this.#divPenultimateTitle = document.createElement("div");
+      this.#divBreadcrumbs.appendChild(this.#divPenultimateTitle);
+      this.#divPenultimateTitle.style.position = "absolute";
+      this.#divPenultimateTitle.style.left = "20%";
+      this.#divPenultimateTitle.style.top = "0%";
+      this.#divPenultimateTitle.style.width = "15%";
+      this.#divPenultimateTitle.style.height = "100%";
+      this.#divPenultimateTitle.style.boxSizing = "border-box";
+      this.#divPenultimateTitle.style.border = "1px solid black";
+    }
+    function drawUltimateTitle() {
+      this.#divUltimateTitle = document.createElement("div");
+      this.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
+      this.#divUltimateTitle.style.position = "absolute";
+      this.#divUltimateTitle.style.left = "15%";
+      this.#divUltimateTitle.style.top = "0%";
+      this.#divUltimateTitle.style.width = "85%";
+      this.#divUltimateTitle.style.height = "100%";
+      this.#divUltimateTitle.style.boxSizing = "border-box";
+      this.#divUltimateTitle.style.border = "1px solid black";
+    }
+    function drawBtnHistory() {
       this.#btnHistory = document.createElement("div");
       this.#divBreadcrumbs.appendChild(this.#btnHistory);
       this.#btnHistory.style.position = "absolute";
       this.#btnHistory.style.left = "95%";
+      this.#btnHistory.style.top = "0%";
       this.#btnHistory.style.width = "5%";
       this.#btnHistory.style.height = "100%";
-      this.#btnHistory.style.boxSizing = "content-box";
+      this.#btnHistory.style.boxSizing = "border-box";
       this.#btnHistory.style.border = "1px solid black";
       this.#btnHistory.addEventListener("click", openHistory);
       function openHistory(evt) {
@@ -274,7 +287,7 @@ class AppNavigation {
           });
         }
         menu.addTiles(arrMenuList);
-        for (const child of this.#rootMain.children) {
+        for (const child of this.#divContent.children) {
           child.style.display = "none";
         }
         this.#rootMain.appendChild(divHistory);
@@ -318,6 +331,8 @@ function start( [ evtWindow ] ) {
     let hrefBase = urlSelf.searchParams.get("url");
     let objGeneralInfo;
     let token;
+    // Create navigation control
+    const myNav = new AppNavigation();
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
@@ -348,8 +363,7 @@ function start( [ evtWindow ] ) {
         const objInfo = await respInfo.json();
         objGeneralInfo = objInfo;
         console.log(objGeneralInfo);
-        // Create navigation control
-        const myNav = new AppNavigation({
+        myNav.addLayout({
           title: objGeneralInfo.name,
           shortTitle: objGeneralInfo.name,
         });
