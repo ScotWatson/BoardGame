@@ -61,25 +61,45 @@ function createRequestPOST(endpoint, body) {
 class MenuTiles {
   #elemMain;
   #rootMain;
+  #divScrollable;
   constructor() {
     this.#elemMain = document.createElement("menu-tiles");
-    this.#rootMain = this.#elemMain.attachShadow();
-    this.#elemMain.style.display = "flex";
-    this.#elemMain.style.flexDirection = "row";
-    this.#elemMain.style.flexWrap = "wrap";
-    this.#elemMain.style.justifyContent = "space-around";
-    this.#elemMain.style.alignItems = "center";
-    this.#elemMain.style.alignContent = "space-around";
+    this.#rootMain = this.#elemMain.attachShadow({ mode: closed });
+    this.#elemMain.style.backgroundColor = "grey";
+    this.#elemMain.style.overflowX = "hidden";
+    this.#elemMain.style.overflowY = "scroll";
+    this.#divScrollable = document.createElement("div");
+    this.#rootMain.appendChild(#divScrollable);
+    this.#divScrollable.style.display = "flex";
+    this.#divScrollable.style.flexDirection = "row";
+    this.#divScrollable.style.flexWrap = "wrap";
+    this.#divScrollable.style.justifyContent = "space-around";
+    this.#divScrollable.style.alignItems = "center";
+    this.#divScrollable.style.alignContent = "space-around";
+    this.#divScrollable.style.backgroundColor = "grey";
+    this.#divScrollable.style.backgroundImage = "url(ScrollGutter.svg)";
+    this.#divScrollable.style.backgroundSize = "48px 48px";
+    this.#divScrollable.style.backgroundPosition = "right top";
+    this.#divScrollable.style.backgroundRepeat = "repeat-y";
   }
-  addTile() {
-    const divNewTile = document.createElement("div");
-    this.#rootMain.appendChild(divNewTile);
-    divNewTile.style.display = "block";
-    divNewTile.style.width = "20%";
-    return divNewTile;
+  addTiles(arrTileInfo) {
+    for (const objTileInfo of arrTileInfo) {
+      const divNewTile = document.createElement("div");
+      this.#divScrollable.appendChild(divNewTile);
+      divNewTile.style.display = "block";
+      divNewTile.style.width = "20%";
+      divNewTile.style.aspectRatio = "1";
+      divNewTile.appendChild(document.createTextNode(objTileInfo.text));
+      divNewTile.addEventListener("click", objTileInfo.handler);
+    }
   }
-  removeTile() {
-    
+  clearAllTiles() {
+    for (const child of this.#divScrollable.children) {
+      child.remove();
+    }
+  }
+  get element() {
+    return this.#elemMain;
   }
 }
 
@@ -95,7 +115,7 @@ class AppNavigation {
   #divTopLayout;
   constructor({ title, shortTitle }) {
     this.#elemMain = document.createElement("app-navigation");
-    this.#rootMain = this.#elemMain.attachShadow();
+    this.#rootMain = this.#elemMain.attachShadow({ mode: closed });
     this.#elemMain.style.backgroundColor = "grey";
     this.#divBreadcrumbs = document.createElement("div");
     this.#rootMain.appendChild(this.#divBreadcrumbs);
@@ -118,10 +138,12 @@ class AppNavigation {
   }
   addLayout({ title, shortTitle }) {
     const divLayout = document.createElement("div");
-    for (const child of divMain.children) {
+    for (const child of this.#rootMain.children) {
       child.style.display = "none";
     }
     this.#arrBreadcrumbs.push({ title, shortTitle, divLayout });
+    this.#rootMain.appendChild(divLayout);
+    this.#divBreadcrumbs.style.display = "block";
     this.#redrawBreadcrumbs();
     return divLayout;
   }
@@ -129,6 +151,7 @@ class AppNavigation {
     { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
     this.#redrawBreadcrumbs();
     divLayout.remove();
+    this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1].divLayout.style.display = "block";
   }
   #redrawBreadcrumbs() {
     // Remove all elements from the breadcrumbs
@@ -199,14 +222,7 @@ class AppNavigation {
         this.#divUltimateTitle.style.height = "100%";
         this.#divUltimateTitle.style.boxSizing = "content-box";
         this.#divUltimateTitle.style.border = "1px solid black";
-        this.#btnHistory = document.createElement("div");
-        this.#divBreadcrumbs.appendChild(this.#btnHistory);
-        this.#btnHistory.style.position = "absolute";
-        this.#btnHistory.style.left = "95%";
-        this.#btnHistory.style.width = "5%";
-        this.#btnHistory.style.height = "100%";
-        this.#btnHistory.style.boxSizing = "content-box";
-        this.#btnHistory.style.border = "1px solid black";
+        createBtnHistory();
         // Insert Titles
         this.#divMainTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[0].shortTitle));
         this.#divPenultimateTitle.appendChild(document.createTextNode(this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 2].shortTitle));
@@ -224,10 +240,46 @@ class AppNavigation {
         this.closeLayout();
       });
     }
-    if (this.#btnHistory !== null) {
-      this.#btnHistory.addEventListener("click", function (evt) {
-      
-      });
+    function createBtnHistory() {
+      this.#btnHistory = document.createElement("div");
+      this.#divBreadcrumbs.appendChild(this.#btnHistory);
+      this.#btnHistory.style.position = "absolute";
+      this.#btnHistory.style.left = "95%";
+      this.#btnHistory.style.width = "5%";
+      this.#btnHistory.style.height = "100%";
+      this.#btnHistory.style.boxSizing = "content-box";
+      this.#btnHistory.style.border = "1px solid black";
+      this.#btnHistory.addEventListener("click", openHistory);
+      function openHistory(evt) {
+        function closeHistory(evt) {
+          this.#btnHistory.addEventListener("click", openHistory);
+          divHistory.remove();
+        }
+        const divHistory = document.createElement("div");
+        const menu = new MenuTiles();
+        divHistory.appendChild(menu.element);
+        const arrMenuList = [];
+        for (const breadcrumb of this.#arrBreadcrumbs) {
+          const handler = function () {
+            while (this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1] !== breadcrumb) {
+              this.closeLayout();
+            }
+            closeHistory();
+          }
+          arrMenuList.push({
+            text: breadcrumb.shortTitle,
+            handler: handler,
+          });
+        }
+        menu.addTiles(arrMenuList);
+        for (const child of this.#rootMain.children) {
+          child.style.display = "none";
+        }
+        this.#rootMain.appendChild(divHistory);
+        this.#divBreadcrumbs.style.display = "block";
+        this.#btnHistory.removeEventListener("click", openHistory);
+        this.#btnHistory.addEventListener("click", closeHistory);
+      }
     }
   }
 }
@@ -245,45 +297,23 @@ function start( [ evtWindow ] ) {
       divMain.style.display = "none";
       let timer;
       clearTimeout(timer);
-      timer = setTimeout(redraw, 200);
+      timer = setTimeout(setMainHeight, 200);
     });
     function setMainHeight() {
       divMain.style.display = "block";
       divMain.style.height = window.innerHeight + "px";
     }
-    redraw();
-    // Create navigation control
-    const myNav = new AppNavigation({
-      baseElement: document.body,
-    });
-    divMain.appendChild(myNav.element);
-    myNav.addLayout({
-      title: "",
-      shortTitle: "",
-    });
-    function draw( { mainTitle, mainShortTitle} ) {
-      const divMainTitle = document.createElement("div");
-      divTitleBreadcrumbs.appendChild(divMainTitle);
-      divMainTitle.style.width = "100%";
-      divMainTitle.style.height = "100%";
-      divMainTitle.appendChild(document.createTextNode(mainTitle));
-      const divMainScreen = document.createElement("div");
-      divMain.appendChild(divMainScreen);
-      divMainScreen.style.backgroundColor = "white";
-      divMainScreen.style.width = "100%";
-      divMainScreen.style.height = "90%";
-      return divMainScreen;
-    }
-
-    
-    
+    setMainHeight();
+    // Obtain initialization info
     const urlSelf = new URL(self.location);
     const urlServiceWorker = new URL("./sw.js", urlSelf);
     const urlServiceWorkerScope = new URL("./", urlSelf);
+    // Start listening for messages from service worker
     navigator.serviceWorker.addEventListener("message", function (evt) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
+    // Register the service worker. If there is no controller, wait for one before proceeding
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
@@ -299,6 +329,13 @@ function start( [ evtWindow ] ) {
     let hrefBase = urlSelf.searchParams.get("url");
     let objGeneralInfo;
     let token;
+    // Create navigation control
+    const myNav = new AppNavigation({
+      baseElement: document.body,
+    });
+    divMain.appendChild(myNav.element);
+    myNav.element.style.width = "100%";
+    myNav.element.style.height = "100%";
     function begin() {
       while (hrefBase === null) {
         hrefBase = window.prompt("Please enter URL:");
@@ -306,30 +343,132 @@ function start( [ evtWindow ] ) {
       const urlBase = new URL(hrefBase);
       const urlEndpointInfo = new URL("./info", urlBase.href);
       const reqInfo = createRequestGET(urlEndpointInfo);
-      fetch(reqInfo).then(login).catch(console.error);
+      (async function () {
+        try {
+          const respInfo = await fetch(reqInfo);
+          if (response.status !== 200) {
+            throw "Failed to get info.";
+          }
+          const objInfo = reqInfo.json();
+          objGeneralInfo = objInfo;
+          console.log(objGeneralInfo);
+          const elemTitle = document.head.getElementsByTagName("title")[0];
+          elemTitle.innerHTML = "";
+          elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
+          const divStart = myNav.addLayout({
+            title: objInfo.name,
+            shortTitle: objInfo.name,
+          });
+          const menu = new MenuTiles();
+          divStart.appendChild(menu.element);
+          menu.element.style.width = "100%";
+          menu.element.style.height = "100%";
+          menu.addTiles([
+            {
+              text: "Login",
+              handler: function () {
+                drawLogin();
+              },
+            },
+            {
+              text: "Game Select",
+              handler: function () {
+                drawGameSelect(true);
+              },
+            }
+          ]);
+        } catch (e) {
+          console.error(e);
+        }
+      })();
     }
-    const divGame = document.getElementById("divGame");
-    window.addEventListener("resize", function (evt) {
-      divGame.style.display = "none";
-      let timer;
-      clearTimeout(timer);
-      timer = setTimeout(redraw, 200);
-    });
-    function redraw() {
-      divGame.style.display = "block";
-      divGame.style.width = window.innerWidth + "px";
-      divGame.style.height = window.innerHeight + "px";
+    function drawLogin() {
+      const divLogin = myNav.addLayout({
+        title: "Login",
+        shortTitle: "Login",
+      });
+      const divInfo = document.createElement("div");
+      divLogin.appendChild(divInfo);
+      const divLogged = document.createElement("div");
+      divLogin.appendChild(divLogged);
+      const lblUsername = document.createElement("label");
+      divLogin.appendChild(lblUsername);
+      lblUsername.appendChild(document.createTextNode("Username: "));
+      const inpUsername = document.createElement("input");
+      lblUsername.appendChild(inpUsername);
+      const lblPassword = document.createElement("label");
+      divLogin.appendChild(lblPassword);
+      lblPassword.appendChild(document.createTextNode("Password: "));
+      const inpPassword = document.createElement("input");
+      lblPassword.appendChild(inpPassword);
+      const btnLogin = document.createElement("button");
+      divLogin.appendChild(btnLogin);
+      const btnCreateAccount = document.createElement("button");
+      divLogin.appendChild(btnCreateAccount);
+      divInfo.innerHTML = "";
+      divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
+      btnLogin.addEventListener("click", function (evt) {
+        const objLogin = {
+          name: inpUsername.value,
+          password: inpPassword.value,
+        };
+        const jsonLogin = JSON.stringify(objLogin);
+        const blobLogin = new Blob(jsonLogin, "application/json");
+        const urlEndpointLogin = new URL("./user/login", urlBase.href);
+        const reqLogin = createRequestPOST(urlEndpointLogin.href, blobLogin);
+        (async function () {
+          try {
+            const response = await fetch(reqLogin);
+            if (response.status !== 200) {
+              throw "Failed to login";
+            }
+            const objLoginInfo = await response.json();
+            token = objLoginInfo.token;
+            showGames();
+          } catch(e) {
+            console.error(e);
+          }
+        })();
+      });
+      btnCreateAccount.addEventListener("click", function (evt) {
+        const objNewUser = {
+          name: inpUsername.value,
+          password: inpPassword.value,
+        };
+        const jsonNewUser = JSON.stringify(objCreate);
+        const blobNewUser = new Blob(jsonCreate, "application/json");
+        const urlEndpointNewUser = new URL("./user/new", urlBase.href);
+        const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
+        (async function () {
+          try {
+            const response = await fetch(reqNewUser);
+            if (response.status !== 200) {
+              throw "Failed to create user";
+            }
+            const objLoginInfo = await response.json();
+            token = objLoginInfo.token;
+            showGames();
+          } catch(e) {
+            console.error(e);
+          }
+        })();
+      });
     }
-    redraw();
-    const divInfo = document.getElementById("divInfo");
-    const divLogin = document.getElementById("divLogin");
-    const lblUsername = document.getElementById("lblUsername");
-    const inpUsername = document.getElementById("inpUsername");
-    const lblPassword = document.getElementById("lblPassword");
-    const inpPassword = document.getElementById("inpPassword");
-    const btnLogin = document.getElementById("btnLogin");
-    const btnCreateAccount = document.getElementById("btnCreateAccount");
+    function drawGameSelect(boolTryMyGames) {
+      const divGameSelect = myNav.addLayout({
+        title: "Game List",
+        shortTitle: "Game List",
+      });
+    }
+    function drawGameInfo(strGameId) {
+      
+    }
+    function drawNewGame() {
+      
+    }
+
     const btnBrowseGames = document.getElementById("btnBrowseGames");
+
     const divGameSelect = document.getElementById("divGameSelect");
     const lblMyGames = document.getElementById("lblMyGames");
     const inpMyGames = document.getElementById("inpMyGames");
@@ -350,66 +489,8 @@ function start( [ evtWindow ] ) {
     const divNewGameOptions = document.getElementById("divNewGameOptions");
     const btnCancelNewGame = document.getElementById("btnCancelNewGame");
     function login(response) {
-      if (response.status !== 200) {
-        console.error("Failed to get info.");
-      }
-      response.json().then(function (obj) {
-        objGeneralInfo = obj;
-        console.log(objGeneralInfo);
-        divLogin.style.display = "block";
-        const elemTitle = document.head.getElementsByTagName("title")[0];
-        elemTitle.innerHTML = "";
-        elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
-        divInfo.innerHTML = "";
-        divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
-      });
     }
-    btnLogin.addEventListener("click", function (evt) {
-      const objLogin = {
-        name: inpUsername.value,
-        password: inpPassword.value,
-      };
-      const jsonLogin = JSON.stringify(objLogin);
-      const blobLogin = new Blob(jsonLogin, "application/json");
-      const urlEndpointLogin = new URL("./user/login", urlBase.href);
-      const reqLogin = createRequestPOST(urlEndpointLogin.href, blobLogin);
-      (async function () {
-        try {
-          const response = await fetch(reqLogin);
-          if (response.status !== 200) {
-            throw "Failed to login";
-          }
-          const objLoginInfo = await response.json();
-          token = objLoginInfo.token;
-          showGames();
-        } catch(e) {
-          console.error(e);
-        }
-      })();
-    });
-    btnCreateAccount.addEventListener("click", function (evt) {
-      const objNewUser = {
-        name: inpUsername.value,
-        password: inpPassword.value,
-      };
-      const jsonNewUser = JSON.stringify(objCreate);
-      const blobNewUser = new Blob(jsonCreate, "application/json");
-      const urlEndpointNewUser = new URL("./user/new", urlBase.href);
-      const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
-      (async function () {
-        try {
-          const response = await fetch(reqNewUser);
-          if (response.status !== 200) {
-            throw "Failed to create user";
-          }
-          const objLoginInfo = await response.json();
-          token = objLoginInfo.token;
-          showGames();
-        } catch(e) {
-          console.error(e);
-        }
-      })();
-    });
+
     btnBrowseGames.addEventListener("click", function (evt) {
       inpMyGames.value = false;
       inpMyGames.disabled = true;
