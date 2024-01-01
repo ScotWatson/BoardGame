@@ -215,7 +215,7 @@ class AppNavigation {
     }
     function drawMainTitleFull() {
       that.#divMainTitle = document.createElement("div");
-      that.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
       that.#divMainTitle.style.left = "0%";
       that.#divMainTitle.style.top = "0%";
@@ -226,7 +226,7 @@ class AppNavigation {
     }
     function drawMainTitleShort() {
       that.#divMainTitle = document.createElement("div");
-      that.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
       that.#divMainTitle.style.left = "0%";
       that.#divMainTitle.style.top = "0%";
@@ -237,7 +237,7 @@ class AppNavigation {
     }
     function drawPenultimateTitle() {
       that.#divPenultimateTitle = document.createElement("div");
-      that.#divBreadcrumbs.appendChild(this.#divPenultimateTitle);
+      that.#divBreadcrumbs.appendChild(that.#divPenultimateTitle);
       that.#divPenultimateTitle.style.position = "absolute";
       that.#divPenultimateTitle.style.left = "20%";
       that.#divPenultimateTitle.style.top = "0%";
@@ -248,7 +248,7 @@ class AppNavigation {
     }
     function drawUltimateTitle() {
       that.#divUltimateTitle = document.createElement("div");
-      that.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
+      that.#divBreadcrumbs.appendChild(that.#divUltimateTitle);
       that.#divUltimateTitle.style.position = "absolute";
       that.#divUltimateTitle.style.left = "15%";
       that.#divUltimateTitle.style.top = "0%";
@@ -259,7 +259,7 @@ class AppNavigation {
     }
     function drawBtnHistory() {
       that.#btnHistory = document.createElement("div");
-      that.#divBreadcrumbs.appendChild(this.#btnHistory);
+      that.#divBreadcrumbs.appendChild(that.#btnHistory);
       that.#btnHistory.style.position = "absolute";
       that.#btnHistory.style.left = "95%";
       that.#btnHistory.style.top = "0%";
@@ -336,6 +336,9 @@ function start( [ evtWindow ] ) {
     let token;
     // Create navigation control
     const myNav = new AppNavigation();
+    divMain.appendChild(myNav.element);
+    myNav.element.style.width = "100%";
+    myNav.element.style.height = "100%";
     (async function () {
       const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
         scope: urlServiceWorkerScope.href,
@@ -366,13 +369,6 @@ function start( [ evtWindow ] ) {
         const objInfo = await respInfo.json();
         objGeneralInfo = objInfo;
         console.log(objGeneralInfo);
-        myNav.addLayout({
-          title: objGeneralInfo.name,
-          shortTitle: objGeneralInfo.name,
-        });
-        divMain.appendChild(myNav.element);
-        myNav.element.style.width = "100%";
-        myNav.element.style.height = "100%";
         const elemTitle = document.head.getElementsByTagName("title")[0];
         elemTitle.innerHTML = "";
         elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
