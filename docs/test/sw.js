@@ -9,7 +9,7 @@ let lastActivateTime;
 const mapUsers = new Map();
 function addUser(username, password) {
   if (mapUsers.has(username)) {
-    throw "Username already exists";
+    throw "Username already exists.";
   }
   const newUser = {
     username: username,
@@ -20,8 +20,14 @@ function addUser(username, password) {
 
 const mapTokens = new Map();
 function loginUser(username, password) {
-  const newId = self.crypto.randomUUID();
-  mapTokens.set(newId, username);
+  if (!(mapUsers.has(username))) {
+    throw "Username doen not exist.";
+  }
+  if (mapUsers.get(username).password !== password) {
+    throw "Invalid password.";
+  }
+  const newToken = self.crypto.randomUUID();
+  mapTokens.set(newToken, username);
 }
 function logoutUser(token) {
   mapTokens.delete(newId);
@@ -175,6 +181,32 @@ self.addEventListener("fetch", function (evt) {
                 headers: [],
               });
             }
+          }
+        }
+        case "games": {
+          try {
+            const arrGameSummaries = [];
+            for (const entry of mapGames.entries()) {
+              const [ id, value ] = entry;
+              arrGameSummaries.push({
+                id: id,
+                title: entry[1],
+                players: value.players,
+              });
+            }
+            const jsonGameSummaries = JSON.stringify(arrGameSummaries);
+            const blobGameSummaries = new Blob( [ jsonGameSummaries ], "application/json");
+            return new Response(blobGameSummaries, {
+              status: 200,
+              statusText: "OK",
+              headers: [],
+            });
+          } catch (e) {
+            return new Response(e.message, {
+              status: 404,
+              statusText: "Not Found",
+              headers: [],
+            });
           }
         }
         case "game": {
