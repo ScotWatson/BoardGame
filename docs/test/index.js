@@ -168,6 +168,7 @@ class AppNavigation {
     for (const child of this.#divBreadcrumbs.children) {
       child.remove();
     }
+    console.log(this.#arrBreadcrumbs.length);
     switch (this.#arrBreadcrumbs.length) {
       case 0:
         this.#divMainTitle = null;
