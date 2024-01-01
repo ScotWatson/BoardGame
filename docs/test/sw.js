@@ -20,10 +20,11 @@ function addUser(username, password) {
 
 const mapTokens = new Map();
 function loginUser(username, password) {
-  if (!(mapUsers.has(username))) {
+  const user = mapUsers.get(username);
+  if (user === undefined) {
     throw "Username does not exist.";
   }
-  if (mapUsers.get(username).password !== password) {
+  if (user.password !== password) {
     throw "Invalid password.";
   }
   const newToken = self.crypto.randomUUID();
@@ -34,10 +35,11 @@ function logoutUser(token) {
   mapTokens.delete(token);
 }
 function getUser(token) {
-  if (!(mapTokens.has(token))) {
+  const username = mapTokens.get(token);
+  if (username === undefined) {
     return null;
   }
-  return mapTokens.get(token);
+  return mapUsers.get(username);
 }
 
 const mapGames = new Map();
