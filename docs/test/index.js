@@ -577,6 +577,12 @@ function start( [ evtWindow ] ) {
       const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
       const urlEndpointAllGames = new URL("./games", urlBase.href);
       populateGameList(result());
+      btnGameListRefresh.addEventListener("click", function (evt) {
+        populateGameList(result());
+      });
+      btnNewGame.addEventListener("click", function (evt) {
+        drawNewGame();
+      });
       async function result() {
         try {
           if (inpMyGames.value === true) {
@@ -602,9 +608,6 @@ function start( [ evtWindow ] ) {
           console.error(e);
         }
       }
-      btnNewGame.addEventListener("click", function (evt) {
-        drawNewGame();
-      });
       async function populateGameList(promiseGameList) {
         gameMenu.clearAllTiles();
         const arrGames = await promiseGameList;
@@ -617,7 +620,6 @@ function start( [ evtWindow ] ) {
             },
           });
         }
-        console.log(arrGameTiles);
         gameMenu.addTiles(arrGameTiles);
       }
     }
@@ -664,8 +666,39 @@ function start( [ evtWindow ] ) {
         alert("This function is yet to be implemented.");
       });
       btnPlayerListRefresh.addEventListener("click", function (evt) {
-        alert("This function is yet to be implemented.");
+        populatePlayerList(result());
       });
+      populatePlayerList(result());
+      async function result() {
+        try {
+          const urlEndpointGameInfo = new URL("./game/" + strGameId + "/info", urlBase.href)
+          const reqGameInfo = createRequestGET(urlEndpointGameInfo.href);
+          const respGameInfo = await fetch(reqGameInfo);
+          const objGameInfo = await respGameInfo.json();
+          pGameTitle.appendChild(document.createTextNode(objGameInfo.title));
+          return objGameInfo.players;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      async function populatePlayerList(promisePlayerList) {
+        playerMenu.clearAllTiles();
+        const arrPlayers = await promisePlayerList;
+        const arrPlayerTiles = [];
+        for (const player of arrPlayers) {
+          arrPlayerTiles.push({
+            text: game.title,
+            handler: function () {
+              if (player.hasOptions) {
+                alert("Player " + player.username + " currently has options.");
+              } else {
+                alert("Player " + player.username + " has no options.");
+              }
+            },
+          });
+        }
+        playerMenu.addTiles(arrPlayerTiles);
+      }
     }
     function drawNewGame() {
       const divNewGame = myNav.addLayout({
