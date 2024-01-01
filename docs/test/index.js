@@ -167,9 +167,7 @@ class AppNavigation {
   #redrawBreadcrumbs() {
     const that = this;
     // Remove all elements from the breadcrumbs
-    for (const child of this.#divBreadcrumbs.children) {
-      child.remove();
-    }
+    this.#divBreadcrumbs.innerHTML = "";
     console.log(this.#arrBreadcrumbs.length);
     switch (this.#arrBreadcrumbs.length) {
       case 0:
