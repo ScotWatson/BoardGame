@@ -120,7 +120,7 @@ self.addEventListener("fetch", function (evt) {
                   token,
                 };
                 const jsonToken = JSON.stringify(objToken);
-                const blobToken = new Blob( [ jsonToken ], "application/json");
+                const blobToken = new Blob( [ jsonToken ], { type: "application/json" });
                 return new Response(blobToken, {
                   status: 200,
                   statusText: "OK",
@@ -143,7 +143,7 @@ self.addEventListener("fetch", function (evt) {
                   token,
                 };
                 const jsonToken = JSON.stringify(objToken);
-                const blobToken = new Blob( [ jsonToken ], "application/json");
+                const blobToken = new Blob( [ jsonToken ], { type: "application/json" });
                 return new Response(blobToken, {
                   status: 200,
                   statusText: "OK",
@@ -195,10 +195,8 @@ self.addEventListener("fetch", function (evt) {
                 players: value.players,
               });
             }
-            await sendMessage(arrGameSummaries);
             const jsonGameSummaries = JSON.stringify(arrGameSummaries);
-            await sendMessage(jsonGameSummaries);
-            const blobGameSummaries = new Blob( [ jsonGameSummaries ], "application/json");
+            const blobGameSummaries = new Blob( [ jsonGameSummaries ], { type: "application/json" });
             return new Response(blobGameSummaries, {
               status: 200,
               statusText: "OK",
