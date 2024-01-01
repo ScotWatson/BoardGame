@@ -68,6 +68,8 @@ class MenuTiles {
     this.#elemMain.style.backgroundColor = "white";
     this.#elemMain.style.overflowX = "hidden";
     this.#elemMain.style.overflowY = "scroll";
+    this.#elemMain.style.boxSizing = "border-box";
+    this.#elemMain.style.border = "1px solid black";
     this.#divScrollable = document.createElement("div");
     this.#rootMain.appendChild(this.#divScrollable);
     this.#divScrollable.style.display = "flex";
@@ -81,6 +83,8 @@ class MenuTiles {
     this.#divScrollable.style.backgroundSize = "48px 48px";
     this.#divScrollable.style.backgroundPosition = "right top";
     this.#divScrollable.style.backgroundRepeat = "repeat-y";
+    this.#divScrollable.style.boxSizing = "border-box";
+    this.#divScrollable.style.minHeight = "100%";
   }
   addTiles(arrTileInfo) {
     for (const objTileInfo of arrTileInfo) {
@@ -511,9 +515,9 @@ function start( [ evtWindow ] ) {
       lblMyGames.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
       const inpMyGames = document.createElement("input");
       lblMyGames.appendChild(inpMyGames);
-      inpMyGames.appendChild(document.createTextNode("My Games Only"));
       inpMyGames.type = "checkbox";
-      inpMyGames.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:100%;";
+      inpMyGames.style = "display:block;position:absolute;left:0%;top:0%;height:100%;";
+      lblMyGames.appendChild(document.createTextNode("My Games Only"));
       const gameMenu = new MenuTiles();
       const divGameList = gameMenu.element;
       divGameSelect.appendChild(divGameList);
