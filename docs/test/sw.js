@@ -124,7 +124,8 @@ self.addEventListener("fetch", function (evt) {
               try {
                 const objNewUser = await request.json();
                 const { username, password } = objNewUser;
-                const token = addUser(username, password);
+                addUser(username, password);
+                const token = loginUser(username, password);
                 const objToken = {
                   token,
                 };
