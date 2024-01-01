@@ -647,7 +647,7 @@ function start( [ evtWindow ] ) {
         const jsonNewGame = JSON.stringify(objNewGame);
         const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
         const urlEndpointNewGame = new URL("./game/new", urlBase.href);
-        const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
+        const reqNewGame = createRequestPOST(urlEndpointNewGame.href, blobNewGame);
         (async function () {
           try {
             const response = await fetch(reqNewGame);
