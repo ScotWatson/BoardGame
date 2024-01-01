@@ -197,17 +197,9 @@ self.addEventListener("fetch", function (evt) {
             const arrGameSummaries = [];
             for (const entry of mapGames.entries()) {
               const [ id, value ] = entry;
-              const players = [];
-              for (const player of value.players) {
-                players.push({
-                  username: player,
-                  hasOptions: true,
-                });
-              }
               arrGameSummaries.push({
                 id: id,
                 title: value.title,
-                players: players,
               });
             }
             const jsonGameSummaries = JSON.stringify(arrGameSummaries);
@@ -249,6 +241,34 @@ self.addEventListener("fetch", function (evt) {
               const gameId = arrEndpoint[1];
               const thisGame = getGame(gameID);
               switch (arrEndpoint[2]) {
+                case "info": {
+                  try {
+                    const players = [];
+                    for (const player of thisGame.players) {
+                      players.push({
+                        username: player,
+                        hasOptions: true,
+                      });
+                    }
+                    const objGameInfo = {
+                      title: thisGame.title,
+                      players,
+                    }
+                    const jsonGameInfo = JSON.stringify();
+                    const blobGameInfo = new Blob( [ jsonGameInfo ], { type: "application/json" });
+                    return new Response(blobGameInfo, {
+                      status: 200,
+                      statusText: "OK",
+                      headers: [],
+                    });
+                  } catch (e) {
+                    return new Response(e.message, {
+                      status: 404,
+                      statusText: "Not Found",
+                      headers: [],
+                    });
+                  }
+                }
                 case "join": {
                   try {
                     const token = arrEndpoint[3];
