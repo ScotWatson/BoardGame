@@ -110,8 +110,8 @@ class AppNavigation {
   #divMainTitle;
   #divPenultimateTitle;
   #divUltimateTitle;
+  #btnHistory;
   #arrBreadcrumbs;
-  #btnForward;
   #divTopLayout;
   constructor({ title, shortTitle }) {
     this.#elemMain = document.createElement("app-navigation");
@@ -120,8 +120,8 @@ class AppNavigation {
     this.#divBreadcrumbs = document.createElement("div");
     this.#rootMain.appendChild(this.#divBreadcrumbs);
     this.#divBreadcrumbs.style.backgroundColor = "grey";
-    this.#btnBreadcrumbs.style.position = "absolute";
-    this.#btnBreadcrumbs.style.left = "95%";
+    this.#divBreadcrumbs.style.position = "absolute";
+    this.#divBreadcrumbs.style.left = "0%";
     this.#divBreadcrumbs.style.width = "100%";
     this.#divBreadcrumbs.style.height = "10%";
     this.#divMainTitle = null;
