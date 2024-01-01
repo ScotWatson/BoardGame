@@ -631,7 +631,8 @@ function start( [ evtWindow ] ) {
       const pGameTitle = document.createElement("p");
       divGameInfo.appendChild(pGameTitle);
       pGameTitle.style="display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
-      const divPlayerList = document.createElement("div");
+      const playerMenu = new MenuTiles();
+      const divPlayerList = playerMenu.element
       divGameInfo.appendChild(divPlayerList);
       divPlayerList.style="display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
       const btnPlayerListRefresh = document.createElement("button");
