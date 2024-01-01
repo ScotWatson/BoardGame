@@ -150,7 +150,7 @@ class AppNavigation {
     return divLayout;
   }
   closeLayout() {
-    { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
+    const { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
     this.#redrawBreadcrumbs();
     divLayout.remove();
     this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1].divLayout.style.display = "block";
