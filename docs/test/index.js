@@ -528,12 +528,12 @@ function start( [ evtWindow ] ) {
           if (inpMyGames.value === true) {
             const reqMyGames = createRequestGET(urlEndpointMyGames.href);
             const respMyGames = await fetch(reqMyGames);
-            const arrMyGames = await response.json();
+            const arrMyGames = await respMyGames.json();
             if (arrMyGames.length === 0) {
               inpMyGames.value = false;
               const reqAllGames = createRequestGET(urlEndpointAllGames.href);
               const respAllGames = await fetch(reqAllGames);
-              const arrAllGames = await response.json();
+              const arrAllGames = await respAllGames.json();
               return arrAllGames;
             } else {
               return arrMyGames;
@@ -541,7 +541,7 @@ function start( [ evtWindow ] ) {
           } else {
             const reqAllGames = createRequestGET(urlEndpointAllGames.href);
             const respAllGames = await fetch(reqAllGames);
-            const arrAllGames = await response.json();
+            const arrAllGames = await respAllGames.json();
             return arrAllGames;
           }
         } catch (e) {
@@ -552,7 +552,7 @@ function start( [ evtWindow ] ) {
         drawNewGame();
       });
       async function populateGameList(promiseGameList) {
-        gameList.clearAllTiles();
+        gameMenu.clearAllTiles();
         const arrGames = await promiseGameList;
         const arrGameTiles = [];
         for (const game of arrGames) {
@@ -563,7 +563,7 @@ function start( [ evtWindow ] ) {
             },
           });
         }
-        gameList.addTiles(arrGameTiles);
+        gameMenu.addTiles(arrGameTiles);
       }
     }
     function drawGameInfo(strGameId) {
