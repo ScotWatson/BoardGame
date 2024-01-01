@@ -508,15 +508,15 @@ function start( [ evtWindow ] ) {
         const reqLogout = createRequestPOST(urlEndpointLogout.href, blobLogout);
         (async function () {
           try {
-            const response = await fetch(reqLogin);
+            const response = await fetch(reqLogout);
             if (response.status !== 200) {
               alert("Failed to logout");
               return;
             }
             token = "";
             // show logged out
-            divLogged.innerHTML = "";
-            divLogged.appendChild(document.createTextNode("Logged out"));
+            divMessage.innerHTML = "";
+            divMessage.appendChild(document.createTextNode("Logged out"));
           } catch(e) {
             console.error(e);
           }
