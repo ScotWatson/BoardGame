@@ -129,6 +129,7 @@ class AppNavigation {
     this.#divUltimateTitle = null;
     this.#arrBreadcrumbs = [];
     this.#divContent = document.createElement("div");
+    this.#rootMain.appendChild(this.#divContent);
     this.#divContent.style.backgroundColor = "grey";
     this.#divContent.style.position = "absolute";
     this.#divContent.style.left = "0%";
