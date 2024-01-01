@@ -342,7 +342,7 @@ function start( [ evtWindow ] ) {
       const reqInfo = createRequestGET(urlEndpointInfo);
       try {
         const respInfo = await fetch(reqInfo);
-        if (response.status !== 200) {
+        if (respInfo.status !== 200) {
           throw "Failed to get info.";
         }
         const objInfo = reqInfo.json();
