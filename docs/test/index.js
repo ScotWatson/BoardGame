@@ -569,6 +569,7 @@ function start( [ evtWindow ] ) {
       async function populateGameList(promiseGameList) {
         gameMenu.clearAllTiles();
         const arrGames = await promiseGameList;
+        console.log(arrGames);
         const arrGameTiles = [];
         for (const game of arrGames) {
           arrGameTiles.push({
@@ -578,6 +579,7 @@ function start( [ evtWindow ] ) {
             },
           });
         }
+        console.log(arrGameTiles);
         gameMenu.addTiles(arrGameTiles);
       }
     }
