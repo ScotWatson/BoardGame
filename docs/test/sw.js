@@ -135,6 +135,7 @@ self.addEventListener("fetch", function (evt) {
             }
             case "login": {
               try {
+                await sendMessage("Logging in...");
                 const objLogin = await request.json();
                 const { username, password } = objLogin;
                 const token = loginUser(username, password);
