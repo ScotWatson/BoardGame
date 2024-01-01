@@ -466,7 +466,7 @@ function start( [ evtWindow ] ) {
           password: inpPassword.value,
         };
         const jsonLogin = JSON.stringify(objLogin);
-        const blobLogin = new Blob(jsonLogin, "application/json");
+        const blobLogin = new Blob( [ jsonLogin ], { type: "application/json" });
         const urlEndpointLogin = new URL("./user/login", urlBase.href);
         const reqLogin = createRequestPOST(urlEndpointLogin.href, blobLogin);
         (async function () {
@@ -491,7 +491,7 @@ function start( [ evtWindow ] ) {
           password: inpPassword.value,
         };
         const jsonNewUser = JSON.stringify(objCreate);
-        const blobNewUser = new Blob(jsonCreate, "application/json");
+        const blobNewUser = new Blob( [ jsonCreate ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
         const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
         (async function () {
@@ -645,7 +645,7 @@ function start( [ evtWindow ] ) {
           action: {},
         };
         const jsonNewGame = JSON.stringify(objNewGame);
-        const blobNewGame = new Blob(jsonNewGame, "application/json");
+        const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
         const urlEndpointNewGame = new URL("./game/new", urlBase.href);
         const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
         (async function () {
