@@ -142,6 +142,7 @@ class AppNavigation {
     return this.#elemMain;
   }
   addLayout({ title, shortTitle }) {
+    console.log("addLayout");
     const divLayout = document.createElement("div");
     for (const child of this.#divContent.children) {
       child.style.display = "none";
@@ -155,6 +156,7 @@ class AppNavigation {
     return divLayout;
   }
   closeLayout() {
+    console.log("closeLayout");
     const { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
     this.#redrawBreadcrumbs();
     divLayout.remove();
@@ -219,6 +221,7 @@ class AppNavigation {
       });
     }
     function drawMainTitleFull() {
+      console.log("drawMainTitleFull");
       that.#divMainTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
@@ -230,6 +233,7 @@ class AppNavigation {
       that.#divMainTitle.style.border = "1px solid black";
     }
     function drawMainTitleShort() {
+      console.log("drawMainTitleShort");
       that.#divMainTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divMainTitle);
       that.#divMainTitle.style.position = "absolute";
@@ -241,6 +245,7 @@ class AppNavigation {
       that.#divMainTitle.style.border = "1px solid black";
     }
     function drawPenultimateTitle() {
+      console.log("drawPenultimateTitle");
       that.#divPenultimateTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divPenultimateTitle);
       that.#divPenultimateTitle.style.position = "absolute";
@@ -252,6 +257,7 @@ class AppNavigation {
       that.#divPenultimateTitle.style.border = "1px solid black";
     }
     function drawUltimateTitle() {
+      console.log("drawUltimateTitle");
       that.#divUltimateTitle = document.createElement("div");
       that.#divBreadcrumbs.appendChild(that.#divUltimateTitle);
       that.#divUltimateTitle.style.position = "absolute";
