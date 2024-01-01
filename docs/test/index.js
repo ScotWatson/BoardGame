@@ -69,7 +69,7 @@ class MenuTiles {
     this.#elemMain.style.overflowX = "hidden";
     this.#elemMain.style.overflowY = "scroll";
     this.#divScrollable = document.createElement("div");
-    this.#rootMain.appendChild(#divScrollable);
+    this.#rootMain.appendChild(this.#divScrollable);
     this.#divScrollable.style.display = "flex";
     this.#divScrollable.style.flexDirection = "row";
     this.#divScrollable.style.flexWrap = "wrap";
