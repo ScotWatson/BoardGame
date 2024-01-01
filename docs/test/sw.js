@@ -197,10 +197,17 @@ self.addEventListener("fetch", function (evt) {
             const arrGameSummaries = [];
             for (const entry of mapGames.entries()) {
               const [ id, value ] = entry;
+              const players = [];
+              for (const player of value.players) {
+                players.push({
+                  username: player,
+                  hasOptions: true,
+                });
+              }
               arrGameSummaries.push({
                 id: id,
                 title: value.title,
-                players: value.players,
+                players: players,
               });
             }
             const jsonGameSummaries = JSON.stringify(arrGameSummaries);
