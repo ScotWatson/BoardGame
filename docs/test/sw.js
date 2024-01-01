@@ -223,15 +223,15 @@ self.addEventListener("fetch", function (evt) {
                 }
               }
             }
-            default: {
-              return new Response("Not a configured endpoint", {
-                status: 404,
-                statusText: "Not Found",
-                headers: [],
-              });
-            }
-            }
           }
+        }
+        default: {
+          return new Response("Not a configured endpoint", {
+            status: 404,
+            statusText: "Not Found",
+            headers: [],
+          });
+        }
       }
     } else {
       return await fetch(request);
