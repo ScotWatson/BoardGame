@@ -64,7 +64,7 @@ class MenuTiles {
   #divScrollable;
   constructor() {
     this.#elemMain = document.createElement("menu-tiles");
-    this.#rootMain = this.#elemMain.attachShadow({ mode: closed });
+    this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
     this.#elemMain.style.backgroundColor = "grey";
     this.#elemMain.style.overflowX = "hidden";
     this.#elemMain.style.overflowY = "scroll";
@@ -115,7 +115,7 @@ class AppNavigation {
   #divTopLayout;
   constructor({ title, shortTitle }) {
     this.#elemMain = document.createElement("app-navigation");
-    this.#rootMain = this.#elemMain.attachShadow({ mode: closed });
+    this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
     this.#elemMain.style.backgroundColor = "grey";
     this.#divBreadcrumbs = document.createElement("div");
     this.#rootMain.appendChild(this.#divBreadcrumbs);
@@ -345,7 +345,7 @@ function start( [ evtWindow ] ) {
         if (respInfo.status !== 200) {
           throw "Failed to get info.";
         }
-        const objInfo = reqInfo.json();
+        const objInfo = await respInfo.json();
         objGeneralInfo = objInfo;
         console.log(objGeneralInfo);
         // Create navigation control
