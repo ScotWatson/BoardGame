@@ -314,8 +314,7 @@ class AppNavigation {
         for (const child of that.#divContent.children) {
           child.style.display = "none";
         }
-        that.#rootMain.appendChild(divHistory);
-        that.#divBreadcrumbs.style.display = "block";
+        that.#divContent.appendChild(divHistory);
         that.#btnHistory.removeEventListener("click", openHistory);
         that.#btnHistory.addEventListener("click", closeHistory);
       }
