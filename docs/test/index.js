@@ -353,7 +353,8 @@ function start( [ evtWindow ] ) {
     let hrefBase = urlSelf.searchParams.get("url");
     let urlBase = null;
     let objGeneralInfo;
-    let token;
+    let token = "";
+    let username = "";
     // Create navigation control
     const myNav = new AppNavigation();
     divMain.appendChild(myNav.element);
@@ -427,9 +428,9 @@ function start( [ evtWindow ] ) {
       const divInfo = document.createElement("div");
       divLogin.appendChild(divInfo);
       divInfo.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:20%;";
-      const divLogged = document.createElement("div");
-      divLogin.appendChild(divLogged);
-      divLogged.style = "display:block;position:absolute;left:0%;top:20%;width:100%;height:10%;";
+      const divMessage = document.createElement("div");
+      divLogin.appendChild(divMessage);
+      divMessage.style = "display:block;position:absolute;left:0%;top:20%;width:100%;height:10%;";
       const lblUsername = document.createElement("label");
       divLogin.appendChild(lblUsername);
       lblUsername.style = "display:block;position:absolute;left:0%;top:30%;width:100%;height:10%;";
@@ -440,7 +441,7 @@ function start( [ evtWindow ] ) {
       inpUsername.style = "display:inline;width:80%;height:100%;";
       const lblPassword = document.createElement("label");
       divLogin.appendChild(lblPassword);
-      lblPassword.style = "display:block;position:absolute;left:0%;top:40%;width:100%;height:10%;"
+      lblPassword.style = "display:block;position:absolute;left:0%;top:45%;width:100%;height:10%;"
       lblPassword.appendChild(document.createTextNode("Password: "));
       const inpPassword = document.createElement("input");
       lblPassword.appendChild(inpPassword);
@@ -448,18 +449,24 @@ function start( [ evtWindow ] ) {
       inpPassword.style = "display:inline;width:80%;height:100%;";
       const btnLogin = document.createElement("button");
       divLogin.appendChild(btnLogin);
-      btnLogin.style = "display:block;position:absolute;left:0%;top:50%;width:50%;height:20%;";
+      btnLogin.style = "display:block;position:absolute;left:0%;top:60%;width:50%;height:20%;";
       btnLogin.appendChild(document.createTextNode("Login"));
       const btnCreateAccount = document.createElement("button");
       divLogin.appendChild(btnCreateAccount);
-      btnCreateAccount.style = "display:block;position:absolute;left:50%;top:50%;width:50%;height:20%;";
+      btnCreateAccount.style = "display:block;position:absolute;left:50%;top:60%;width:50%;height:20%;";
       btnCreateAccount.appendChild(document.createTextNode("Create Account"));
       const btnLogout = document.createElement("button");
       divLogin.appendChild(btnLogout);
-      btnLogout.style = "display:block;position:absolute;left:70%;top:70%;width:30%;height:20%;";
+      btnLogout.style = "display:block;position:absolute;left:0%;top:80%;width:100%;height:20%;";
       btnLogout.appendChild(document.createTextNode("Logout"));
       divInfo.innerHTML = "";
       divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
+      divMessage.innerHTML = "";
+      if (token === "") {
+        divMessage.appendChild(document.createTextNode("Logged out"));
+      } else {
+        divMessage.appendChild(document.createTextNode("Logged in as " + username));
+      }
       btnLogin.addEventListener("click", function (evt) {
         const objLogin = {
           name: inpUsername.value,
@@ -473,13 +480,43 @@ function start( [ evtWindow ] ) {
           try {
             const response = await fetch(reqLogin);
             if (response.status !== 200) {
-              throw "Failed to login";
+              alert("Failed to login");
+              return;
             }
             const objLoginInfo = await response.json();
             token = objLoginInfo.token;
+            username = inpUsername.value;
             // show logged in
+            divMessage.innerHTML = "";
+            divMessage.appendChild(document.createTextNode("Logged in as " + username));
+          } catch(e) {
+            console.error(e);
+          }
+        })();
+      });
+      btnLogout.addEventListener("click", function (evt) {
+        if (token === "") {
+          console.log("Already logged out");
+          return;
+        }
+        const objLogout = {
+          token: token,
+        };
+        const jsonLogout = JSON.stringify(objLogout);
+        const blobLogout = new Blob( [ jsonLogout ], { type: "application/json" });
+        const urlEndpointLogout = new URL("./user/logout", urlBase.href);
+        const reqLogout = createRequestPOST(urlEndpointLogout.href, blobLogout);
+        (async function () {
+          try {
+            const response = await fetch(reqLogin);
+            if (response.status !== 200) {
+              alert("Failed to logout");
+              return;
+            }
+            token = "";
+            // show logged out
             divLogged.innerHTML = "";
-            divLogged.appendChild(document.createTextNode("Logged in as " + inpUsername.value));
+            divLogged.appendChild(document.createTextNode("Logged out"));
           } catch(e) {
             console.error(e);
           }
@@ -498,13 +535,15 @@ function start( [ evtWindow ] ) {
           try {
             const response = await fetch(reqNewUser);
             if (response.status !== 200) {
-              throw "Failed to create user";
+              alert("Failed to create user");
+              return;
             }
             const objLoginInfo = await response.json();
             token = objLoginInfo.token;
+            username = inpUsername.value;
             // show logged in
-            divLogged.innerHTML = "";
-            divLogged.appendChild(document.createTextNode("Logged in as " + inpUsername.value));
+            divMessage.innerHTML = "";
+            divMessage.appendChild(document.createTextNode("Logged in as " + username));
           } catch(e) {
             console.error(e);
           }
@@ -569,7 +608,6 @@ function start( [ evtWindow ] ) {
       async function populateGameList(promiseGameList) {
         gameMenu.clearAllTiles();
         const arrGames = await promiseGameList;
-        console.log(arrGames);
         const arrGameTiles = [];
         for (const game of arrGames) {
           arrGameTiles.push({
@@ -607,6 +645,8 @@ function start( [ evtWindow ] ) {
       btnOpenGame.style="display:block;position:absolute;left:50%;top:80%;width:25%;height:20%;";
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinUnjoinGame.addEventListener("click", function (evt) {
+        alert("This function is yet to be implemented.");
+        return;
         const reqJoinGame = createRequestGET("./game/" + strGameId + "/join/" + token, urlBase.href);
         const reqUnjoinGame = createRequestGET("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
         (async function () {
@@ -619,6 +659,12 @@ function start( [ evtWindow ] ) {
             console.error(e);
           }
         })();
+      });
+      btnOpenGame.addEventListener("click", function (evt) {
+        alert("This function is yet to be implemented.");
+      });
+      btnPlayerListRefresh.addEventListener("click", function (evt) {
+        alert("This function is yet to be implemented.");
       });
     }
     function drawNewGame() {
