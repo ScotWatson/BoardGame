@@ -172,7 +172,6 @@ class AppNavigation {
     const that = this;
     // Remove all elements from the breadcrumbs
     this.#divBreadcrumbs.innerHTML = "";
-    console.log(this.#arrBreadcrumbs.length);
     switch (this.#arrBreadcrumbs.length) {
       case 0:
         this.#divMainTitle = null;
@@ -300,10 +299,10 @@ class AppNavigation {
         const arrMenuList = [];
         for (const breadcrumb of that.#arrBreadcrumbs) {
           const handler = function () {
+            closeHistory();
             while (that.#arrBreadcrumbs[that.#arrBreadcrumbs.length - 1] !== breadcrumb) {
               that.closeLayout();
             }
-            closeHistory();
           }
           arrMenuList.push({
             text: breadcrumb.shortTitle,
