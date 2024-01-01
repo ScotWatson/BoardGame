@@ -65,6 +65,7 @@ class MenuTiles {
   constructor() {
     this.#elemMain = document.createElement("menu-tiles");
     this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
+    this.#elemMain.style.display = "block";
     this.#elemMain.style.backgroundColor = "white";
     this.#elemMain.style.overflowX = "hidden";
     this.#elemMain.style.overflowY = "scroll";
@@ -91,7 +92,7 @@ class MenuTiles {
       const divNewTile = document.createElement("div");
       this.#divScrollable.appendChild(divNewTile);
       divNewTile.style.display = "block";
-      divNewTile.style.width = "20%";
+      divNewTile.style.width = "96px"; // ~1 in
       divNewTile.style.aspectRatio = "1";
       divNewTile.style.border = "1px solid black";
       divNewTile.appendChild(document.createTextNode(objTileInfo.text));
@@ -121,6 +122,7 @@ class AppNavigation {
   constructor() {
     this.#elemMain = document.createElement("app-navigation");
     this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
+    this.#elemMain.style.display = "block";
     this.#elemMain.style.backgroundColor = "white";
     this.#divBreadcrumbs = document.createElement("div");
     this.#rootMain.appendChild(this.#divBreadcrumbs);
