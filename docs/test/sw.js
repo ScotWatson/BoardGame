@@ -34,7 +34,7 @@ function logoutUser(token) {
   mapTokens.delete(token);
 }
 function getUser(token) {
-  if (!(mapTokens.get(token))) {
+  if (!(mapTokens.has(token))) {
     return null;
   }
   return mapTokens.get(token);
