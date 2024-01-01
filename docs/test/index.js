@@ -519,17 +519,6 @@ function start( [ evtWindow ] ) {
           console.error(e);
         }
       }
-    }
-    function drawGameInfo(strGameId) {
-      const divGameInfo = myNav.addLayout({
-        title: "Game List",
-        shortTitle: "Game List",
-      });
-      const pGameTitle = document.getElementById("pGameTitle");
-      const divPlayerList = document.getElementById("divPlayerList");
-      const btnPlayerListRefresh = document.getElementById("btnPlayerListRefresh");
-      const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
-      const btnOpenGame = document.getElementById("btnOpenGame");
       btnNewGame.addEventListener("click", function (evt) {
         const objNewGame = {
           title: "",
@@ -545,6 +534,30 @@ function start( [ evtWindow ] ) {
           }
         });
       });
+    }
+    function drawGameInfo(strGameId) {
+      const divGameInfo = myNav.addLayout({
+        title: "Game Info",
+        shortTitle: "Game Info",
+      });
+      const pGameTitle = document.createElement("p");
+      divGameInfo.appendChild(pGameTitle);
+      pGameTitle.style="display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
+      const divPlayerList = document.createElement("div");
+      divGameInfo.appendChild(divPlayerList);
+      divPlayerList.style="display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
+      const btnPlayerListRefresh = document.createElement("button");
+      divGameInfo.appendChild(btnPlayerListRefresh);
+      btnPlayerListRefresh.style="display:block;position:absolute;left:0%;top:80%;width:25%;height:20%;";
+      btnPlayerListRefresh.appendChild(document.createTextNode("Refresh"));
+      const btnJoinUnjoinGame = document.createElement("button");
+      divGameInfo.appendChild(btnJoinUnjoinGame);
+      btnJoinUnjoinGame.style="display:block;position:absolute;left:25%;top:80%;width:25%;height:20%;";
+      btnJoinUnjoinGame.appendChild(document.createTextNode("Join Game"));
+      const btnOpenGame = document.createElement("button");
+      divGameInfo.appendChild(btnOpenGame);
+      btnOpenGame.style="display:block;position:absolute;left:50%;top:80%;width:25%;height:20%;";
+      btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinUnjoinGame.addEventListener("click", function (evt) {
         const reqJoinGame = createRequestGET("./game/" + gameId + "/join/" + token, urlBase.href);
         const reqUnjoinGame = createRequestGET("./game/" + gameId + "/unjoin/" + token, urlBase.href);
