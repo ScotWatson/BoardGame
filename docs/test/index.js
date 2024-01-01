@@ -493,7 +493,7 @@ function start( [ evtWindow ] ) {
         const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
-        const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
+        const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobNewUser);
         (async function () {
           try {
             const response = await fetch(reqNewUser);
