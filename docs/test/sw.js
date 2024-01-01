@@ -221,9 +221,19 @@ self.addEventListener("fetch", function (evt) {
           switch (arrEndpoint[1]) {
             case "new": {
               try {
+                const token = arrEndpoint[2];
+                const thisUser = getUser(token);
+                if (thisUser === null) {
+                  return new Response("This user is not logged in.", {
+                    status: 404,
+                    statusText: "Not Found",
+                    headers: [],
+                  });
+                }
                 const objGameData = await request.json();
                 const { title, action } = objGameData;
-                addGame(title, action);
+                const thisGame = addGame(title, action);
+                thisGame.players.push(thisUser.username);
                 return new Response("", {
                   status: 200,
                   statusText: "OK",
