@@ -155,9 +155,12 @@ class AppNavigation {
     const { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
     this.#redrawBreadcrumbs();
     divLayout.remove();
-    this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1].divLayout.style.display = "block";
+    if (this.#arrBreadcrumbs.length !== 0) {
+      this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1].divLayout.style.display = "block";
+    }
   }
   #redrawBreadcrumbs() {
+    const that = this;
     // Remove all elements from the breadcrumbs
     for (const child of this.#divBreadcrumbs.children) {
       child.remove();
@@ -211,73 +214,73 @@ class AppNavigation {
       });
     }
     function drawMainTitleFull() {
-      this.#divMainTitle = document.createElement("div");
-      this.#divBreadcrumbs.appendChild(this.#divMainTitle);
-      this.#divMainTitle.style.position = "absolute";
-      this.#divMainTitle.style.left = "0%";
-      this.#divMainTitle.style.top = "0%";
-      this.#divMainTitle.style.width = "100%";
-      this.#divMainTitle.style.height = "100%";
-      this.#divMainTitle.style.boxSizing = "border-box";
-      this.#divMainTitle.style.border = "1px solid black";
+      that.#divMainTitle = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      that.#divMainTitle.style.position = "absolute";
+      that.#divMainTitle.style.left = "0%";
+      that.#divMainTitle.style.top = "0%";
+      that.#divMainTitle.style.width = "100%";
+      that.#divMainTitle.style.height = "100%";
+      that.#divMainTitle.style.boxSizing = "border-box";
+      that.#divMainTitle.style.border = "1px solid black";
     }
     function drawMainTitleShort() {
-      this.#divMainTitle = document.createElement("div");
-      this.#divBreadcrumbs.appendChild(this.#divMainTitle);
-      this.#divMainTitle.style.position = "absolute";
-      this.#divMainTitle.style.left = "0%";
-      this.#divMainTitle.style.top = "0%";
-      this.#divMainTitle.style.width = "15%";
-      this.#divMainTitle.style.height = "100%";
-      this.#divMainTitle.style.boxSizing = "border-box";
-      this.#divMainTitle.style.border = "1px solid black";
+      that.#divMainTitle = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(this.#divMainTitle);
+      that.#divMainTitle.style.position = "absolute";
+      that.#divMainTitle.style.left = "0%";
+      that.#divMainTitle.style.top = "0%";
+      that.#divMainTitle.style.width = "15%";
+      that.#divMainTitle.style.height = "100%";
+      that.#divMainTitle.style.boxSizing = "border-box";
+      that.#divMainTitle.style.border = "1px solid black";
     }
     function drawPenultimateTitle() {
-      this.#divPenultimateTitle = document.createElement("div");
-      this.#divBreadcrumbs.appendChild(this.#divPenultimateTitle);
-      this.#divPenultimateTitle.style.position = "absolute";
-      this.#divPenultimateTitle.style.left = "20%";
-      this.#divPenultimateTitle.style.top = "0%";
-      this.#divPenultimateTitle.style.width = "15%";
-      this.#divPenultimateTitle.style.height = "100%";
-      this.#divPenultimateTitle.style.boxSizing = "border-box";
-      this.#divPenultimateTitle.style.border = "1px solid black";
+      that.#divPenultimateTitle = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(this.#divPenultimateTitle);
+      that.#divPenultimateTitle.style.position = "absolute";
+      that.#divPenultimateTitle.style.left = "20%";
+      that.#divPenultimateTitle.style.top = "0%";
+      that.#divPenultimateTitle.style.width = "15%";
+      that.#divPenultimateTitle.style.height = "100%";
+      that.#divPenultimateTitle.style.boxSizing = "border-box";
+      that.#divPenultimateTitle.style.border = "1px solid black";
     }
     function drawUltimateTitle() {
-      this.#divUltimateTitle = document.createElement("div");
-      this.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
-      this.#divUltimateTitle.style.position = "absolute";
-      this.#divUltimateTitle.style.left = "15%";
-      this.#divUltimateTitle.style.top = "0%";
-      this.#divUltimateTitle.style.width = "85%";
-      this.#divUltimateTitle.style.height = "100%";
-      this.#divUltimateTitle.style.boxSizing = "border-box";
-      this.#divUltimateTitle.style.border = "1px solid black";
+      that.#divUltimateTitle = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(this.#divUltimateTitle);
+      that.#divUltimateTitle.style.position = "absolute";
+      that.#divUltimateTitle.style.left = "15%";
+      that.#divUltimateTitle.style.top = "0%";
+      that.#divUltimateTitle.style.width = "85%";
+      that.#divUltimateTitle.style.height = "100%";
+      that.#divUltimateTitle.style.boxSizing = "border-box";
+      that.#divUltimateTitle.style.border = "1px solid black";
     }
     function drawBtnHistory() {
-      this.#btnHistory = document.createElement("div");
-      this.#divBreadcrumbs.appendChild(this.#btnHistory);
-      this.#btnHistory.style.position = "absolute";
-      this.#btnHistory.style.left = "95%";
-      this.#btnHistory.style.top = "0%";
-      this.#btnHistory.style.width = "5%";
-      this.#btnHistory.style.height = "100%";
-      this.#btnHistory.style.boxSizing = "border-box";
-      this.#btnHistory.style.border = "1px solid black";
-      this.#btnHistory.addEventListener("click", openHistory);
+      that.#btnHistory = document.createElement("div");
+      that.#divBreadcrumbs.appendChild(this.#btnHistory);
+      that.#btnHistory.style.position = "absolute";
+      that.#btnHistory.style.left = "95%";
+      that.#btnHistory.style.top = "0%";
+      that.#btnHistory.style.width = "5%";
+      that.#btnHistory.style.height = "100%";
+      that.#btnHistory.style.boxSizing = "border-box";
+      that.#btnHistory.style.border = "1px solid black";
+      that.#btnHistory.addEventListener("click", openHistory);
       function openHistory(evt) {
         function closeHistory(evt) {
-          this.#btnHistory.addEventListener("click", openHistory);
+          that.#btnHistory.addEventListener("click", openHistory);
           divHistory.remove();
         }
         const divHistory = document.createElement("div");
         const menu = new MenuTiles();
         divHistory.appendChild(menu.element);
         const arrMenuList = [];
-        for (const breadcrumb of this.#arrBreadcrumbs) {
+        for (const breadcrumb of that.#arrBreadcrumbs) {
           const handler = function () {
-            while (this.#arrBreadcrumbs[this.#arrBreadcrumbs.length - 1] !== breadcrumb) {
-              this.closeLayout();
+            while (that.#arrBreadcrumbs[that.#arrBreadcrumbs.length - 1] !== breadcrumb) {
+              that.closeLayout();
             }
             closeHistory();
           }
@@ -287,13 +290,13 @@ class AppNavigation {
           });
         }
         menu.addTiles(arrMenuList);
-        for (const child of this.#divContent.children) {
+        for (const child of that.#divContent.children) {
           child.style.display = "none";
         }
-        this.#rootMain.appendChild(divHistory);
-        this.#divBreadcrumbs.style.display = "block";
-        this.#btnHistory.removeEventListener("click", openHistory);
-        this.#btnHistory.addEventListener("click", closeHistory);
+        that.#rootMain.appendChild(divHistory);
+        that.#divBreadcrumbs.style.display = "block";
+        that.#btnHistory.removeEventListener("click", openHistory);
+        that.#btnHistory.addEventListener("click", closeHistory);
       }
     }
   }
