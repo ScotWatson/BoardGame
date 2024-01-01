@@ -639,25 +639,43 @@ function start( [ evtWindow ] ) {
       divGameInfo.appendChild(btnPlayerListRefresh);
       btnPlayerListRefresh.style="display:block;position:absolute;left:0%;top:80%;width:25%;height:20%;";
       btnPlayerListRefresh.appendChild(document.createTextNode("Refresh"));
-      const btnJoinUnjoinGame = document.createElement("button");
-      divGameInfo.appendChild(btnJoinUnjoinGame);
-      btnJoinUnjoinGame.style="display:block;position:absolute;left:25%;top:80%;width:25%;height:20%;";
-      btnJoinUnjoinGame.appendChild(document.createTextNode("Join Game"));
+      const btnJoinGame = document.createElement("button");
+      divGameInfo.appendChild(btnJoinGame);
+      btnJoinGame.style="display:block;position:absolute;left:25%;top:80%;width:25%;height:20%;";
+      btnJoinGame.appendChild(document.createTextNode("Join Game"));
+      const btnUnjoinGame = document.createElement("button");
+      divGameInfo.appendChild(btnUnjoinGame);
+      btnUnjoinGame.style="display:block;position:absolute;left:50%;top:80%;width:25%;height:20%;";
+      btnUnjoinGame.appendChild(document.createTextNode("Unjoin Game"));
       const btnOpenGame = document.createElement("button");
       divGameInfo.appendChild(btnOpenGame);
-      btnOpenGame.style="display:block;position:absolute;left:50%;top:80%;width:25%;height:20%;";
+      btnOpenGame.style="display:block;position:absolute;left:75%;top:80%;width:25%;height:20%;";
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
-      btnJoinUnjoinGame.addEventListener("click", function (evt) {
-        alert("This function is yet to be implemented.");
-        return;
+      btnJoinGame.addEventListener("click", function (evt) {
         const reqJoinGame = createRequestGET("./game/" + strGameId + "/join/" + token, urlBase.href);
-        const reqUnjoinGame = createRequestGET("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
         (async function () {
           try {
             const response = await fetch(reqJoinGame);
             if (response.status !== 200) {
+              alert("Failed to join");
               return;
             }
+            alert("Successfully joined!");
+          } catch (e) {
+            console.error(e);
+          }
+        })();
+      });
+      btnUnjoinGame.addEventListener("click", function (evt) {
+        const reqUnjoinGame = createRequestGET("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
+        (async function () {
+          try {
+            const response = await fetch(reqUnjoinGame);
+            if (response.status !== 200) {
+              alert("Failed to unjoin");
+              return;
+            }
+            alert("Successfully unjoined!");
           } catch (e) {
             console.error(e);
           }
@@ -669,6 +687,10 @@ function start( [ evtWindow ] ) {
       btnPlayerListRefresh.addEventListener("click", function (evt) {
         populatePlayerList(result());
       });
+      if (token === "") {
+        btnJoinGame.disabled = true;
+        btnUnjoinGame.disabled = true;
+      }
       populatePlayerList(result());
       async function result() {
         try {
@@ -676,6 +698,7 @@ function start( [ evtWindow ] ) {
           const reqGameInfo = createRequestGET(urlEndpointGameInfo.href);
           const respGameInfo = await fetch(reqGameInfo);
           const objGameInfo = await respGameInfo.json();
+          pGameTitle.innerHTML = "";
           pGameTitle.appendChild(document.createTextNode(objGameInfo.title));
           return objGameInfo.players;
         } catch (e) {
@@ -721,6 +744,9 @@ function start( [ evtWindow ] ) {
       divNewGame.appendChild(btnStartNewGame);
       btnStartNewGame.style = "display:block;position:absolute;left:0%;top:80%;width:100%;height:20%;";
       btnStartNewGame.appendChild(document.createTextNode("Start"));
+      if (token === "") {
+        btnStartNewGame.disabled = true;
+      }
       btnStartNewGame.addEventListener("click", function (evt) {
         let objAction = {};
         objAction.id = objGeneralInfo.options.id;
@@ -743,7 +769,7 @@ function start( [ evtWindow ] ) {
         };
         const jsonNewGame = JSON.stringify(objNewGame);
         const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
-        const urlEndpointNewGame = new URL("./game/new", urlBase.href);
+        const urlEndpointNewGame = new URL("./game/new/" + token, urlBase.href);
         const reqNewGame = createRequestPOST(urlEndpointNewGame.href, blobNewGame);
         (async function () {
           try {
