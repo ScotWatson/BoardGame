@@ -335,6 +335,7 @@ function start( [ evtWindow ] ) {
     });
     navigator.serviceWorker.startMessages();
     let hrefBase = urlSelf.searchParams.get("url");
+    let urlBase = null;
     let objGeneralInfo;
     let token;
     // Create navigation control
@@ -361,7 +362,8 @@ function start( [ evtWindow ] ) {
       while (hrefBase === null) {
         hrefBase = window.prompt("Please enter URL:");
       }
-      const urlBase = new URL(hrefBase);
+      urlBase = new URL(hrefBase);
+      // Send request for info
       const urlEndpointInfo = new URL("./info", urlBase.href);
       const reqInfo = createRequestGET(urlEndpointInfo);
       try {
