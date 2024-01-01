@@ -518,7 +518,6 @@ function start( [ evtWindow ] ) {
       const inpMyGames = document.createElement("input");
       lblMyGames.appendChild(inpMyGames);
       inpMyGames.type = "checkbox";
-      inpMyGames.style = "display:block;position:absolute;left:0%;top:0%;height:100%;";
       lblMyGames.appendChild(document.createTextNode("My Games Only"));
       const gameMenu = new MenuTiles();
       const divGameList = gameMenu.element;
@@ -526,11 +525,11 @@ function start( [ evtWindow ] ) {
       divGameList.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;"
       const btnGameListRefresh = document.createElement("button");
       divGameSelect.appendChild(btnGameListRefresh);
-      btnGameListRefresh.style = "display:block;position:absolute;left:35%;top:40%;width:30%;height:20%;";
+      btnGameListRefresh.style = "display:block;position:absolute;left:35%;top:80%;width:30%;height:20%;";
       btnGameListRefresh.appendChild(document.createTextNode("Refresh"));
       const btnNewGame = document.createElement("button");
       divGameSelect.appendChild(btnNewGame);
-      btnNewGame.style = "display:block;position:absolute;left:0%;top:40%;width:30%;height:20%;";
+      btnNewGame.style = "display:block;position:absolute;left:0%;top:80%;width:30%;height:20%;";
       btnNewGame.appendChild(document.createTextNode("New Game"));
       const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
       const urlEndpointAllGames = new URL("./games", urlBase.href);
