@@ -417,6 +417,9 @@ function start( [ evtWindow ] ) {
       const btnCreateAccount = document.createElement("button");
       divLogin.appendChild(btnCreateAccount);
       btnCreateAccount.style = "display:block;position:absolute;left:50%;top:50%;width:50%;height:20%;";
+      const btnLogout = document.createElement("button");
+      divLogin.appendChild(btnLogout);
+      btnLogout.style = "display:block;position:absolute;left:70%;top:70%;width:30%;height:20%;";
       divInfo.innerHTML = "";
       divInfo.appendChild(document.createTextNode(objGeneralInfo.description));
       btnLogin.addEventListener("click", function (evt) {
@@ -471,11 +474,23 @@ function start( [ evtWindow ] ) {
         title: "Game List",
         shortTitle: "Game List",
       });
-      const lblMyGames = document.getElementById("lblMyGames");
-      const inpMyGames = document.getElementById("inpMyGames");
-      const divGameList = document.getElementById("divGameList");
-      const btnGameListRefresh = document.getElementById("btnGameListRefresh");
-      const btnNewGame = document.getElementById("btnNewGame");
+      const lblMyGames = document.createElement("label");
+      divGameSelect.appendChild(lblMyGames);
+      lblMyGames.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
+      const inpMyGames = document.createElement("input");
+      lblMyGames.appendChild(inpMyGames);
+      inpMyGames.appendChild(document.createTextNode("My Games Only"));
+      inpMyGames.type = "checkbox";
+      inpMyGames.style = "display:block;position:absolute;left:0%;top:0%;width:100%;height:100%;";
+      const divGameList = document.createElement("div");
+      divGameSelect.appendChild(divGameList);
+      divGameList.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;"
+      const btnGameListRefresh = document.createElement("button");
+      divGameSelect.appendChild(btnGameListRefresh);
+      btnGameListRefresh.style = "display:block;position:absolute;left:35%;top:40%;width:30%;height:20%;";
+      const btnNewGame = document.createElement("button");
+      divGameSelect.appendChild(btnNewGame);
+      btnNewGame.style = "display:block;position:absolute;left:0%;top:40%;width:30%;height:20%;";
       const urlEndpointMyGames = new URL("./games/by-user/" + token, urlBase.href);
       const urlEndpointAllGames = new URL("./games", urlBase.href);
       populateGameList(result());
@@ -515,6 +530,30 @@ function start( [ evtWindow ] ) {
       const btnPlayerListRefresh = document.getElementById("btnPlayerListRefresh");
       const btnJoinUnjoinGame = document.getElementById("btnJoinUnjoinGame");
       const btnOpenGame = document.getElementById("btnOpenGame");
+      btnNewGame.addEventListener("click", function (evt) {
+        const objNewGame = {
+          title: "",
+          action: {},
+        };
+        const jsonNewGame = JSON.stringify(objNewGame);
+        const blobNewGame = new Blob(jsonNewGame, "application/json");
+        const urlEndpointNewGame = new URL("./game/new", urlBase.href);
+        const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
+        fetch(reqNewGame).then(function (response) {
+          if (response.status !== 200) {
+            return;
+          }
+        });
+      });
+      btnJoinUnjoinGame.addEventListener("click", function (evt) {
+        const reqJoinGame = createRequestGET("./game/" + gameId + "/join/" + token, urlBase.href);
+        const reqUnjoinGame = createRequestGET("./game/" + gameId + "/unjoin/" + token, urlBase.href);
+        fetch(reqJoinGame).then(function (response) {
+          if (response.status !== 200) {
+            return;
+          }
+        });
+      });
     }
     function drawNewGame() {
       const divNewGame = document.getElementById("divNewGame");
@@ -557,30 +596,6 @@ function start( [ evtWindow ] ) {
     }
     function showGames() {
     }
-    btnNewGame.addEventListener("click", function (evt) {
-      const objNewGame = {
-        title: "",
-        action: {},
-      };
-      const jsonNewGame = JSON.stringify(objNewGame);
-      const blobNewGame = new Blob(jsonNewGame, "application/json");
-      const urlEndpointNewGame = new URL("./game/new", urlBase.href);
-      const reqNewGame = createRequestPOST(urlEndpointNewGame.href);
-      fetch(reqNewGame).then(function (response) {
-        if (response.status !== 200) {
-          return;
-        }
-      });
-    });
-    btnJoinUnjoinGame.addEventListener("click", function (evt) {
-      const reqJoinGame = createRequestGET("./game/" + gameId + "/join/" + token, urlBase.href);
-      const reqUnjoinGame = createRequestGET("./game/" + gameId + "/unjoin/" + token, urlBase.href);
-      fetch(reqJoinGame).then(function (response) {
-        if (response.status !== 200) {
-          return;
-        }
-      });
-    });
   } catch (e) {
     console.log(e);
   }
