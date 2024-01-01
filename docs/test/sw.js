@@ -254,7 +254,7 @@ self.addEventListener("fetch", function (evt) {
                       title: thisGame.title,
                       players,
                     }
-                    const jsonGameInfo = JSON.stringify();
+                    const jsonGameInfo = JSON.stringify(objGameInfo);
                     const blobGameInfo = new Blob( [ jsonGameInfo ], { type: "application/json" });
                     return new Response(blobGameInfo, {
                       status: 200,
