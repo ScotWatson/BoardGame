@@ -491,7 +491,7 @@ function start( [ evtWindow ] ) {
           password: inpPassword.value,
         };
         const jsonNewUser = JSON.stringify(objNewUser);
-        const blobNewUser = new Blob( [ jsonCreate ], { type: "application/json" });
+        const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
         const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
         (async function () {
