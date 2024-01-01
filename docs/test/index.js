@@ -490,7 +490,7 @@ function start( [ evtWindow ] ) {
           name: inpUsername.value,
           password: inpPassword.value,
         };
-        const jsonNewUser = JSON.stringify(objCreate);
+        const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonCreate ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
         const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobCreate);
@@ -640,9 +640,24 @@ function start( [ evtWindow ] ) {
       btnStartNewGame.style = "display:block;position:absolute;left:0%;top:80%;width:100%;height:20%;";
       btnStartNewGame.appendChild(document.createTextNode("Start"));
       btnStartNewGame.addEventListener("click", function (evt) {
+        let objAction = {};
+        objAction.id = objGeneralInfo.options.id;
+        switch (objGeneralInfo.options.type) {
+          case "select":
+            objAction.options = [];
+            break;
+          case "range":
+            objAction.value = 0;
+            break;
+          case "text":
+            objAction.value = "";
+            break;
+          default:
+            alert("Unrecognized option type");
+        }
         const objNewGame = {
-          title: "",
-          action: {},
+          title: inpNewGameTitle.value,
+          action: objAction,
         };
         const jsonNewGame = JSON.stringify(objNewGame);
         const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
@@ -654,7 +669,7 @@ function start( [ evtWindow ] ) {
             if (response.status !== 200) {
               throw "Failed to create new game";
             }
-            alert("This function is yet to be implemented.");
+            alert("New Game Created!");
           } catch (e) {
             console.error(e);
           }
