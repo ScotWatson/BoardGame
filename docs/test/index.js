@@ -469,10 +469,9 @@ function start( [ evtWindow ] ) {
       }
       btnLogin.addEventListener("click", function (evt) {
         const objLogin = {
-          name: inpUsername.value,
+          username: inpUsername.value,
           password: inpPassword.value,
         };
-        console.log(objLogin);
         const jsonLogin = JSON.stringify(objLogin);
         const blobLogin = new Blob( [ jsonLogin ], { type: "application/json" });
         const urlEndpointLogin = new URL("./user/login", urlBase.href);
@@ -525,10 +524,9 @@ function start( [ evtWindow ] ) {
       });
       btnCreateAccount.addEventListener("click", function (evt) {
         const objNewUser = {
-          name: inpUsername.value,
+          username: inpUsername.value,
           password: inpPassword.value,
         };
-        console.log(objNewUser);
         const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
