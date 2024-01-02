@@ -29,12 +29,15 @@ function loginUser(username, password) {
   }
   const newToken = self.crypto.randomUUID();
   mapTokens.set(newToken, username);
+  sendMessage("Logged in: " + newToken);
   return newToken;
 }
 function logoutUser(token) {
+  sendMessage("Logged out: " + token);
   mapTokens.delete(token);
 }
 function getUser(token) {
+  sendMessage("Checking: " + token);
   const username = mapTokens.get(token);
   if (username === undefined) {
     return null;
