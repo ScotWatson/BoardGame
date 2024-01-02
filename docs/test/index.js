@@ -472,6 +472,7 @@ function start( [ evtWindow ] ) {
           name: inpUsername.value,
           password: inpPassword.value,
         };
+        console.log(objLogin);
         const jsonLogin = JSON.stringify(objLogin);
         const blobLogin = new Blob( [ jsonLogin ], { type: "application/json" });
         const urlEndpointLogin = new URL("./user/login", urlBase.href);
@@ -527,6 +528,7 @@ function start( [ evtWindow ] ) {
           name: inpUsername.value,
           password: inpPassword.value,
         };
+        console.log(objNewUser);
         const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
