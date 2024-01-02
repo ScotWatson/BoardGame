@@ -30,6 +30,11 @@ function loginUser(username, password) {
   const newToken = self.crypto.randomUUID();
   mapTokens.set(newToken, username);
   sendMessage("Logged in: " + newToken);
+  if (getUser(newToken) === null) {
+    sendMessage("Verification Failed");
+  } else {
+    sendMessage("Verification Succeeded");
+  }
   return newToken;
 }
 function logoutUser(token) {
