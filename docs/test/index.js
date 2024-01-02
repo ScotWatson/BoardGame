@@ -711,7 +711,7 @@ function start( [ evtWindow ] ) {
         const arrPlayerTiles = [];
         for (const player of arrPlayers) {
           arrPlayerTiles.push({
-            text: game.title,
+            text: player.username,
             handler: function () {
               if (player.hasOptions) {
                 alert("Player " + player.username + " currently has options.");
