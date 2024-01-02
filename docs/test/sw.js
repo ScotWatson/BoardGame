@@ -39,6 +39,7 @@ function logoutUser(token) {
 function getUser(token) {
   sendMessage("Checking: " + token);
   const username = mapTokens.get(token);
+  sendMessage("Username: " + username);
   if (username === undefined) {
     return null;
   }
