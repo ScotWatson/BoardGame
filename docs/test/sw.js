@@ -30,6 +30,7 @@ function loginUser(username, password) {
   const newToken = self.crypto.randomUUID();
   mapTokens.set(newToken, username);
   const u_n = mapTokens.get(newToken);
+  sendMessage("username: " + username);
   sendMessage("u_n: " + u_n);
   sendMessage("Logged in: " + newToken);
   if (getUser(newToken) === null) {
