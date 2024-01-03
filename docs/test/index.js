@@ -100,9 +100,7 @@ class MenuTiles {
     }
   }
   clearAllTiles() {
-    for (const child of this.#divScrollable.children) {
-      child.remove();
-    }
+    this.#divScrollable.innerHTML = "";
   }
   get element() {
     return this.#elemMain;
