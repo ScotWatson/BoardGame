@@ -652,7 +652,8 @@ function start( [ evtWindow ] ) {
       btnOpenGame.style="display:block;position:absolute;left:75%;top:80%;width:25%;height:20%;";
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinGame.addEventListener("click", function (evt) {
-        const reqJoinGame = createRequestGET("./game/" + strGameId + "/join/" + token, urlBase.href);
+        const urlEndpointJoinGame = new URL("./game/" + strGameId + "/join/" + token, urlBase.href);
+        const reqJoinGame = createRequestGET(urlEndpointJoinGame);
         (async function () {
           try {
             const response = await fetch(reqJoinGame);
@@ -667,7 +668,8 @@ function start( [ evtWindow ] ) {
         })();
       });
       btnUnjoinGame.addEventListener("click", function (evt) {
-        const reqUnjoinGame = createRequestGET("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
+        const urlEndpointUnjoinGame = new URL("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
+        const reqUnjoinGame = createRequestGET(urlEndpointUnjoinGame);
         (async function () {
           try {
             const response = await fetch(reqUnjoinGame);
