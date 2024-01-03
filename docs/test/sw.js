@@ -55,6 +55,9 @@ function addGame(title, action) {
 function getGame(id) {
   return mapGames.get(id);
 }
+function removeGame(id) {
+  mapGames.delete(id);
+}
 
 const mapOptions = new Map();
 function addOption(objOption) {
@@ -73,12 +76,15 @@ function removeOption(id, nested) {
 }
 
 const objNewGameOptions = {
+  optionId: Crypto.randomUUID(),
   type: "select",
   description: "",
   options: [],
   operations: [],
   validations: [],
+  maxOptions: 0,
 }
+addOption(objNewGameOptions);
 const objInfo = {
   name: "Fake Game",
   description: "A fake game designed to test the interface",
@@ -335,6 +341,9 @@ self.addEventListener("fetch", function (evt) {
                       });
                     }
                     thisGame.players.splice(playerIndex, 1);
+                    if (thisGame.players.length === 0) {
+                        removeGame(gameId);
+                    }
                     return new Response("", {
                       status: 200,
                       statusText: "OK",
