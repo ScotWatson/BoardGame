@@ -76,7 +76,7 @@ function removeOption(id, nested) {
 }
 
 const objNewGameOptions = {
-  optionId: Crypto.randomUUID(),
+  optionId: self.crypto.randomUUID(),
   type: "select",
   description: "",
   options: [],
