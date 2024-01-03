@@ -611,12 +611,13 @@ function start( [ evtWindow ] ) {
       async function populateGameList(promiseGameList) {
         gameMenu.clearAllTiles();
         const arrGames = await promiseGameList;
+        console.log(arrGames);
         const arrGameTiles = [];
         for (const game of arrGames) {
           arrGameTiles.push({
             text: game.title,
             handler: function () {
-              drawGameInfo(game.id);
+              drawGameInfo(game.gameId);
             },
           });
         }
