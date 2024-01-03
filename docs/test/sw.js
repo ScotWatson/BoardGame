@@ -63,7 +63,7 @@ const mapOptions = new Map();
 function addOption(objOption) {
   objOption.id = self.crypto.randomUUID();
   mapGames.set(objOption.id, objOption);
-  return newGame;
+  return objOption;
 }
 function removeOption(id, nested) {
   if (nested) {
@@ -76,7 +76,6 @@ function removeOption(id, nested) {
 }
 
 const objNewGameOptions = {
-  optionId: self.crypto.randomUUID(),
   type: "select",
   description: "",
   options: [],
@@ -84,11 +83,10 @@ const objNewGameOptions = {
   validations: [],
   maxOptions: 0,
 }
-addOption(objNewGameOptions);
 const objInfo = {
   name: "Fake Game",
   description: "A fake game designed to test the interface",
-  options: objNewGameOptions,
+  options: addOption(objNewGameOptions),
 }
 
 self.addEventListener("install", function (evt) {
