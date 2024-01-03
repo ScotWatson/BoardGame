@@ -206,7 +206,7 @@ self.addEventListener("fetch", function (evt) {
             for (const entry of mapGames.entries()) {
               const [ id, value ] = entry;
               arrGameSummaries.push({
-                id: id,
+                gameId: id,
                 title: value.title,
               });
             }
