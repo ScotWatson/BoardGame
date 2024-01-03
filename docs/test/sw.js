@@ -56,7 +56,9 @@ function getGame(id) {
   return mapGames.get(id);
 }
 function removeGame(id) {
+  sendMessage("Removing game: " + id);
   mapGames.delete(id);
+  sendMessage(mapGames);
 }
 
 const mapOptions = new Map();
