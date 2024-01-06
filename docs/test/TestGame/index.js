@@ -21,6 +21,50 @@ const asyncWindow = new Promise(function (resolve, reject) {
   }
 })();
 
+let workerTestGame = null;
+
+const promiseControllerConnected = new Promise(function (resolve, reject) {
+  if (window.navigator.serviceWorker.controller === null) {
+    resolve();
+  } else {
+    window.navigator.serviceWorker.addEventListener("controllerchange", function () {
+      resolve();
+    });
+  }
+});
+
 async function start() {
-  
+  const layout = new DocumentFragment();
+  const inpTestGameScriptFile = document.createElement("input");
+  inpTestGameScriptFile.type = "file";
+  layout.appendChild(inpTestGameScriptFile);
+  const inpTestGameImageFiles = document.createElement("input");
+  inpTestGameImageFiles.type = "file";
+  inpTestGameImageFiles.multiple = true;
+  layout.appendChild(inpTestGameImageFiles);
+  const btnUpload = document.createElement("input");
+  btnUpload.addEventListener("click", function (evt) {
+    const fileWorkerScript = inpTestGameScriptFile.files[0];
+    const filesImages = inpTestGameScriptFile.files;
+    if (workerTestGame !== null) {
+      workerTestGame.terminate();
+    }
+    workerTestGame = new Worker(URL.createObjectURL(fileWorkerScript));
+    workerTestGame.postMessage({
+      action: "ping",
+    });
+    const channelTestGame = new MessageChannel();
+    workerTestGame.postMessage({
+      action: "port",
+      port: channelTestGame.port1,
+    });
+    window.navigator.serviceWorker.postMessage({
+      action: "port",
+      port: channelTestGame.port2,
+    });
+  });
+  layout.appendChild(btnUpload);
+  promiseControllerConnected.then(function () {
+    document.body.appendChild(layout);
+  });
 }
