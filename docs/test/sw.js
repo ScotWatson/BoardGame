@@ -387,16 +387,31 @@ self.addEventListener("fetch", function (evt) {
 
 let portTestGameWorker = null;
 
+function testGameMessageHandler(evt) {
+  const data = evt.data;
+  switch (data.action) {
+    case "ping": {
+      await sendMessage("TestGame Worker Ping Received");
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+}
+
 self.addEventListener("message", function (evt) {
   async function serverMessage(evt) {
     const data = evt.data;
     switch (data.action) {
       case "ping": {
-        await sendMessage("TestGame Worker Ping Received");
+        await sendMessage("Server Ping Received");
         break;
       }
       case "port": {
         portTestGameWorker = data.port;
+        portTestGameWorker.addEventListener("message", testGameMessageHandler);
+        portTestGameWorker.start();
         portTestGameWorker.postMessage({
           action: "ping",
         });
