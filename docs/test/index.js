@@ -107,6 +107,78 @@ class MenuTiles {
   }
 }
 
+class Options {
+  #elemMain;
+  #rootMain;
+  constructor(getOption, optionRoot) {
+    this.#elemMain = document.createElement("div");
+    this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
+    this.#elemMain.style.display = "block";
+    this.#elemMain.style.backgroundColor = "white";
+    this.#rootMain.appendChild(createOption(optionRoot));
+    function createOption(option) {
+      switch (option.optionType) {
+        case "select": {
+          const details = document.createElement("details");
+          const summary = document.createElement("summary");
+          summary.append(option.description);
+          details.appendChild(summary);
+          details.addEventListener("toggle", function () {
+            if (optionControl.open) {
+              if (optionControl.children.length === 1) {
+                (async function () {
+                  for (const optionId of option.optionList) {
+                    const pItem = document.createElement("p");
+                    const select = document.createElement("input");
+                    select.type = "checkbox";
+                    pItem.appendChild(select);
+                    const newOption = await getOption(optionId);
+                    const newOptionControl = createOption(newOption);
+                    pItem.appendChild(newOptionControl);
+                    details.appendChild(pItem);
+                  }
+                })();
+              }
+            }
+          });
+          return details;
+        }
+        case "range": {
+          const label = document.createElement("label");
+          label.append(option.description);
+          const range = document.createElement("input");
+          range.type = "range";
+          if (typeof option.minValue === "number") {
+            range.setAttribute("min", option.minValue);
+          } else {
+            range.setAttribute("min", 0);
+          }
+          range.setAttribute("max", option.maxValue);
+          label.appendChild(range);
+          return label;
+        }
+        case "text": {
+          const label = document.createElement("label");
+          label.append(option.description);
+          const text = document.createElement("input");
+          text.type = "text";
+          label.appendChild(text);
+          return label;
+        }
+        default: {
+          const p = document.createElement("p");
+          p.append("<Unrecognized Option Type>");
+          p.style.backgroundColor = "grey";
+          return p;
+        }
+      }
+    }
+  }
+  get element() {
+    return this.#elemMain;
+  }
+}
+
 class AppNavigation {
   #elemMain;
   #rootMain;
@@ -738,7 +810,14 @@ function start( [ evtWindow ] ) {
       lblNewGameTitle.appendChild(inpNewGameTitle);
       inpNewGameTitle.type = "text";
       inpNewGameTitle.style = "width:80%;height:100%;";
-      const divNewGameOptions = document.createElement("div");
+      async function getOption(optionId) {
+        const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
+        const requestGetOption = createRequestGET(endpointGetOption);
+        const responseGetOption = await fetch(request);
+        return await responseGetOption.json();
+      }
+      const newGameOptions = new Options(getOption);
+      const divNewGameOptions = newGameOptions.element;
       divNewGame.appendChild(divNewGameOptions);
       divNewGameOptions.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
       const btnStartNewGame = document.createElement("button");
