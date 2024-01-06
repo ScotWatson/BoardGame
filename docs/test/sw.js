@@ -103,18 +103,21 @@ self.addEventListener("activate", function (evt) {
 
 self.addEventListener("fetch", function (evt) {
   evt.respondWith(fetchModified(evt.request));
-  // if path starts with "https://scotwatson.github.io/BoardGame/FakeGame/", invoke API
+  // if path starts with "https://scotwatson.github.io/BoardGame/TestGame/", invoke API
   // "index.html" should still be accessable. It forms the "server-side" interface.
   async function fetchModified(request) {
     const urlRequest = new URL(request.url);
     const urlSelf = new URL(self.location);
-    const urlFakeGame = new URL("./FakeGame/", urlSelf);
-    if (urlRequest.href.startsWith(urlFakeGame.href)) {
-      const endpoint = urlRequest.href.substring(urlFakeGame.href.length);
+    const urlTestGame = new URL("./TestGame/", urlSelf);
+    if (urlRequest.href.startsWith(urlTestGame.href)) {
+      const endpoint = urlRequest.href.substring(urlTestGame.href.length);
       const arrEndpoint = endpoint.split("/");
       await sendMessage(arrEndpoint);
       switch (arrEndpoint[0]) {
         case "index.html": {
+          return await fetch(request);
+        }
+        case "index.js": {
           return await fetch(request);
         }
         case "info": {
@@ -382,22 +385,56 @@ self.addEventListener("fetch", function (evt) {
   }
 });
 
+let portTestGameWorker = null;
+
 self.addEventListener("message", function (evt) {
-//  if (evt.source.url !== "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
-//    return;
-//  }
-  evt.waitUntil((async function () {
+  async function serverMessage(evt) {
     const data = evt.data;
-    if (data.action === "getUsers") {
-      evt.source.postMessage("numUsers: " + mapUsers.size);
+    switch (data.action) {
+      case "ping": {
+        await sendMessage("TestGame Worker Ping Received");
+        break;
+      }
+      case "port": {
+        portTestGameWorker = data.port;
+        portTestGameWorker.postMessage({
+          action: "ping",
+        });
+        evt.source.postMessage("TestGame Worker Port Received");
+        break;
+      }
+      default: {
+        break;
+      }
     }
-    if (data.action === "numClients") {
-      evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
-    }
-    if (data.action === "getTimes") {
-      evt.source.postMessage({lastInstallTime, lastActivateTime});
+  }
+  async function otherMessage(evt) {
+    const data = evt.data;
+    switch (data.action) {
+      case "getUsers": {
+        evt.source.postMessage("numUsers: " + mapUsers.size);
+        break;
+      }
+      case "numClients": {
+        evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
+        break;
+      }
+      case "getTimes": {
+        evt.source.postMessage({lastInstallTime, lastActivateTime});
+        break;
+      }
+      default: {
+        break;
+      }
     }
     await sendServerMessage("ACK");
+  }
+  evt.waitUntil((async function () {
+    if (evt.source.url !== "https://scotwatson.github.io/BoardGame/TestGame/index.html") {
+      return await serverMessage(evt);
+    } else {
+      return await otherMessage(evt);
+    }
   })());
 });
 
@@ -411,7 +448,7 @@ async function sendMessage(data) {
 async function sendServerMessage(data) {
   const clients = await self.clients.matchAll();
   for (const client of clients) {
-    if (client.url === "https://scotwatson.github.io/BoardGame/FakeGame/index.html") {
+    if (client.url === "https://scotwatson.github.io/BoardGame/TestGame/index.html") {
       client.postMessage(data);
     }
   }
