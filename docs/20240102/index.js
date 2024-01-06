@@ -145,7 +145,7 @@ class AppNavigation {
   get element() {
     return this.#elemMain;
   }
-  addLayout({ title, shortTitle }) {
+  addLayout({ title, shortTitle, refresh }) {
     const divLayout = document.createElement("div");
     for (const child of this.#divContent.children) {
       child.style.display = "none";
@@ -156,7 +156,10 @@ class AppNavigation {
     this.#arrBreadcrumbs.push({ title, shortTitle, divLayout });
     this.#divContent.appendChild(divLayout);
     this.#redrawBreadcrumbs();
-    return divLayout;
+    const contents = new DocumentFragment();
+    refresh(contents).then(function () {
+      divLayout.appendChild(contents);
+    });
   }
   closeLayout() {
     const { title, shortTitle, divLayout } = this.#arrBreadcrumbs.pop();
