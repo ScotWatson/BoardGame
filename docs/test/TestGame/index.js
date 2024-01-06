@@ -42,7 +42,8 @@ async function start() {
   inpTestGameImageFiles.type = "file";
   inpTestGameImageFiles.multiple = true;
   layout.appendChild(inpTestGameImageFiles);
-  const btnUpload = document.createElement("input");
+  const btnUpload = document.createElement("button");
+  btnUpload.append("Upload");
   btnUpload.addEventListener("click", function (evt) {
     const fileWorkerScript = inpTestGameScriptFile.files[0];
     const filesImages = inpTestGameScriptFile.files;
