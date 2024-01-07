@@ -30,7 +30,7 @@ class MessageHandler {
         handler.handler(evt);
       }
     }
-    unhandledMessage(evt);
+    this.unhandledMessage(evt);
   }
   // default, intended to be overwritten, may be asynchronous
   unhandledMessage(evt) {
@@ -49,7 +49,7 @@ class AsyncMessageRequest {
       handler: async function (evt) {
         const messageId = evt.data.messageId;
         try {
-          const value = await requestHandler(evt);
+          const value = await this.requestHandler(evt);
           evt.source.postMessage({
             action: "response",
             messageId,
@@ -72,7 +72,7 @@ class AsyncMessageRequest {
         if (handler) {
           handler.resolve(evt.data.value);
         } else {
-          unpairedResponseHandler(evt);
+          this.unpairedResponseHandler(evt);
         }
       }
     });
@@ -84,7 +84,7 @@ class AsyncMessageRequest {
         if (handler) {
           handler.reject(evt.data.error);
         } else {
-          unpairedResponseHandler(evt);
+          this.unpairedResponseHandler(evt);
         }
       }
     });
