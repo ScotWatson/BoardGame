@@ -16,7 +16,9 @@ class MessageHandler {
     const { action } = args;
   }
   get mainHandler() {
-    return this.#mainHandler;
+    return function (evt) {
+      return this.#mainHandler(evt);
+    }
   }
   #mainHandler(evt) {
     const data = evt.data;
