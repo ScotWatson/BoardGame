@@ -401,9 +401,9 @@ function unhandledMessage(evt) {
     message: evt.data,
   });
 }
-messageHandlerServerInterface.unhandledMessage(unhandledMessage);
-messageHandlerClientInterface.unhandledMessage(unhandledMessage);
-messageHandlerTestGameWorker.unhandledMessage(unhandledMessage);
+messageHandlerServerInterface.unhandledMessage = unhandledMessage;
+messageHandlerClientInterface.unhandledMessage = unhandledMessage;
+messageHandlerTestGameWorker.unhandledMessage = unhandledMessage;
 
 const asyncMessageRequestServerInterface = new AsyncMessageRequest({
   messageHandler: messageHandlerServerInterface,
