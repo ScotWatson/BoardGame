@@ -506,7 +506,10 @@ self.addEventListener("message", function (evt) {
 async function sendMessage(data) {
   const clients = await self.clients.matchAll();
   for (const client of clients) {
-    client.postMessage(data);
+    client.postMessage({
+      action: "console",
+      data
+    });
   }
 }
 
