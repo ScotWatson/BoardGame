@@ -65,7 +65,7 @@ class AsyncMessageRequest {
       }
     });
     messageHandler.addHandler({
-      action: "response":
+      action: "response",
       handler: async function (evt) {
         const messageId = evt.data.messageId;
         const handler = this.#mapPendingRequests.get(messageId);
