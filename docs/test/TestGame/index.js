@@ -51,6 +51,9 @@ async function start() {
       workerTestGame.terminate();
     }
     workerTestGame = new Worker(URL.createObjectURL(fileWorkerScript));
+    workerTestGame.addEventListener("message", function (evt) {
+      console.log(evt.data);
+    });
     workerTestGame.postMessage({
       action: "ping",
     });
