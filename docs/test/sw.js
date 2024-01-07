@@ -5,7 +5,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 const urlSelf = new URL(self.location);
 const urlTestGame = new URL("./TestGame/", urlSelf);
+const urlClasses = new URL("./classes.js", urlSelf);
 
+importScripts(urlClasses.href);
 
 let lastInstallTime;
 let lastActivateTime;
