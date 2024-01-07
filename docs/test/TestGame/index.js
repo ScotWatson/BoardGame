@@ -24,7 +24,7 @@ const asyncWindow = new Promise(function (resolve, reject) {
 let workerTestGame = null;
 
 const promiseControllerConnected = new Promise(function (resolve, reject) {
-  if (window.navigator.serviceWorker.controller === null) {
+  if (window.navigator.serviceWorker.controller !== null) {
     resolve();
   } else {
     window.navigator.serviceWorker.addEventListener("controllerchange", function () {
