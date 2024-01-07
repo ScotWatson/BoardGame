@@ -3,6 +3,10 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const urlSelf = new URL(self.location);
+const urlTestGame = new URL("./TestGame/", urlSelf);
+
+
 let lastInstallTime;
 let lastActivateTime;
 
@@ -85,7 +89,7 @@ const objNewGameOptions = {
   validations: [],
   maxOptions: 0,
 }
-const objInfo = {
+let objInfo = {
   name: "Fake Game",
   description: "A fake game designed to test the interface",
   options: addOption(objNewGameOptions),
@@ -107,11 +111,6 @@ self.addEventListener("fetch", function (evt) {
   // "index.html" should still be accessable. It forms the "server-side" interface.
   async function fetchModified(request) {
     const urlRequest = new URL(request.url);
-    await sendMessage(urlRequest.href);
-    const urlSelf = new URL(self.location);
-    await sendMessage(urlSelf.href);
-    const urlTestGame = new URL("./TestGame/", urlSelf);
-    await sendMessage(urlTestGame.href);
     if (urlRequest.href.startsWith(urlTestGame.href)) {
       const endpoint = urlRequest.href.substring(urlTestGame.href.length);
       const arrEndpoint = endpoint.split("/");
@@ -390,70 +389,82 @@ self.addEventListener("fetch", function (evt) {
 
 let portTestGameWorker = null;
 
-function testGameMessageHandler(evt) {
-  (async function () {
-    const data = evt.data;
-    switch (data.action) {
-      case "ping": {
-        await sendMessage("TestGame Worker Ping Received");
-        break;
-      }
-      default: {
-        break;
-      }
+const messageHandlerServerInterface = new MessageHandler();
+const messageHandlerClientInterface = new MessageHandler();
+const messageHandlerTestGameWorker = new MessageHandler();
+const asyncMessageRequestServerInterface = new AsyncMessageRequest({
+  messageHandler: messageHandlerServerInterface,
+});
+asyncMessageRequestServerInterface.requestHandler = async function (evt) {
+  const data = evt.data.data;
+  switch (data.action) {
+    case "addOption": {
+      addOption(data.option);
+      return data.option.id;
     }
-  })();
+    default: {
+      throw new Error("Not a configured action");
+    }
+  }
 }
 
+messageHandlerServerInterface.addHandler({
+  action: "ping",
+  handler: async function (evt) {
+    await sendMessage("Server Ping Received");
+  },
+});
+messageHandlerServerInterface.addHandler({
+  action: "port",
+  handler: async function (evt) {
+    portTestGameWorker = data.port;
+    portTestGameWorker.addEventListener("message", messageHandlerTestGameWorker.mainHandler);
+    portTestGameWorker.start();
+    portTestGameWorker.postMessage({
+      action: "ping",
+    });
+    evt.source.postMessage("TestGame Worker Port Received");
+  },
+});
+messageHandlerClientInterface.addHandler({
+  action: "getUsers",
+  handler: async function (evt) {
+    evt.source.postMessage("numUsers: " + mapUsers.size);
+  },
+});
+messageHandlerClientInterface.addHandler({
+  action: "numClients",
+  handler: async function (evt) {
+    evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
+  },
+});
+messageHandlerClientInterface.addHandler({
+  action: "getTimes",
+  handler: async function (evt) {
+    evt.source.postMessage({lastInstallTime, lastActivateTime});
+  },
+});
+messageHandlerTestGameWorker.addHandler({
+  action: "ping",
+  handler: async function (evt) {
+    await sendMessage("TestGame Worker Ping Received");
+  },
+});
+messageHandlerTestGameWorker.addHandler({
+  action: "setGameInfo",
+  handler: async function (evt) {
+    const { name, description, optionId } = evt.data.info;
+    const options = mapOptions.get(optionId);
+    objInfo = { name, description, options };
+  },
+});
+
 self.addEventListener("message", function (evt) {
-  async function serverMessage(evt) {
-    const data = evt.data;
-    switch (data.action) {
-      case "ping": {
-        await sendMessage("Server Ping Received");
-        break;
-      }
-      case "port": {
-        portTestGameWorker = data.port;
-        portTestGameWorker.addEventListener("message", testGameMessageHandler);
-        portTestGameWorker.start();
-        portTestGameWorker.postMessage({
-          action: "ping",
-        });
-        evt.source.postMessage("TestGame Worker Port Received");
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  }
-  async function otherMessage(evt) {
-    const data = evt.data;
-    switch (data.action) {
-      case "getUsers": {
-        evt.source.postMessage("numUsers: " + mapUsers.size);
-        break;
-      }
-      case "numClients": {
-        evt.source.postMessage("numClients: " + (await self.clients.matchAll()).length);
-        break;
-      }
-      case "getTimes": {
-        evt.source.postMessage({lastInstallTime, lastActivateTime});
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-    await sendServerMessage("ACK");
-  }
   evt.waitUntil((async function () {
     if (evt.source.url !== "https://scotwatson.github.io/BoardGame/TestGame/index.html") {
-      return await serverMessage(evt);
+      messageHandlerServerInterface.mainHandler(evt);
     } else {
-      return await otherMessage(evt);
+      messageHandlerClientInterface.mainHandler(evt);
     }
   })());
 });
