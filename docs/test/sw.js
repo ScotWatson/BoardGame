@@ -394,6 +394,17 @@ let portTestGameWorker = null;
 const messageHandlerServerInterface = new MessageHandler();
 const messageHandlerClientInterface = new MessageHandler();
 const messageHandlerTestGameWorker = new MessageHandler();
+
+function unhandledMessage(evt) {
+  evt.source.postMessage({
+    action: "error",
+    message: evt.data,
+  });
+}
+messageHandlerServerInterface.unhandledMessage(unhandledMessage);
+messageHandlerClientInterface.unhandledMessage(unhandledMessage);
+messageHandlerTestGameWorker.unhandledMessage(unhandledMessage);
+
 const asyncMessageRequestServerInterface = new AsyncMessageRequest({
   messageHandler: messageHandlerServerInterface,
 });
