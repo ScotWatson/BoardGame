@@ -474,6 +474,13 @@ messageHandlerTestGameWorker.addHandler({
     objInfo = { name, description, options };
   },
 });
+messageHandlerTestGameWorker.addHandler({
+  action: "error",
+  handler: async function (evt) {
+    await sendMessage("error on message");
+    await sendMessage(evt.data.message);
+  },
+});
 
 self.addEventListener("message", function (evt) {
   evt.waitUntil((async function () {
