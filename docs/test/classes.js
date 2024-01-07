@@ -37,7 +37,7 @@ class MessageHandler {
   }
   // default, intended to be overwritten, may be asynchronous
   unhandledMessage(evt) {
-    throw new Error("Action is not configured");
+    throw new Error("Action is not configured: " + JSON.stringify(evt.data));
   }
 }
 
