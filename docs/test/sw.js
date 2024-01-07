@@ -419,7 +419,7 @@ messageHandlerServerInterface.addHandler({
 messageHandlerServerInterface.addHandler({
   action: "port",
   handler: async function (evt) {
-    portTestGameWorker = data.port;
+    portTestGameWorker = evt.data.port;
     portTestGameWorker.addEventListener("message", messageHandlerTestGameWorker.mainHandler);
     portTestGameWorker.start();
     portTestGameWorker.postMessage({
