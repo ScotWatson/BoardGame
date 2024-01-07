@@ -428,6 +428,13 @@ messageHandlerServerInterface.addHandler({
     evt.source.postMessage("TestGame Worker Port Received");
   },
 });
+messageHandlerServerInterface.addHandler({
+  action: "error",
+  handler: async function (evt) {
+    await sendMessage("error on message");
+    await sendMessage(evt.data.message);
+  },
+});
 messageHandlerClientInterface.addHandler({
   action: "getUsers",
   handler: async function (evt) {
@@ -444,6 +451,13 @@ messageHandlerClientInterface.addHandler({
   action: "getTimes",
   handler: async function (evt) {
     evt.source.postMessage({lastInstallTime, lastActivateTime});
+  },
+});
+messageHandlerClientInterface.addHandler({
+  action: "error",
+  handler: async function (evt) {
+    await sendMessage("error on message");
+    await sendMessage(evt.data.message);
   },
 });
 messageHandlerTestGameWorker.addHandler({
