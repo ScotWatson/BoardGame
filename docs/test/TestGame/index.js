@@ -59,10 +59,12 @@ async function start() {
       action: "port",
       port: channelTestGame.port1,
     }, [ channelTestGame.port1 ]);
-    window.navigator.serviceWorker.postMessage({
-      action: "port",
-      port: channelTestGame.port2,
-    }, [ channelTestGame.port2 ]);
+    promiseControllerConnected.then(function () {
+      window.navigator.serviceWorker.controller.postMessage({
+        action: "port",
+        port: channelTestGame.port2,
+      }, [ channelTestGame.port2 ]);
+    });
   });
   layout.appendChild(btnUpload);
   promiseControllerConnected.then(function () {
