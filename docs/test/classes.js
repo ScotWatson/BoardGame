@@ -32,10 +32,14 @@ class MessageHandler {
     }
     unhandledMessage(evt);
   }
+  // default, intended to be overwritten, may be asynchronous
+  unhandledMessage(evt) {
+    throw new Error("Action is not configured");
+  }
 }
 
 // Requires MessageHandler
-class AsyncMessageRequest() {
+class AsyncMessageRequest {
   #mapPendingRequests;
   constructor(args) {
     const { messageHandler } = args;
