@@ -49,22 +49,24 @@ class MessageHandler {
 // Requires MessageHandler
 class AsyncMessageRequest {
   #mapPendingRequests;
+  #port;
   constructor(args) {
-    const { messageHandler } = args;
+    const { messageHandler, port } = args;
     this.#mapPendingRequests = new Map();
+    this.#port = port;
     messageHandler.addHandler({
       action: "request",
       handler: async function (evt) {
         const messageId = evt.data.messageId;
         try {
           const value = await this.requestHandler(evt);
-          evt.source.postMessage({
+          evt.target.postMessage({
             action: "response",
             messageId,
             value,
           });
         } catch (error) {
-          evt.source.postMessage({
+          evt.target.postMessage({
             action: "reject",
             messageId,
             error,
@@ -101,8 +103,8 @@ class AsyncMessageRequest {
   send(data) {
     return new Promise(function (resolve, reject) {
       const messageId = self.crypto.randomUUID();
-      mapPendingRequests.set(messageId, { resolve, reject } );
-      serverPort.postMessage({
+      this.#mapPendingRequests.set(messageId, { resolve, reject } );
+      port.postMessage({
         action: "request",
         messageId: messageId,
         data: data,
