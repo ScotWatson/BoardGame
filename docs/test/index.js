@@ -460,7 +460,6 @@ function start( [ evtWindow ] ) {
         }
         const objInfo = await respInfo.json();
         objGeneralInfo = objInfo;
-        console.log(objGeneralInfo);
         const elemTitle = document.head.getElementsByTagName("title")[0];
         elemTitle.innerHTML = "";
         elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
@@ -810,7 +809,7 @@ function start( [ evtWindow ] ) {
       lblNewGameTitle.appendChild(inpNewGameTitle);
       inpNewGameTitle.type = "text";
       inpNewGameTitle.style = "width:80%;height:100%;";
-      async function getOption(optionId) {
+      async function getOption(optionId, objGeneralInfo.options) {
         const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
         const requestGetOption = createRequestGET(endpointGetOption);
         const responseGetOption = await fetch(request);
