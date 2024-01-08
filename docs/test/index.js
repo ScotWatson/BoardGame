@@ -129,6 +129,8 @@ class Options {
                 (async function () {
                   for (const optionId of option.optionList) {
                     const pItem = document.createElement("p");
+                    pItem.style.display = "flex";
+                    pItem.style.alignItems = "baseline";
                     const select = document.createElement("input");
                     select.type = "checkbox";
                     pItem.appendChild(select);
