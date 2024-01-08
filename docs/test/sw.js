@@ -133,6 +133,25 @@ self.addEventListener("fetch", function (evt) {
             headers: [],
           });
         }
+        case "option": {
+          const optionId = arrEndpoint[1];
+          const option = mapOptions.get(optionId);
+          if (option) {
+            const jsonOption = JSON.stringify(option);
+            const blobOption = new Blob( [ jsonOption ], { type: "application/json" });
+            return new Response(blobOption, {
+              status: 200,
+              statusText: "OK",
+              headers: [],
+            });
+          } else {
+            return new Response("Not an option", {
+              status: 404,
+              statusText: "Not Found",
+              headers: [],
+            });
+          }
+        }
         case "user": {
           switch (arrEndpoint[1]) {
             case "new": {
