@@ -268,6 +268,7 @@ self.addEventListener("fetch", function (evt) {
                 }
                 const objGameData = await request.json();
                 const { title, action } = objGameData;
+                console.log(action);
                 const thisGame = addGame(title, action);
                 thisGame.players.push(thisUser.username);
                 return new Response("", {
