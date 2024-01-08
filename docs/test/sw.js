@@ -396,7 +396,7 @@ const messageHandlerClientInterface = new MessageHandler();
 const messageHandlerTestGameWorker = new MessageHandler();
 
 function unhandledMessage(evt) {
-  evt.source.postMessage({
+  evt.target.postMessage({
     action: "error",
     message: evt.data,
   });
@@ -405,21 +405,7 @@ messageHandlerServerInterface.unhandledMessage = unhandledMessage;
 messageHandlerClientInterface.unhandledMessage = unhandledMessage;
 messageHandlerTestGameWorker.unhandledMessage = unhandledMessage;
 
-const asyncMessageRequestServerInterface = new AsyncMessageRequest({
-  messageHandler: messageHandlerServerInterface,
-});
-asyncMessageRequestServerInterface.requestHandler = async function (evt) {
-  const data = evt.data.data;
-  switch (data.action) {
-    case "addOption": {
-      addOption(data.option);
-      return data.option.id;
-    }
-    default: {
-      throw new Error("Not a configured action");
-    }
-  }
-}
+let asyncMessageRequestTestGameWorker = null;
 
 messageHandlerServerInterface.addHandler({
   action: "ping",
@@ -431,6 +417,22 @@ messageHandlerServerInterface.addHandler({
   action: "port",
   handler: async function (evt) {
     portTestGameWorker = evt.data.port;
+    asyncMessageRequestTestGameWorker = new AsyncMessageRequest({
+      messageHandler: messageHandlerServerInterface,
+      port: portTestGameWorker,
+    });
+    asyncMessageRequestTestGameWorker.requestHandler = async function (evt) {
+      const data = evt.data.data;
+      switch (data.action) {
+        case "addOption": {
+          addOption(data.option);
+          return data.option.id;
+        }
+        default: {
+          throw new Error("Not a configured action");
+        }
+      }
+    }
     portTestGameWorker.addEventListener("message", messageHandlerTestGameWorker.mainHandler);
     portTestGameWorker.start();
     portTestGameWorker.postMessage({
