@@ -122,6 +122,14 @@ class Options {
           if (option.optionList.length === 0) {
             const spanItem = document.createElement("span");
             spanItem.append(option.description);
+            spanItem.createAction = function () {
+              const optionId = option.optionId;
+              const options = [];
+              return {
+                optionId,
+                options,
+              };
+            };
             return spanItem;
           } else {
             const details = document.createElement("details");
@@ -143,11 +151,36 @@ class Options {
                       const newOptionControl = createOption(newOption);
                       pItem.appendChild(newOptionControl);
                       details.appendChild(pItem);
+                      pItem.getAction = function () {
+                        if (select.value) {
+                          return newOptionControl.createAction();
+                        } else {
+                          return null;
+                        }
+                      }
                     }
                   })();
                 }
               }
             });
+            details.createAction = function () {
+              const optionId = option.optionId;
+              const options = [];
+              for (const elem of details.children) {
+                if (elem.type === "summary") {
+                  continue;
+                }
+                const action = item.getAction();
+                if (action === null) {
+                  continue;
+                }
+                options.push(action);
+              }
+              return {
+                optionId,
+                options,
+              };
+            };
             return details;
           }
         }
@@ -163,6 +196,14 @@ class Options {
           }
           range.setAttribute("max", option.maxValue);
           label.appendChild(range);
+          label.createAction = function () {
+            const optionId = option.optionId;
+            const value = range.value;
+            return {
+              optionId,
+              value,
+            };
+          };
           return label;
         }
         case "text": {
@@ -171,6 +212,14 @@ class Options {
           const text = document.createElement("input");
           text.type = "text";
           label.appendChild(text);
+          label.createAction = function () {
+            const optionId = option.optionId;
+            const value = text.value;
+            return {
+              optionId,
+              value,
+            };
+          };
           return label;
         }
         default: {
@@ -184,6 +233,17 @@ class Options {
   }
   get element() {
     return this.#elemMain;
+  }
+  createAction() {
+    {
+      optionId,
+      value: 0,
+    }
+    {
+      optionId,
+      value: "",
+    }
+    
   }
 }
 
@@ -836,21 +896,7 @@ function start( [ evtWindow ] ) {
         btnStartNewGame.disabled = true;
       }
       btnStartNewGame.addEventListener("click", function (evt) {
-        let objAction = {};
-        objAction.id = objGeneralInfo.options.id;
-        switch (objGeneralInfo.options.type) {
-          case "select":
-            objAction.options = [];
-            break;
-          case "range":
-            objAction.value = 0;
-            break;
-          case "text":
-            objAction.value = "";
-            break;
-          default:
-            alert("Unrecognized option type");
-        }
+        let objAction = newGameOptions.createAction();
         const objNewGame = {
           title: inpNewGameTitle.value,
           action: objAction,
