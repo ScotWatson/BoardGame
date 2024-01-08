@@ -138,7 +138,7 @@ class Options {
             details.appendChild(summary);
             details.addEventListener("toggle", function () {
               if (details.open) {
-                if (details.children.length === 1) {
+                if (details.childNodes.length === 1) {
                   (async function () {
                     for (const optionId of option.optionList) {
                       const pItem = document.createElement("p");
@@ -150,7 +150,6 @@ class Options {
                       const newOption = await getOption(optionId);
                       const newOptionControl = createOption(newOption);
                       pItem.appendChild(newOptionControl);
-                      details.appendChild(pItem);
                       pItem.getAction = function () {
                         if (select.value) {
                           return newOptionControl.createAction();
@@ -158,6 +157,7 @@ class Options {
                           return null;
                         }
                       }
+                      details.appendChild(pItem);
                     }
                   })();
                 }
@@ -166,8 +166,8 @@ class Options {
             details.createAction = function () {
               const optionId = option.optionId;
               const options = [];
-              for (const elem of details.children) {
-                if (elem.type === "summary") {
+              for (const elem of details.childNodes) {
+                if (elem.tagName === "summary") {
                   continue;
                 }
                 const action = elem.getAction();
