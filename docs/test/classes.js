@@ -101,9 +101,10 @@ class AsyncMessageRequest {
   }
   // Returns a promise, therefore acts as an asynchronous function
   send(data) {
+    let that = this;
     return new Promise(function (resolve, reject) {
       const messageId = self.crypto.randomUUID();
-      this.#mapPendingRequests.set(messageId, { resolve, reject } );
+      that.#mapPendingRequests.set(messageId, { resolve, reject } );
       port.postMessage({
         action: "request",
         messageId: messageId,
