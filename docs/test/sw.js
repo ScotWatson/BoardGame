@@ -418,7 +418,7 @@ messageHandlerServerInterface.addHandler({
   handler: async function (evt) {
     portTestGameWorker = evt.data.port;
     asyncMessageRequestTestGameWorker = new AsyncMessageRequest({
-      messageHandler: messageHandlerServerInterface,
+      messageHandler: messageHandlerTestGameWorker,
       port: portTestGameWorker,
     });
     asyncMessageRequestTestGameWorker.requestHandler = async function (evt) {
