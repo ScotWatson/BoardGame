@@ -54,12 +54,13 @@ class AsyncMessageRequest {
     const { messageHandler, port } = args;
     this.#mapPendingRequests = new Map();
     this.#port = port;
+    let that = this;
     messageHandler.addHandler({
       action: "request",
       handler: async function (evt) {
         const messageId = evt.data.messageId;
         try {
-          const value = await this.requestHandler(evt);
+          const value = await that.requestHandler(evt);
           evt.target.postMessage({
             action: "response",
             messageId,
@@ -78,11 +79,11 @@ class AsyncMessageRequest {
       action: "response",
       handler: async function (evt) {
         const messageId = evt.data.messageId;
-        const handler = this.#mapPendingRequests.get(messageId);
+        const handler = that.#mapPendingRequests.get(messageId);
         if (handler) {
           handler.resolve(evt.data.value);
         } else {
-          this.unpairedResponseHandler(evt);
+          that.unpairedResponseHandler(evt);
         }
       }
     });
@@ -90,11 +91,11 @@ class AsyncMessageRequest {
       action: "reject",
       handler: async function (evt) {
         const messageId = evt.data.messageId;
-        const handler = this.#mapPendingRequests.get(messageId);
+        const handler = that.#mapPendingRequests.get(messageId);
         if (handler) {
           handler.reject(evt.data.error);
         } else {
-          this.unpairedResponseHandler(evt);
+          that.unpairedResponseHandler(evt);
         }
       }
     });
