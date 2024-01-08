@@ -809,13 +809,14 @@ function start( [ evtWindow ] ) {
       lblNewGameTitle.appendChild(inpNewGameTitle);
       inpNewGameTitle.type = "text";
       inpNewGameTitle.style = "width:80%;height:100%;";
-      async function getOption(optionId, objGeneralInfo.options) {
+      async function getOption(optionId) {
         const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
         const requestGetOption = createRequestGET(endpointGetOption);
         const responseGetOption = await fetch(request);
         return await responseGetOption.json();
       }
-      const newGameOptions = new Options(getOption);
+      console.log(objGeneralInfo);
+      const newGameOptions = new Options(getOption, objGeneralInfo.options);
       const divNewGameOptions = newGameOptions.element;
       divNewGame.appendChild(divNewGameOptions);
       divNewGameOptions.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
