@@ -120,8 +120,8 @@ class Options {
       switch (option.optionType) {
         case "select": {
           if (option.optionList.length === 0) {
-            const pItem = document.createElement("p");
-            pItem.append(option.description);
+            const spanItem = document.createElement("span");
+            spanItem.append(option.description);
             return pItem;
           } else {
             const details = document.createElement("details");
