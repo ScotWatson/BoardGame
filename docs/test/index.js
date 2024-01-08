@@ -812,7 +812,7 @@ function start( [ evtWindow ] ) {
       async function getOption(optionId) {
         const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
         const requestGetOption = createRequestGET(urlEndpointGetOption);
-        const responseGetOption = await fetch(request);
+        const responseGetOption = await fetch(requestGetOption);
         return await responseGetOption.json();
       }
       console.log(objGeneralInfo);
