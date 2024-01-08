@@ -122,7 +122,7 @@ class Options {
           if (option.optionList.length === 0) {
             const spanItem = document.createElement("span");
             spanItem.append(option.description);
-            return pItem;
+            return spanItem;
           } else {
             const details = document.createElement("details");
             const summary = document.createElement("summary");
