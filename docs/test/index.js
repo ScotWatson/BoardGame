@@ -811,7 +811,7 @@ function start( [ evtWindow ] ) {
       inpNewGameTitle.style = "width:80%;height:100%;";
       async function getOption(optionId) {
         const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
-        const requestGetOption = createRequestGET(endpointGetOption);
+        const requestGetOption = createRequestGET(urlEndpointGetOption);
         const responseGetOption = await fetch(request);
         return await responseGetOption.json();
       }
