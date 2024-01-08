@@ -474,7 +474,7 @@ messageHandlerClientInterface.addHandler({
 messageHandlerTestGameWorker.addHandler({
   action: "ping",
   handler: async function (evt) {
-    evt.source.postMessage({
+    evt.target.postMessage({
       action: "initGameInfo",
     })
     await sendMessage("TestGame Worker Ping Received");
