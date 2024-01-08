@@ -32,9 +32,11 @@ class MessageHandler {
         }
       }
       if (handler.action === data.action) {
+        console.log("handler found");
         handler.handler(evt);
       }
     }
+    console.log("handler not found");
     this.unhandledMessage(evt);
   }
   // default, intended to be overwritten, may be asynchronous
