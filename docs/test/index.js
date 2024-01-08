@@ -119,31 +119,37 @@ class Options {
     function createOption(option) {
       switch (option.optionType) {
         case "select": {
-          const details = document.createElement("details");
-          const summary = document.createElement("summary");
-          summary.append(option.description);
-          details.appendChild(summary);
-          details.addEventListener("toggle", function () {
-            if (details.open) {
-              if (details.children.length === 1) {
-                (async function () {
-                  for (const optionId of option.optionList) {
-                    const pItem = document.createElement("p");
-                    pItem.style.display = "flex";
-                    pItem.style.alignItems = "baseline";
-                    const select = document.createElement("input");
-                    select.type = "checkbox";
-                    pItem.appendChild(select);
-                    const newOption = await getOption(optionId);
-                    const newOptionControl = createOption(newOption);
-                    pItem.appendChild(newOptionControl);
-                    details.appendChild(pItem);
-                  }
-                })();
+          if (option.optionList.length === 0) {
+            const pItem = document.createElement("p");
+            pItem.append(option.description);
+            return pItem;
+          } else {
+            const details = document.createElement("details");
+            const summary = document.createElement("summary");
+            summary.append(option.description);
+            details.appendChild(summary);
+            details.addEventListener("toggle", function () {
+              if (details.open) {
+                if (details.children.length === 1) {
+                  (async function () {
+                    for (const optionId of option.optionList) {
+                      const pItem = document.createElement("p");
+                      pItem.style.display = "flex";
+                      pItem.style.alignItems = "baseline";
+                      const select = document.createElement("input");
+                      select.type = "checkbox";
+                      pItem.appendChild(select);
+                      const newOption = await getOption(optionId);
+                      const newOptionControl = createOption(newOption);
+                      pItem.appendChild(newOptionControl);
+                      details.appendChild(pItem);
+                    }
+                  })();
+                }
               }
-            }
-          });
-          return details;
+            });
+            return details;
+          }
         }
         case "range": {
           const label = document.createElement("label");
