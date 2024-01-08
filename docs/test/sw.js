@@ -481,7 +481,7 @@ messageHandlerTestGameWorker.addHandler({
   action: "setGameInfo",
   handler: async function (evt) {
     const { name, description, options } = evt.data.info;
-    const options = mapOptions.get(options);
+    options = mapOptions.get(options);
     objInfo = { name, description, options };
     await sendMessage(objInfo);
   },
