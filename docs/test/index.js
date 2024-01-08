@@ -170,7 +170,7 @@ class Options {
                 if (elem.type === "summary") {
                   continue;
                 }
-                const action = item.getAction();
+                const action = elem.getAction();
                 if (action === null) {
                   continue;
                 }
