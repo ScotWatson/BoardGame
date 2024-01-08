@@ -22,7 +22,9 @@ class MessageHandler {
     }
   }
   #mainHandler(evt) {
+    console.log(this.#arrActionHandlers);
     const data = evt.data;
+    console.log(data.action);
     for (const handler of this.#arrActionHandlers) {
       if (typeof handler.action === "function") {
         if (handler.action(data.action)) {
