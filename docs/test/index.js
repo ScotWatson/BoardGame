@@ -124,8 +124,8 @@ class Options {
           summary.append(option.description);
           details.appendChild(summary);
           details.addEventListener("toggle", function () {
-            if (optionControl.open) {
-              if (optionControl.children.length === 1) {
+            if (details.open) {
+              if (details.children.length === 1) {
                 (async function () {
                   for (const optionId of option.optionList) {
                     const pItem = document.createElement("p");
