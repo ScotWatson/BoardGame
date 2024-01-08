@@ -105,7 +105,7 @@ class AsyncMessageRequest {
     return new Promise(function (resolve, reject) {
       const messageId = self.crypto.randomUUID();
       that.#mapPendingRequests.set(messageId, { resolve, reject } );
-      port.postMessage({
+      that.port.postMessage({
         action: "request",
         messageId: messageId,
         data: data,
