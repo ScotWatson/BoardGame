@@ -22,22 +22,23 @@ class MessageHandler {
     }
   }
   #mainHandler(evt) {
-    console.log(this.#arrActionHandlers);
     const data = evt.data;
-    console.log(data.action);
+    let handled = false;
     for (const handler of this.#arrActionHandlers) {
       if (typeof handler.action === "function") {
         if (handler.action(data.action)) {
           handler.handler(evt);
+          handled = true;
         }
       }
       if (handler.action === data.action) {
-        console.log("handler found");
         handler.handler(evt);
+        handled = true;
       }
     }
-    console.log("handler not found");
-    this.unhandledMessage(evt);
+    if (!handled) {
+      this.unhandledMessage(evt);
+    }
   }
   // default, intended to be overwritten, may be asynchronous
   unhandledMessage(evt) {
