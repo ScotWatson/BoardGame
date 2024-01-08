@@ -235,15 +235,7 @@ class Options {
     return this.#elemMain;
   }
   createAction() {
-    {
-      optionId,
-      value: 0,
-    }
-    {
-      optionId,
-      value: "",
-    }
-    
+    return this.#rootMain.firstChild.createAction();
   }
 }
 
