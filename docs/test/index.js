@@ -152,7 +152,7 @@ class Options {
                       const newOptionControl = createOption(newOption);
                       pItem.appendChild(newOptionControl);
                       pItem.getAction = function () {
-                        if (select.value) {
+                        if (select.checked) {
                           return newOptionControl.createAction();
                         } else {
                           return null;
