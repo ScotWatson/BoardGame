@@ -26,9 +26,10 @@ let workerTestGame = null;
 const urlSelf = new URL(self.location);
 const urlServiceWorker = new URL("./sw.js", urlSelf);
 const urlServiceWorkerScope = new URL("./", urlSelf);
-const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
+let registration = null;
+navigator.serviceWorker.register(urlServiceWorker.href, {
   scope: urlServiceWorkerScope.href,
-});
+}).then((value) => { registration = value });
 const promiseControllerConnected = new Promise(function (resolve, reject) {
   if (window.navigator.serviceWorker.controller !== null) {
     resolve();
