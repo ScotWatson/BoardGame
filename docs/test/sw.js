@@ -77,7 +77,7 @@ function removeOption(id, nested) {
   if (nested) {
     const thisOption = mapOptions.get(id);
     for (const option of thisOption.options) {
-      removeOption(option.id, true);
+      removeOption(option.optionId, true);
     }
   }
   mapOptions.delete(id);
@@ -446,7 +446,7 @@ messageHandlerServerInterface.addHandler({
       switch (data.action) {
         case "addOption": {
           addOption(data.option);
-          return data.option.id;
+          return data.option.optionId;
         }
         default: {
           throw new Error("Not a configured action");
