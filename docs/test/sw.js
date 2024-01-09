@@ -69,7 +69,7 @@ function removeGame(id) {
 
 const mapOptions = new Map();
 function addOption(objOption) {
-  objOption.id = self.crypto.randomUUID();
+  objOption.optionId = self.crypto.randomUUID();
   mapOptions.set(objOption.id, objOption);
   return objOption;
 }
