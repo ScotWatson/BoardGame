@@ -24,8 +24,8 @@ const asyncWindow = new Promise(function (resolve, reject) {
 let workerTestGame = null;
 
 const urlSelf = new URL(self.location);
-const urlServiceWorker = new URL("./sw.js", urlSelf);
-const urlServiceWorkerScope = new URL("./", urlSelf);
+const urlServiceWorker = new URL("../sw.js", urlSelf);
+const urlServiceWorkerScope = new URL("../", urlSelf);
 let registration = null;
 navigator.serviceWorker.register(urlServiceWorker.href, {
   scope: urlServiceWorkerScope.href,
