@@ -137,6 +137,7 @@ class Options {
             summary.append(option.description);
             details.appendChild(summary);
             details.addEventListener("toggle", function () {
+              console.log(option);
               if (details.open) {
                 if (details.childNodes.length === 1) {
                   (async function () {
