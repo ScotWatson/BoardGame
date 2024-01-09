@@ -167,7 +167,7 @@ class Options {
               const optionId = option.optionId;
               const options = [];
               for (const elem of details.childNodes) {
-                if (elem.tagName === "summary") {
+                if (elem.tagName === "SUMMARY") {
                   continue;
                 }
                 console.log(elem);
