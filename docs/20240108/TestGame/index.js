@@ -23,6 +23,12 @@ const asyncWindow = new Promise(function (resolve, reject) {
 
 let workerTestGame = null;
 
+const urlSelf = new URL(self.location);
+const urlServiceWorker = new URL("./sw.js", urlSelf);
+const urlServiceWorkerScope = new URL("./", urlSelf);
+const registration = await navigator.serviceWorker.register(urlServiceWorker.href, {
+  scope: urlServiceWorkerScope.href,
+});
 const promiseControllerConnected = new Promise(function (resolve, reject) {
   if (window.navigator.serviceWorker.controller !== null) {
     resolve();
