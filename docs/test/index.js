@@ -3,8 +3,6 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-importScripts("./ui.js");
-
 const initPageTime = performance.now();
 
 const asyncWindow = new Promise(function (resolve, reject) {
@@ -13,9 +11,11 @@ const asyncWindow = new Promise(function (resolve, reject) {
   });
 });
 
+const asyncUI = await import("./ui.mjs");
+
 (async function () {
   try {
-    const modules = await Promise.all( [ asyncWindow ] );
+    const modules = await Promise.all( [ asyncWindow, asyncUI ] );
     start(modules);
   } catch (e) {
     console.error(e);
@@ -60,7 +60,7 @@ function createRequestPOST(endpoint, body) {
   });
 }
 
-function start( [ evtWindow ] ) {
+function start( [ evtWindow, UI ] ) {
   try {
     // Create full window div for full control. Height must be resized by JS.
     document.body.backgroundColor = "black";
@@ -95,7 +95,7 @@ function start( [ evtWindow ] ) {
     let token = "";
     let username = "";
     // Create navigation control
-    const myNav = new AppNavigation();
+    const myNav = new UI.AppNavigation();
     divMain.appendChild(myNav.element);
     myNav.element.style.width = "100%";
     myNav.element.style.height = "100%";
@@ -136,7 +136,7 @@ function start( [ evtWindow ] ) {
           title: objInfo.name,
           shortTitle: objInfo.name,
         });
-        const menu = new MenuTiles();
+        const menu = new UI.MenuTiles();
         divStart.appendChild(menu.element);
         menu.element.style.width = "100%";
         menu.element.style.height = "100%";
@@ -300,7 +300,7 @@ function start( [ evtWindow ] ) {
       lblMyGames.appendChild(inpMyGames);
       inpMyGames.type = "checkbox";
       lblMyGames.appendChild(document.createTextNode("My Games Only"));
-      const gameMenu = new MenuTiles();
+      const gameMenu = new UI.MenuTiles();
       const divGameList = gameMenu.element;
       divGameSelect.appendChild(divGameList);
       divGameList.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;"
@@ -370,7 +370,7 @@ function start( [ evtWindow ] ) {
       const pGameTitle = document.createElement("p");
       divGameInfo.appendChild(pGameTitle);
       pGameTitle.style="display:block;position:absolute;left:0%;top:0%;width:100%;height:10%;";
-      const playerMenu = new MenuTiles();
+      const playerMenu = new UI.MenuTiles();
       const divPlayerList = playerMenu.element
       divGameInfo.appendChild(divPlayerList);
       divPlayerList.style="display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
@@ -491,7 +491,7 @@ function start( [ evtWindow ] ) {
         return await responseGetOption.json();
       }
       console.log(objGeneralInfo);
-      const newGameOptions = new Options(getOption, objGeneralInfo.options);
+      const newGameOptions = new UI.Options(getOption, objGeneralInfo.options);
       const divNewGameOptions = newGameOptions.element;
       divNewGame.appendChild(divNewGameOptions);
       divNewGameOptions.style = "display:block;position:absolute;left:0%;top:10%;width:100%;height:70%;";
