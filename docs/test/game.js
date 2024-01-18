@@ -62,11 +62,34 @@ function createRequestPOST(endpoint, body) {
 
 function start() {
   try {
+    // Get initialization info
     const urlSelf = new URL(self.location);
     const url = urlSelf.searchParams("url");
     const gameId = urlSelf.searchParams("gameId");
     const token = urlSelf.searchParams("token");
-    const nav = new AppNavigation();
+    // Create full window div for full control. Height must be resized by JS.
+    document.body.backgroundColor = "black";
+    document.body.margin = "0px";
+    const divMain = document.createElement("div");
+    document.body.appendChild(divMain);
+    divMain.style.width = "100%";
+    divMain.style.overflow = "hidden hidden";
+    window.addEventListener("resize", function (evt) {
+      divMain.style.display = "none";
+      let timer;
+      clearTimeout(timer);
+      timer = setTimeout(setMainHeight, 200);
+    });
+    function setMainHeight() {
+      divMain.style.display = "block";
+      divMain.style.height = window.innerHeight + "px";
+    }
+    setMainHeight();
+    // Create navigation control
+    const myNav = new AppNavigation();
+    divMain.appendChild(myNav.element);
+    myNav.element.style.width = "100%";
+    myNav.element.style.height = "100%";
   } catch (e) {
     console.error(e);
   }
