@@ -3,7 +3,7 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-importScripts("ui.js");
+importScripts("./ui.js");
 
 const initPageTime = performance.now();
 
@@ -423,7 +423,13 @@ function start( [ evtWindow ] ) {
         })();
       });
       btnOpenGame.addEventListener("click", function (evt) {
-        alert("This function is yet to be implemented.");
+        const paramsGameWindow = new URLSearchParams([
+          ["url", urlBase.href],
+          ["gameId", strGameId],
+          ["token", token],
+        ]);
+        const urlGameWindow = new URL("./game.html?" + paramsGameWindow);
+        window.open(urlGameWindow.href);
       });
       btnPlayerListRefresh.addEventListener("click", function (evt) {
         populatePlayerList(result());
