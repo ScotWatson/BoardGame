@@ -64,9 +64,11 @@ function start() {
   try {
     // Get initialization info
     const urlSelf = new URL(self.location);
-    const url = urlSelf.searchParams("url");
+    const urlServer = urlSelf.searchParams("url");
     const gameId = urlSelf.searchParams("gameId");
     const token = urlSelf.searchParams("token");
+    const urlEndpointGameInfo = new URL("./game/" + gameId + "/info", urlServer.href);
+    const requestGameInfo = createRequestGET(urlEndpointGameInfo.href);
     // Create full window div for full control. Height must be resized by JS.
     document.body.backgroundColor = "black";
     document.body.margin = "0px";
@@ -90,6 +92,50 @@ function start() {
     divMain.appendChild(myNav.element);
     myNav.element.style.width = "100%";
     myNav.element.style.height = "100%";
+    (async function () {
+      const responseGameInfo = await fetch(requestGameInfo);
+      const objGameInfo = await responseGameInfo.json();
+      createMenu(objGameInfo.title);
+    })();
+    function createMenu(title) {
+      const divStart = myNav.addLayout({
+        title: title,
+        shortTitle: title,
+      });
+      const menu = new MenuTiles();
+      divStart.appendChild(menu.element);
+      menu.element.style.width = "100%";
+      menu.element.style.height = "100%";
+      menu.addTiles([
+        {
+          text: "Maps",
+          handler: function () {
+            drawMaps();
+          },
+        },
+        {
+          text: "Units",
+          handler: function () {
+            drawUnits();
+          },
+        },
+        {
+          text: "Options",
+          handler: function () {
+            drawOptions();
+          },
+        }
+      ]);
+    }
+    function drawMaps() {
+      
+    }
+    function drawUnits() {
+      
+    }
+    function drawOptions() {
+      
+    }
   } catch (e) {
     console.error(e);
   }
