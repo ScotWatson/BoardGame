@@ -62,6 +62,7 @@ function createRequestPOST(endpoint, body) {
 
 function start( [ evtWindow, UI ] ) {
   try {
+    console.log(UI);
     // Create full window div for full control. Height must be resized by JS.
     document.body.backgroundColor = "black";
     document.body.margin = "0px";
