@@ -11,7 +11,7 @@ const asyncWindow = new Promise(function (resolve, reject) {
   });
 });
 
-const asyncUI = await import("./ui.mjs");
+const asyncUI = import("./ui.mjs");
 
 (async function () {
   try {
