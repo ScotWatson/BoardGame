@@ -3,8 +3,6 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-importScripts("./ui.js");
-
 const initPageTime = performance.now();
 
 const asyncWindow = new Promise(function (resolve, reject) {
@@ -13,9 +11,11 @@ const asyncWindow = new Promise(function (resolve, reject) {
   });
 });
 
+const asyncUI = await import("./ui.mjs");
+
 (async function () {
   try {
-    const modules = await Promise.all( [ asyncWindow ] );
+    const modules = await Promise.all( [ asyncWindow, asyncUI ] );
     start(modules);
   } catch (e) {
     console.error(e);
@@ -60,7 +60,7 @@ function createRequestPOST(endpoint, body) {
   });
 }
 
-function start() {
+function start( [ evtWindow, UI] ) {
   try {
     // Get initialization info
     const urlSelf = new URL(self.location);
@@ -88,7 +88,7 @@ function start() {
     }
     setMainHeight();
     // Create navigation control
-    const myNav = new AppNavigation();
+    const myNav = new UI.AppNavigation();
     divMain.appendChild(myNav.element);
     myNav.element.style.width = "100%";
     myNav.element.style.height = "100%";
@@ -102,7 +102,7 @@ function start() {
         title: title,
         shortTitle: title,
       });
-      const menu = new MenuTiles();
+      const menu = new UI.MenuTiles();
       divStart.appendChild(menu.element);
       menu.element.style.width = "100%";
       menu.element.style.height = "100%";
