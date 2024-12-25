@@ -7,7 +7,7 @@ const selfUrl = new URL(self.location);
 
 let thisRedirectUri;
 
-export async function setup(responseType, authorizationUri, tokenUri, clientId) {
+export function setup(responseType, authorizationUri, tokenUri, clientId) {
   self.sessionStorage.setItem(redirectUri + "_responseType") = responseType;
   self.sessionStorage.setItem(redirectUri + "_authorizationUri") = authorizationUri;
   self.sessionStorage.setItem(redirectUri + "_tokenUri") = tokenUri;
