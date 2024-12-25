@@ -33,7 +33,7 @@ async function login( [ evtWindow, UI, Oauth ] ) {
   const authorizationUri = selfUrl.searchParams.get("authorization_uri");
   const tokenUri = selfUrl.searchParams.get("token_uri");
   const clientId = selfUrl.searchParams.get("client_id");
-  if ((responseType !== null) {
+  if (responseType !== null) {
     if (authorizationUri === null) && (tokenUri === null) && (clientId === null)) {
       throw new Error("Missing Required Information to begin login.");
     }
