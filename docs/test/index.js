@@ -33,10 +33,13 @@ async function login( [ evtWindow, UI, Oauth ] ) {
   const authorizationUri = selfUrl.searchParams.get("authorization_uri");
   const tokenUri = selfUrl.searchParams.get("token_uri");
   const clientId = selfUrl.searchParams.get("client_id");
-  if ((responseType === null) && (authorizationUri === null) && (tokenUri === null) && (clientId === null)) {
-    throw new Error("Missing Required Information to begin login.");
+  if ((responseType !== null) {
+    if (authorizationUri === null) && (tokenUri === null) && (clientId === null)) {
+      throw new Error("Missing Required Information to begin login.");
+    }
+    Oauth.setup(responseType, new URL(authorizationUri), new URL(tokenUri), clientId);
   }
-  await Oauth.login(responseType, new URL(authorizationUri), new URL(tokenUri), clientId, new URL(redirectUri));
+  await Oauth.login(new URL(redirectUri));
   return;
 }
 function start( [ evtWindow, UI, Oauth ] ) {
