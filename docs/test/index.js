@@ -33,11 +33,13 @@ async function login( [ evtWindow, UI, Oauth ] ) {
   const authorizationUri = selfUrl.searchParams.get("authorization_uri");
   const tokenUri = selfUrl.searchParams.get("token_uri");
   const clientId = selfUrl.searchParams.get("client_id");
+  const baseUri = selfUrl.searchParams.get("base_uri");
   if (responseType !== null) {
-    if ((authorizationUri === null) && (tokenUri === null) && (clientId === null)) {
+    if ((authorizationUri === null) && (tokenUri === null) && (clientId === null) && (baseUri === null)) {
       throw new Error("Missing Required Information to begin login.");
     }
     Oauth.setup(responseType, new URL(authorizationUri), new URL(tokenUri), clientId);
+    self.sessionStorage.setItem(redirectUri + "_baseUri", baseUri);
   }
   await Oauth.login(new URL(redirectUri));
   return;
@@ -108,7 +110,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       console.log(evt.data);
     });
     navigator.serviceWorker.startMessages();
-    let hrefBase = urlSelf.searchParams.get("url");
+    let hrefBase = self.sessionStorage.getItem(redirectUri + "_baseUri");
     let urlBase = null;
     let objGeneralInfo;
     let token = "";
