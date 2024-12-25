@@ -68,7 +68,6 @@ export async function login(responseType, authorizationUri, tokenUri, clientId, 
     default:
       throw new Error("Invalid response type");
   }
-  }
 }
 export function newRequestWithToken(url, options) {
   if (isTokenExpired()) {
