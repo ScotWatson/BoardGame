@@ -8,10 +8,10 @@ const selfUrl = new URL(self.location);
 let thisRedirectUri;
 
 export function setup(responseType, authorizationUri, tokenUri, clientId) {
-  self.sessionStorage.setItem(redirectUri + "_responseType") = responseType;
-  self.sessionStorage.setItem(redirectUri + "_authorizationUri") = authorizationUri;
-  self.sessionStorage.setItem(redirectUri + "_tokenUri") = tokenUri;
-  self.sessionStorage.setItem(redirectUri + "_clientId") = clientId;
+  self.sessionStorage.setItem(redirectUri + "_responseType", responseType);
+  self.sessionStorage.setItem(redirectUri + "_authorizationUri", authorizationUri);
+  self.sessionStorage.setItem(redirectUri + "_tokenUri", tokenUri);
+  self.sessionStorage.setItem(redirectUri + "_clientId", clientId);
 }
 export async function login(redirectUri) {
   const responseType = self.sessionStorage.getItem(redirectUri + "_responseType");
