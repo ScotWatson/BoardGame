@@ -29,7 +29,7 @@ const asyncOauth = import("./oauth2.mjs");
 const redirectUri = new URL("https://scotwatson.github.io/BoardGame/test/");
 
 async function login( [ evtWindow, UI, Oauth ] ) {
-  const response_type = selfUrl.searchParams.get("response_type");
+  const responseType = selfUrl.searchParams.get("response_type");
   const authorizationUri = selfUrl.searchParams.get("authorization_uri");
   const tokenUri = selfUrl.searchParams.get("token_uri");
   const clientId = selfUrl.searchParams.get("client_id");
