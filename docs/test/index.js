@@ -4,6 +4,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 const initPageTime = performance.now();
+const selfUrl = new URL(self.location);
 
 const asyncWindow = new Promise(function (resolve, reject) {
   window.addEventListener("load", function (evt) {
