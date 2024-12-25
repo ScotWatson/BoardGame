@@ -12,10 +12,12 @@ const asyncWindow = new Promise(function (resolve, reject) {
 });
 
 const asyncUI = import("./ui.mjs");
+const asyncOauth = import("./oauth2.mjs");
 
 (async function () {
   try {
-    const modules = await Promise.all( [ asyncWindow, asyncUI ] );
+    const modules = await Promise.all( [ asyncWindow, asyncUI, asyncOauth ] );
+    await login(modules);
     start(modules);
   } catch (e) {
     console.error(e);
@@ -23,44 +25,56 @@ const asyncUI = import("./ui.mjs");
   }
 })();
 
-// Creates a GET Request to the specified endpoint
-function createRequestGET(endpoint) {
-  return new self.Request(endpoint, {
-    method: "GET",
-    headers: [],
-    mode: "cors",
-    credentials: "same-origin",
-    cache: "default",
-    redirect: "follow",
-    referrer: "about:client",
-    referrerPolicy: "",
-    integrity: "",
-    keepalive: "",
-    signal: null,
-    priority: "auto",
-  });
-}
+const redirectUri = new URL("https://scotwatson.github.io/BoardGame/test/");
 
-// Creates a POST Request to the specified endpoint w/ the specified body
-function createRequestPOST(endpoint, body) {
-  return new self.Request(endpoint, {
-    method: "POST",
-    headers: [],
-    mode: "cors",
-    body: body,
-    credentials: "same-origin",
-    cache: "default",
-    redirect: "follow",
-    referrer: "about:client",
-    referrerPolicy: "",
-    integrity: "",
-    keepalive: "",
-    signal: null,
-    priority: "auto",
-  });
+async function login( [ evtWindow, UI, Oauth ] ) {
+  const response_type = selfUrl.searchParams.get("response_type");
+  const authorizationUri = selfUrl.searchParams.get("authorization_uri");
+  const tokenUri = selfUrl.searchParams.get("token_uri");
+  const clientId = selfUrl.searchParams.get("client_id");
+  if ((response_type === null) && (authorizationUri === null) && (tokenUri === null) && (clientId === null)) {
+    throw new Error("Missing Required Information to begin login.");
+  }
+  await Oauth.login(responseType, new URL(authorizationUri), new URL(tokenUri), clientId, new URL(redirectUri));
+  return;
 }
-
-function start( [ evtWindow, UI ] ) {
+function start( [ evtWindow, UI, Oauth ] ) {
+  // Creates a GET Request to the specified endpoint
+  function createRequestGET(endpoint) {
+    return Oauth.newRequestWithToken(endpoint, {
+      method: "GET",
+      headers: new Headers(),
+      mode: "cors",
+      credentials: "same-origin",
+      cache: "default",
+      redirect: "follow",
+      referrer: "about:client",
+      referrerPolicy: "",
+      integrity: "",
+      keepalive: "",
+      signal: null,
+      priority: "auto",
+    });
+  }
+  
+  // Creates a POST Request to the specified endpoint w/ the specified body
+  function createRequestPOST(endpoint, body) {
+    return Oauth.newRequestWithToken(endpoint, {
+      method: "POST",
+      headers: new Headers(),
+      mode: "cors",
+      body: body,
+      credentials: "same-origin",
+      cache: "default",
+      redirect: "follow",
+      referrer: "about:client",
+      referrerPolicy: "",
+      integrity: "",
+      keepalive: "",
+      signal: null,
+      priority: "auto",
+    });
+  }
   try {
     console.log(UI);
     // Create full window div for full control. Height must be resized by JS.
