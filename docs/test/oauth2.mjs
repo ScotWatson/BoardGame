@@ -14,10 +14,10 @@ export function setup(responseType, authorizationUri, tokenUri, clientId) {
   self.sessionStorage.setItem(redirectUri + "_clientId", clientId);
 }
 export async function login(redirectUri) {
-  const responseType = self.sessionStorage.getItem(redirectUri + "_responseType");
-  const thisauthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
-  const tokenUri = self.sessionStorage.getItem(redirectUri + "_tokenUri");
-  const clientId = self.sessionStorage.getItem(redirectUri + "_clientId");
+  const thisResponseType = self.sessionStorage.getItem(redirectUri + "_responseType");
+  const thisAuthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
+  const thisTokenUri = self.sessionStorage.getItem(redirectUri + "_tokenUri");
+  const thisClientId = self.sessionStorage.getItem(redirectUri + "_clientId");
   thisRedirectUri = redirectUri;
   switch (thisResponseType) {
     case "token": {
@@ -92,10 +92,10 @@ function isTokenExpired() {
   return (new Date() >= expiresAt);
 }
 async function performRefreshToken() {
-  const responseType = self.sessionStorage.getItem(redirectUri + "_responseType");
-  const thisauthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
-  const tokenUri = self.sessionStorage.getItem(redirectUri + "_tokenUri");
-  const clientId = self.sessionStorage.getItem(redirectUri + "_clientId");
+  const thisResponseType = self.sessionStorage.getItem(redirectUri + "_responseType");
+  const thisAuthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
+  const thisTokenUri = self.sessionStorage.getItem(redirectUri + "_tokenUri");
+  const thisClientId = self.sessionStorage.getItem(redirectUri + "_clientId");
   self.sessionStorage.removeItem(thisRedirectUri + "_accessToken");
   const refreshToken = self.sessionStorage.getItem(thisRedirectUri + "_refreshToken");
   const refreshParameters = new URLSearchParams();
