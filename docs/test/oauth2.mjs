@@ -58,12 +58,7 @@ export async function login(redirectUri) {
       } else if (self.sessionStorage.getItem(thisRedirectUri + "_accessToken") !== null) {
         return;
       } else {
-        const authorizationQuery = new URLSearchParams();
-        authorizationQuery.append("response_type", "code");
-        authorizationQuery.append("client_id", thisClientId);
-        authorizationQuery.append("redirect_uri", thisRedirectUri);
-        const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
-        self.location = authorizationLocation.toString();
+        goToLogin();
         throw new Error("Redirecting to authorization endpoint...");
       }
     }
@@ -71,6 +66,14 @@ export async function login(redirectUri) {
     default:
       throw new Error("Invalid response type");
   }
+}
+function goToLogin() {
+    const authorizationQuery = new URLSearchParams();
+    authorizationQuery.append("response_type", "code");
+    authorizationQuery.append("client_id", thisClientId);
+    authorizationQuery.append("redirect_uri", thisRedirectUri);
+    const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
+    self.location = authorizationLocation.toString();
 }
 export function newRequestWithToken(url, options) {
   if (isTokenExpired()) {
@@ -123,6 +126,7 @@ async function performRefreshToken() {
     }
     self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * refreshResponse.expires_in);
   } else if (refreshResponse.status === 400) {
+    goToLogin();
     throw new Error("error: " + refreshResponseParsed.error + "\nerror description: " + refreshResponseParsed.error_description + "\nerror URI: " + refreshResponseParsed.error_uri);
   } else {
     throw new Error("Unexpected response to token refresh request");
