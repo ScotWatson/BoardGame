@@ -142,8 +142,8 @@ function start( [ evtWindow, UI, Oauth ] ) {
       urlBase = new URL(hrefBase);
       // Send request for info
       const urlEndpointInfo = new URL("./info", urlBase.href);
-      const reqInfo = await createRequestGET(urlEndpointInfo);
       try {
+        const reqInfo = await createRequestGET(urlEndpointInfo);
         const respInfo = await Oauth.fetchWithToken(reqInfo);
         if (respInfo.status !== 200) {
           throw "Failed to get info.";
@@ -413,9 +413,9 @@ function start( [ evtWindow, UI, Oauth ] ) {
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinGame.addEventListener("click", function (evt) {
         const urlEndpointJoinGame = new URL("./game/" + strGameId + "/join/" + token, urlBase.href);
-        const reqJoinGame = await createRequestGET(urlEndpointJoinGame);
         (async function () {
           try {
+            const reqJoinGame = await createRequestGET(urlEndpointJoinGame);
             const response = await Oauth.fetchWithToken(reqJoinGame);
             if (response.status !== 200) {
               alert("Failed to join");
@@ -429,9 +429,9 @@ function start( [ evtWindow, UI, Oauth ] ) {
       });
       btnUnjoinGame.addEventListener("click", function (evt) {
         const urlEndpointUnjoinGame = new URL("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
-        const reqUnjoinGame = await createRequestGET(urlEndpointUnjoinGame);
         (async function () {
           try {
+            const reqUnjoinGame = await createRequestGET(urlEndpointUnjoinGame);
             const response = await Oauth.fetchWithToken(reqUnjoinGame);
             if (response.status !== 200) {
               alert("Failed to unjoin");
@@ -532,9 +532,9 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonNewGame = JSON.stringify(objNewGame);
         const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
         const urlEndpointNewGame = new URL("./game/new/" + token, urlBase.href);
-        const reqNewGame = await createRequestPOST(urlEndpointNewGame.href, blobNewGame);
         (async function () {
           try {
+            const reqNewGame = await createRequestPOST(urlEndpointNewGame.href, blobNewGame);
             const response = await Oauth.fetchWithToken(reqNewGame);
             if (response.status !== 200) {
               throw "Failed to create new game";
