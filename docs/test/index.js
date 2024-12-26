@@ -44,7 +44,7 @@ async function login( [ evtWindow, UI, Oauth ] ) {
   await Oauth.login(new URL(redirectUri));
   return;
 }
-function start( [ evtWindow, UI, Oauth ] ) {
+async function start( [ evtWindow, UI, Oauth ] ) {
   // Creates a GET Request to the specified endpoint
   async function createRequestGET(endpoint) {
     return await Oauth.newRequestWithToken(endpoint, {
