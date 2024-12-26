@@ -122,12 +122,13 @@ export async function fetchRequestWithToken(url, options) {
     options.headers = new Headers();
     options.headers.append("Authorization", "Bearer " + access_token);
   }
-  return new Request(url, options);
+  let request = new Request(url, options);
   let response = await fetch(request);
   if (response.status === 401) {
     await performRefreshToken();
     access_token = self.sessionStorage.getItem(thisRedirectUri + "_accessToken");
     options.headers.set("Authorization", "Bearer " + access_token);
+    request = new Request(url, options);
     response = await fetch(request);
   }
   return response;
