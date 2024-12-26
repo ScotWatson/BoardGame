@@ -27,12 +27,8 @@ export async function login(redirectUri) {
         self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * params.get("expires_in"));
         self.sessionStorage.removeItem(thisRedirectUri + "_refreshToken");
       } else {
-        const authorizationQuery = new URLSearchParams();
-        authorizationQuery.append("response_type", "token");
-        authorizationQuery.append("client_id", thisClientId);
-        authorizationQuery.append("redirect_uri", thisRedirectUri);
-        const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
-        self.location = authorizationLocation.toString();
+        goToLogin();
+        throw new Error("Redirecting to authorization endpoint...");
       }
     }
       break;
@@ -57,8 +53,10 @@ export async function login(redirectUri) {
             self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * tokenResponseParsed.expires_in);
           } else if (tokenResponse.status === 400) {
             goToLogin();
+            throw new Error("Bad authorization code. Redirecting to authorization endpoint...");
           } else {
             goToLogin();
+            throw new Error("Unable to continue. Redirecting to authorization endpoint...");
           }
         })();
       } else if (self.sessionStorage.getItem(thisRedirectUri + "_accessToken") !== null) {
