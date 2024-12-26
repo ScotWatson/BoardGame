@@ -46,8 +46,8 @@ async function login( [ evtWindow, UI, Oauth ] ) {
 }
 function start( [ evtWindow, UI, Oauth ] ) {
   // Creates a GET Request to the specified endpoint
-  function createRequestGET(endpoint) {
-    return Oauth.newRequestWithToken(endpoint, {
+  async function createRequestGET(endpoint) {
+    return await Oauth.newRequestWithToken(endpoint, {
       method: "GET",
       headers: new Headers(),
       mode: "cors",
@@ -64,8 +64,8 @@ function start( [ evtWindow, UI, Oauth ] ) {
   }
   
   // Creates a POST Request to the specified endpoint w/ the specified body
-  function createRequestPOST(endpoint, body) {
-    return Oauth.newRequestWithToken(endpoint, {
+  async function createRequestPOST(endpoint, body) {
+    return await Oauth.newRequestWithToken(endpoint, {
       method: "POST",
       headers: new Headers(),
       mode: "cors",
@@ -142,7 +142,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       urlBase = new URL(hrefBase);
       // Send request for info
       const urlEndpointInfo = new URL("./info", urlBase.href);
-      const reqInfo = createRequestGET(urlEndpointInfo);
+      const reqInfo = await createRequestGET(urlEndpointInfo);
       try {
         const respInfo = await Oauth.fetchWithToken(reqInfo);
         if (respInfo.status !== 200) {
@@ -234,7 +234,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonLogin = JSON.stringify(objLogin);
         const blobLogin = new Blob( [ jsonLogin ], { type: "application/json" });
         const urlEndpointLogin = new URL("./user/login", urlBase.href);
-        const reqLogin = createRequestPOST(urlEndpointLogin.href, blobLogin);
+        const reqLogin = await createRequestPOST(urlEndpointLogin.href, blobLogin);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqLogin);
@@ -264,7 +264,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonLogout = JSON.stringify(objLogout);
         const blobLogout = new Blob( [ jsonLogout ], { type: "application/json" });
         const urlEndpointLogout = new URL("./user/logout", urlBase.href);
-        const reqLogout = createRequestPOST(urlEndpointLogout.href, blobLogout);
+        const reqLogout = await createRequestPOST(urlEndpointLogout.href, blobLogout);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqLogout);
@@ -289,7 +289,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
-        const reqNewUser = createRequestPOST(urlEndpointNewUser.href, blobNewUser);
+        const reqNewUser = await createRequestPOST(urlEndpointNewUser.href, blobNewUser);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqNewUser);
@@ -345,12 +345,12 @@ function start( [ evtWindow, UI, Oauth ] ) {
       async function result() {
         try {
           if (inpMyGames.value === true) {
-            const reqMyGames = createRequestGET(urlEndpointMyGames.href);
+            const reqMyGames = await createRequestGET(urlEndpointMyGames.href);
             const respMyGames = await Oauth.fetchWithToken(reqMyGames);
             const arrMyGames = await respMyGames.json();
             if (arrMyGames.length === 0) {
               inpMyGames.value = false;
-              const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+              const reqAllGames = await createRequestGET(urlEndpointAllGames.href);
               const respAllGames = await Oauth.fetchWithToken(reqAllGames);
               const arrAllGames = await respAllGames.json();
               return arrAllGames;
@@ -358,7 +358,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
               return arrMyGames;
             }
           } else {
-            const reqAllGames = createRequestGET(urlEndpointAllGames.href);
+            const reqAllGames = await createRequestGET(urlEndpointAllGames.href);
             const respAllGames = await Oauth.fetchWithToken(reqAllGames);
             const arrAllGames = await respAllGames.json();
             return arrAllGames;
@@ -413,7 +413,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       btnOpenGame.appendChild(document.createTextNode("Open Game"));
       btnJoinGame.addEventListener("click", function (evt) {
         const urlEndpointJoinGame = new URL("./game/" + strGameId + "/join/" + token, urlBase.href);
-        const reqJoinGame = createRequestGET(urlEndpointJoinGame);
+        const reqJoinGame = await createRequestGET(urlEndpointJoinGame);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqJoinGame);
@@ -429,7 +429,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       });
       btnUnjoinGame.addEventListener("click", function (evt) {
         const urlEndpointUnjoinGame = new URL("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
-        const reqUnjoinGame = createRequestGET(urlEndpointUnjoinGame);
+        const reqUnjoinGame = await createRequestGET(urlEndpointUnjoinGame);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqUnjoinGame);
@@ -463,7 +463,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       async function result() {
         try {
           const urlEndpointGameInfo = new URL("./game/" + strGameId + "/info", urlBase.href)
-          const reqGameInfo = createRequestGET(urlEndpointGameInfo.href);
+          const reqGameInfo = await createRequestGET(urlEndpointGameInfo.href);
           const respGameInfo = await Oauth.fetchWithToken(reqGameInfo);
           const objGameInfo = await respGameInfo.json();
           pGameTitle.innerHTML = "";
@@ -507,7 +507,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
       inpNewGameTitle.style = "width:80%;height:100%;";
       async function getOption(optionId) {
         const urlEndpointGetOption = new URL("./option/" + optionId, urlBase.href);
-        const requestGetOption = createRequestGET(urlEndpointGetOption);
+        const requestGetOption = await createRequestGET(urlEndpointGetOption);
         const responseGetOption = await Oauth.fetchWithToken(requestGetOption);
         return await responseGetOption.json();
       }
@@ -532,7 +532,7 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonNewGame = JSON.stringify(objNewGame);
         const blobNewGame = new Blob( [ jsonNewGame ], { type: "application/json" });
         const urlEndpointNewGame = new URL("./game/new/" + token, urlBase.href);
-        const reqNewGame = createRequestPOST(urlEndpointNewGame.href, blobNewGame);
+        const reqNewGame = await createRequestPOST(urlEndpointNewGame.href, blobNewGame);
         (async function () {
           try {
             const response = await Oauth.fetchWithToken(reqNewGame);
