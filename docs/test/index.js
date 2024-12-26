@@ -289,9 +289,9 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonNewUser = JSON.stringify(objNewUser);
         const blobNewUser = new Blob( [ jsonNewUser ], { type: "application/json" });
         const urlEndpointNewUser = new URL("./user/new", urlBase.href);
-        const reqNewUser = await createRequestPOST(urlEndpointNewUser.href, blobNewUser);
         (async function () {
           try {
+            const reqNewUser = await createRequestPOST(urlEndpointNewUser.href, blobNewUser);
             const response = await Oauth.fetchWithToken(reqNewUser);
             if (response.status !== 200) {
               alert("Failed to create user");
