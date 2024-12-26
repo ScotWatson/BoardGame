@@ -50,10 +50,16 @@ export async function login(redirectUri) {
         });
         return (async () => {
           const tokenResponse = await fetch(tokenRequest);
-          const tokenResponseParsed = await tokenResponse.json();
-          self.sessionStorage.setItem(thisRedirectUri + "_accessToken", tokenResponseParsed.access_token);
-          self.sessionStorage.setItem(thisRedirectUri + "_refreshToken", tokenResponseParsed.refresh_token);
-          self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * tokenResponseParsed.expires_in);
+          if (tokenResponse.status === 200) {
+            const tokenResponseParsed = await tokenResponse.json();
+            self.sessionStorage.setItem(thisRedirectUri + "_accessToken", tokenResponseParsed.access_token);
+            self.sessionStorage.setItem(thisRedirectUri + "_refreshToken", tokenResponseParsed.refresh_token);
+            self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * tokenResponseParsed.expires_in);
+          } else if (tokenResponse.status === 400) {
+            goToLogin();
+          } else {
+            goToLogin();
+          }
         })();
       } else if (self.sessionStorage.getItem(thisRedirectUri + "_accessToken") !== null) {
         return;
