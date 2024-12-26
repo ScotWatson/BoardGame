@@ -128,11 +128,12 @@ async function performRefreshToken() {
   const refreshResponse = await fetch(refreshRequest);
   const refreshResponseParsed = await refreshResponse.json();
   if (refreshResponse.status === 200) {
-    self.sessionStorage.setItem(thisRedirectUri + "_accessToken", refreshResponse.access_token);
-    if (refreshResponse.refresh_token) {
-      self.sessionStorage.setItem(thisRedirectUri + "_refreshToken", refreshResponse.refresh_token);
+    console.log("Storing new tokens");
+    self.sessionStorage.setItem(thisRedirectUri + "_accessToken", refreshResponseParsed.access_token);
+    if (refreshResponseParsed.refresh_token) {
+      self.sessionStorage.setItem(thisRedirectUri + "_refreshToken", refreshResponseParsed.refresh_token);
     }
-    self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * refreshResponse.expires_in);
+    self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * refreshResponseParsed.expires_in);
   } else if (refreshResponse.status === 400) {
     goToLogin();
     throw new Error("error: " + refreshResponseParsed.error + "\nerror description: " + refreshResponseParsed.error_description + "\nerror URI: " + refreshResponseParsed.error_uri);
