@@ -44,7 +44,7 @@ async function login( [ evtWindow, UI, Oauth ] ) {
   await Oauth.login(new URL(redirectUri));
   return;
 }
-async function start( [ evtWindow, UI, Oauth ] ) {
+function start( [ evtWindow, UI, Oauth ] ) {
   // Creates a GET Request to the specified endpoint
   async function createRequestGET(endpoint) {
     return await Oauth.newRequestWithToken(endpoint, {
@@ -234,8 +234,8 @@ async function start( [ evtWindow, UI, Oauth ] ) {
         const jsonLogin = JSON.stringify(objLogin);
         const blobLogin = new Blob( [ jsonLogin ], { type: "application/json" });
         const urlEndpointLogin = new URL("./user/login", urlBase.href);
-        const reqLogin = await createRequestPOST(urlEndpointLogin.href, blobLogin);
         (async function () {
+          const reqLogin = await createRequestPOST(urlEndpointLogin.href, blobLogin);
           try {
             const response = await Oauth.fetchWithToken(reqLogin);
             if (response.status !== 200) {
