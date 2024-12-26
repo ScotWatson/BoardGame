@@ -65,7 +65,7 @@ export class Options {
     function createOption(option) {
       switch (option.optionType) {
         case "select": {
-          if (option.optionList.length === 0) {
+          if (option.options.length === 0) {
             const spanItem = document.createElement("span");
             spanItem.append(option.description);
             spanItem.createAction = function () {
@@ -87,7 +87,7 @@ export class Options {
               if (details.open) {
                 if (details.childNodes.length === 1) {
                   (async function () {
-                    for (const optionId of option.optionList) {
+                    for (const optionId of option.options) {
                       const pItem = document.createElement("p");
                       pItem.style.display = "flex";
                       pItem.style.alignItems = "baseline";
