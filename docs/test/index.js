@@ -264,9 +264,9 @@ function start( [ evtWindow, UI, Oauth ] ) {
         const jsonLogout = JSON.stringify(objLogout);
         const blobLogout = new Blob( [ jsonLogout ], { type: "application/json" });
         const urlEndpointLogout = new URL("./user/logout", urlBase.href);
-        const reqLogout = await createRequestPOST(urlEndpointLogout.href, blobLogout);
         (async function () {
           try {
+            const reqLogout = await createRequestPOST(urlEndpointLogout.href, blobLogout);
             const response = await Oauth.fetchWithToken(reqLogout);
             if (response.status !== 200) {
               alert("Failed to logout");
