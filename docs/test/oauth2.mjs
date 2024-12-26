@@ -68,12 +68,16 @@ export async function login(redirectUri) {
   }
 }
 function goToLogin() {
-    const authorizationQuery = new URLSearchParams();
-    authorizationQuery.append("response_type", "code");
-    authorizationQuery.append("client_id", thisClientId);
-    authorizationQuery.append("redirect_uri", thisRedirectUri);
-    const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
-    self.location = authorizationLocation.toString();
+  const thisResponseType = self.sessionStorage.getItem(redirectUri + "_responseType");
+  const thisAuthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
+  const thisTokenUri = self.sessionStorage.getItem(redirectUri + "_tokenUri");
+  const thisClientId = self.sessionStorage.getItem(redirectUri + "_clientId");
+  const authorizationQuery = new URLSearchParams();
+  authorizationQuery.append("response_type", "code");
+  authorizationQuery.append("client_id", thisClientId);
+  authorizationQuery.append("redirect_uri", thisRedirectUri);
+  const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
+  self.location = authorizationLocation.toString();
 }
 export async function newRequestWithToken(url, options) {
   if (isTokenExpired()) {
