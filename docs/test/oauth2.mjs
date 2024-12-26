@@ -111,6 +111,27 @@ export async function fetchWithToken(request) {
   }
   return response;
 }
+export async function fetchRequestWithToken(url, options) {
+  if (isTokenExpired()) {
+    await performRefreshToken();
+  }
+  let access_token = self.sessionStorage.getItem(thisRedirectUri + "_accessToken");
+  if (options.headers) {
+    options.headers.append("Authorization", "Bearer " + access_token);
+  } else {
+    options.headers = new Headers();
+    options.headers.append("Authorization", "Bearer " + access_token);
+  }
+  return new Request(url, options);
+  let response = await fetch(request);
+  if (response.status === 401) {
+    await performRefreshToken();
+    access_token = self.sessionStorage.getItem(thisRedirectUri + "_accessToken");
+    options.headers.set("Authorization", "Bearer " + access_token);
+    response = await fetch(request);
+  }
+  return response;
+}
 async function performRefreshToken() {
   const thisResponseType = self.sessionStorage.getItem(redirectUri + "_responseType");
   const thisAuthorizationUri = self.sessionStorage.getItem(redirectUri + "_authorizationUri");
