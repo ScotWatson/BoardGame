@@ -92,7 +92,7 @@ function isTokenExpired() {
   }
   return (new Date() >= expiresAt);
 }
-async function fetchWithToken(request) {
+export async function fetchWithToken(request) {
   let response = await fetch(request);
   if (response.status === 401) {
     performRefreshToken();
