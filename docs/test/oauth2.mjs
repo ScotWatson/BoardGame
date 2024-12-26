@@ -116,13 +116,13 @@ async function performRefreshToken() {
   });
   const refreshResponse = await fetch(refreshRequest);
   const refreshResponseParsed = await refreshResponse.json();
-  if (refreshResponse.statusCode == 200) {
+  if (refreshResponse.status === 200) {
     self.sessionStorage.setItem(thisRedirectUri + "_accessToken", refreshResponse.access_token);
     if (refreshResponse.refresh_token) {
       self.sessionStorage.setItem(thisRedirectUri + "_refreshToken", refreshResponse.refresh_token);
     }
     self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * refreshResponse.expires_in);
-  } else if (refreshResponse.statusCode == 400) {
+  } else if (refreshResponse.status === 400) {
     throw new Error("error: " + refreshResponseParsed.error + "\nerror description: " + refreshResponseParsed.error_description + "\nerror URI: " + refreshResponseParsed.error_uri);
   } else {
     throw new Error("Unexpected response to token refresh request");
