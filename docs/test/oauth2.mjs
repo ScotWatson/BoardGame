@@ -21,9 +21,10 @@ export async function login(redirectUri) {
   thisRedirectUri = redirectUri;
   switch (thisResponseType) {
     case "token": {
-      if (selfUrl.searchParams.has("access_token")) {
-        self.sessionStorage.setItem(thisRedirectUri + "_accessToken", selfUrl.searchParams.get("access_token"));
-        self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * selfUrl.searchParams.has("expires_in"));
+      const params = new URLSearchParams(selfUrl.hash);
+      if (params.has("access_token")) {
+        self.sessionStorage.setItem(thisRedirectUri + "_accessToken", params.get("access_token"));
+        self.sessionStorage.setItem(thisRedirectUri + "_expiresAt", Date.now() + 1000 * params.get("expires_in"));
         self.sessionStorage.removeItem(thisRedirectUri + "_refreshToken");
       } else {
         const authorizationQuery = new URLSearchParams();
@@ -90,6 +91,14 @@ function isTokenExpired() {
     return false;
   }
   return (new Date() >= expiresAt);
+}
+async function fetchWithToken(request) {
+  let response = await fetch(request);
+  if (response.status === 401) {
+    performRefreshToken();
+    response = await fetch(request);
+  }
+  return response;
 }
 async function performRefreshToken() {
   const thisResponseType = self.sessionStorage.getItem(redirectUri + "_responseType");
