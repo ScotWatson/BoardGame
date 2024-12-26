@@ -74,7 +74,7 @@ export async function login(redirectUri) {
 }
 export function newRequestWithToken(url, options) {
   if (isTokenExpired()) {
-    performRefreshToken();
+    await performRefreshToken();
   }
   const access_token = self.sessionStorage.getItem(thisRedirectUri + "_accessToken");
   if (options.headers) {
@@ -95,7 +95,7 @@ function isTokenExpired() {
 export async function fetchWithToken(request) {
   let response = await fetch(request);
   if (response.status === 401) {
-    performRefreshToken();
+    await performRefreshToken();
     response = await fetch(request);
   }
   return response;
