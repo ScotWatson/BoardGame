@@ -56,6 +56,7 @@ export class Options {
   #elemMain;
   #rootMain;
   constructor(getOption, optionRoot) {
+    console.log(optionRoot);
     this.#elemMain = document.createElement("div");
     this.#rootMain = this.#elemMain.attachShadow({ mode: "closed" });
     this.#elemMain.style.display = "block";
