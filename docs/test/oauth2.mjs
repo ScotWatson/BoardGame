@@ -75,7 +75,7 @@ function goToLogin() {
     const authorizationLocation = new URL(thisAuthorizationUri.toString() + "?" + authorizationQuery.toString());
     self.location = authorizationLocation.toString();
 }
-export function newRequestWithToken(url, options) {
+export async function newRequestWithToken(url, options) {
   if (isTokenExpired()) {
     await performRefreshToken();
   }
