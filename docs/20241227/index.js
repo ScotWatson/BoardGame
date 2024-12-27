@@ -26,7 +26,7 @@ const asyncOauth = import("./oauth2.mjs");
   }
 })();
 
-const redirectUri = new URL("https://scotwatson.github.io/BoardGame/test/");
+const redirectUri = new URL("./", selfUrl);
 
 async function login( [ evtWindow, UI, Oauth ] ) {
   const responseType = selfUrl.searchParams.get("response_type");
