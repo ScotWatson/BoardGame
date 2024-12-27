@@ -161,12 +161,14 @@ function start( [ evtWindow, UI, Oauth ] ) {
         menu.element.style.width = "100%";
         menu.element.style.height = "100%";
         menu.addTiles([
+          /*
           {
             text: "Login",
             handler: function () {
               drawLogin();
             },
           },
+          */
           {
             text: "Game Select",
             handler: function () {
