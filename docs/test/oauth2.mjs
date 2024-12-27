@@ -97,7 +97,7 @@ export async function newRequestWithToken(url, options) {
   return new Request(url, options);
 }
 function isTokenExpired() {
-  const expiresAt = new Date(self.sessionStorage.getItem(thisRedirectUri + "_expiresAt"));
+  const expiresAt = new Date(Number(self.sessionStorage.getItem(thisRedirectUri + "_expiresAt")));
   if (!expiresAt) {
     return false;
   }
