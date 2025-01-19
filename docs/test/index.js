@@ -1,5 +1,5 @@
 /*
-(c) 2024 Scot Watson  All Rights Reserved
+(c) 2025 Scot Watson  All Rights Reserved
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
@@ -258,8 +258,8 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       const objGameInfo = await respGameInfo.json();
       objInfoElements.setText(objGameInfo.name);
     })();
-    const objUnitTypes = objLayoutViewport.view.tabs[2];
-    const objUnitTypes = objUnitTypes..view.firstView;
+    const objUnitTypesTab = objLayoutViewport.view.tabs[2];
+    const objUnitTypesList = objUnitTypes.view.firstView;
     function handleServiceWorker() {
       // Start listening for messages from service worker
       navigator.serviceWorker.addEventListener("message", function (evt) {
