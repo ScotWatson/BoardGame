@@ -14,7 +14,7 @@ const asyncWindow = new Promise(function (resolve, reject) {
 
 const loadingUI = import("https://scotwatson.github.io/UserInterfaceTest/ui.mjs");
 const loadingOauth = import("./oauth2.mjs");
-const loadingAsyncEvents = import("https://scotwatson.github.io/UserInterfaceTest/async-events.mjs");
+const loadingAsyncEvents = import("https://scotwatson.github.io/WebCommon/20240119/async-events.mjs");
 
 (async function () {
   try {
