@@ -18,7 +18,7 @@ const loadingAsyncEvents = import("https://scotwatson.github.io/WebCommon/202401
 
 (async function () {
   try {
-    const modules = await Promise.all( [ asyncWindow, asyncUI, asyncOauth, loadingAsyncEvents ] );
+    const modules = await Promise.all( [ asyncWindow, loadingUI, loadingOauth, loadingAsyncEvents ] );
     await login(modules);
     start(modules);
   } catch (e) {
