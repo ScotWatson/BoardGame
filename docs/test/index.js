@@ -100,41 +100,43 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     const urlEndpointInfo = new URL("./info", urlBase.href);
     const objLayoutViewport = UI.initialize({
       type: "navigation",
-      tabs: [
-        {
-          icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
-          title: "Games",
-          type: "hierarchy",
-          options: {
-            firstView: {
-              type: "list",
-              options: {},
+      options: {
+        tabs: [
+          {
+            icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
+            title: "Games",
+            type: "hierarchy",
+            options: {
+              firstView: {
+                type: "list",
+                options: {},
+              },
             },
           },
-        },
-        {
-          icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
-          title: "Info",
-          type: "hierarchy",
-          options: {
-            firstView: {
-              type: "elements",
-              options: {},
+          {
+            icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
+            title: "Info",
+            type: "hierarchy",
+            options: {
+              firstView: {
+                type: "elements",
+                options: {},
+              },
             },
           },
-        },
-        {
-          icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
-          title: "Unit Types",
-          type: "hierarchy",
-          options: {
-            firstView: {
-              type: "list",
-              options: {},
+          {
+            icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
+            title: "Unit Types",
+            type: "hierarchy",
+            options: {
+              firstView: {
+                type: "list",
+                options: {},
+              },
             },
           },
-        },
-      ],
+        ],
+      },
     });
     const objGamesTab = objLayoutViewport.view.tabs[0];
     const objGamesList = objGamesTab.view.firstView;
