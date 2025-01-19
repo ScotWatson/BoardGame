@@ -281,7 +281,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
             return;
           });
         });
-      }
+      })();
     }
     function drawNewGame() {
       const divNewGame = myNav.addLayout({
