@@ -97,43 +97,46 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     urlBase = new URL(hrefBase);
     // Send request for info
     const urlEndpointInfo = new URL("./info", urlBase.href);
-    try {
-      const respInfo = await fetchRequestGET(urlEndpointInfo);
-      if (respInfo.status !== 200) {
-        throw "Failed to get info.";
-      }
-      const objInfo = await respInfo.json();
-      objGeneralInfo = objInfo;
-      const elemTitle = document.head.getElementsByTagName("title")[0];
-      elemTitle.innerHTML = "";
-      elemTitle.appendChild(document.createTextNode(objGeneralInfo.name));
-    } catch (e) {
-      console.error(e);
-    }
-    const objWindow = UI.initialize({
+    const objLayoutViewport = UI.initialize({
       type: "navigation",
       tabs: [
         {
           icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
           title: "Games",
           type: "hierarchy",
+          options: {
+            firstView: {
+              type: "list",
+              options: {},
+            },
+          },
         },
         {
           icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
           title: "Info",
           type: "hierarchy",
+          options: {
+            firstView: {
+              type: "elements",
+              options: {},
+            },
+          },
         },
         {
           icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
           title: "Unit Types",
           type: "hierarchy",
+          options: {
+            firstView: {
+              type: "list",
+              options: {},
+            },
+          },
         },
       ],
     });
-    const objGames = objWindow.tabs[0];
-    const objGamesList = objGames.assignView({
-      type: "list",
-    });
+    const objGamesTab = objLayoutViewport.view.tabs[0];
+    const objGamesList = objGamesTab.view.firstView;
     populateGamesList();
     async function populateGamesList() {
       const respAllGames = await fetchRequestGET(urlEndpointAllGames.href);
@@ -242,19 +245,21 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       objGamesList.clearAll();
       populateGamesList();
     });
-    const objInfo = objWindow.tabs[1];
-    const objInfoElements = objInfo.assignView({
-      title: "Game Info",
-      type: "elements",
-    });
+    const objInfoTab = objLayoutViewport.view.tabs[1];
+    const objInfoElements = objInfoTab.view.firstView;
     objInfoElements.addElement({
       type: "text-display",
     });
-    objInfoElements.setText(objGeneralInfo.name);
-    const objUnitTypes = objWindow.tabs[2];
-    const objUnitTypes = objUnitTypes.assignView({
-      type: "list",
-    });
+    (async () => {
+      const respGameInfo = await fetchRequestGET(urlEndpointInfo);
+      if (respGameInfo.status !== 200) {
+        throw "Failed to get info.";
+      }
+      const objGameInfo = await respGameInfo.json();
+      objInfoElements.setText(objGameInfo.name);
+    })();
+    const objUnitTypes = objLayoutViewport.view.tabs[2];
+    const objUnitTypes = objUnitTypes..view.firstView;
     function handleServiceWorker() {
       // Start listening for messages from service worker
       navigator.serviceWorker.addEventListener("message", function (evt) {
