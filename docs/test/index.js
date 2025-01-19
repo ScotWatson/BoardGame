@@ -17,9 +17,9 @@ const loadingOauth = import("./oauth2.mjs");
 const loadingAsyncEvents = import("https://scotwatson.github.io/WebCommon/20240119/async-events.mjs");
 
 (async function () {
-  alert("hi");
   try {
     const modules = await Promise.all( [ asyncWindow, loadingUI, loadingOauth, loadingAsyncEvents ] );
+    alert("hi");
     await login(modules);
     start(modules);
   } catch (e) {
