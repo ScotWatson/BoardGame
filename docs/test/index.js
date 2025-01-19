@@ -282,7 +282,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
           });
         });
       }
-    })();
+    }
     function drawNewGame() {
       const divNewGame = myNav.addLayout({
         title: "New Game",
