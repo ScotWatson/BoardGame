@@ -142,6 +142,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     const objGamesList = objGamesTab.view.firstView;
     populateGamesList();
     async function populateGamesList() {
+      const urlEndpointAllGames = new URL("./games/", urlBase.href);
       const respAllGames = await fetchRequestGET(urlEndpointAllGames.href);
       const arrAllGames = await respAllGames.json();
       for (const game of arrAllGames) {
