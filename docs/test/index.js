@@ -147,6 +147,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       const arrAllGames = await respAllGames.json();
       for (const game of arrAllGames) {
         const gameItem = objGamesList.addItem({
+          icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
           title: game.title,
           item: game,
         });
