@@ -252,7 +252,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     });
     const objInfoTab = objLayoutViewport.view.tabs[1];
     const objInfoElements = objInfoTab.view.firstView;
-    objInfoElements.addElement({
+    const objGameName = objInfoElements.view.addElement({
       type: "text-display",
     });
     (async () => {
@@ -261,7 +261,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
         throw "Failed to get info.";
       }
       const objGameInfo = await respGameInfo.json();
-      objInfoElements.setText(objGameInfo.name);
+      objGameName.setText(objGameInfo.name);
     })();
     const objUnitTypesTab = objLayoutViewport.view.tabs[2];
     const objUnitTypesList = objUnitTypes.view.firstView;
