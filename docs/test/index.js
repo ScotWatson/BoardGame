@@ -246,7 +246,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     const btnRefreshGames = objGamesList.addAction({
       title: "refresh",
     });
-    AsyncEvents.listen(btnRefreshGames, (event) => {
+    AsyncEvents.listen(btnRefreshGames.clicked, (event) => {
       objGamesList.clearAll();
       populateGamesList();
     });
@@ -264,7 +264,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       objGameName.setText(objGameInfo.name);
     })();
     const objUnitTypesTab = objLayoutViewport.view.tabs[2];
-    const objUnitTypesList = objUnitTypes.view.firstView;
+    const objUnitTypesList = objUnitTypesTab.view.firstView;
     function handleServiceWorker() {
       // Start listening for messages from service worker
       navigator.serviceWorker.addEventListener("message", function (evt) {
