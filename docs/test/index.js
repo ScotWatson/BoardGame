@@ -146,7 +146,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       const respAllGames = await fetchRequestGET(urlEndpointAllGames.href);
       const arrAllGames = await respAllGames.json();
       for (const game of arrAllGames) {
-        const gameItem = objGamesList.addItem({
+        const gameItem = objGamesList.view.addItem({
           icon: "https://scotwatson.github.io/UserInterfaceTest/icons/unselected.svg",
           title: game.title,
           item: game,
@@ -158,23 +158,23 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
     }
     async function drawGameInfo(item) {
       const strGameId = item.gameId;
-      const objGameInfo = objGames.assignView({
-        title: item.title,
+      const objGameInfo = objGamesTab.view.addView({
         type: "elements",
+        options: {},
       });
-      objPlayersTitle.addElement({
+      const objPlayersTitle = objGameInfo.view.addElement({
         type: "text-display",
       });
       objPlayersTitle.setText("Players");
-      const objPlayersList = objGameInfo.addElement({
+      const objPlayersList = objGameInfo.view.addElement({
         type: "list",
       });
       const btnJoinGame = objGameInfo.addAction({
         title: "Join Game",
       });
-      AsyncEvents.listen(btnJoinGame.clicked, function (evt) {
-        const urlEndpointJoinGame = new URL("./game/" + strGameId + "/join/" + token, urlBase.href);
-        (async function () {
+      AsyncEvents.listen(btnJoinGame.clicked, (evt) => {
+        const urlEndpointJoinGame = new URL("./game/" + strGameId + "/join/", urlBase.href);
+        (async () => {
           try {
             const response = await fetchRequestGET(urlEndpointJoinGame);
             if (response.status !== 200) {
@@ -190,9 +190,9 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       const btnUnjoinGame = objGameInfo.addAction({
         title: "Unjoin Game",
       });
-      AsyncEvents.listen(btnUnjoinGame.clicked, function (evt) {
-        const urlEndpointUnjoinGame = new URL("./game/" + strGameId + "/unjoin/" + token, urlBase.href);
-        (async function () {
+      AsyncEvents.listen(btnUnjoinGame.clicked, (evt) => {
+        const urlEndpointUnjoinGame = new URL("./game/" + strGameId + "/unjoin/", urlBase.href);
+        (async () => {
           try {
             const response = await fetchRequestGET(urlEndpointUnjoinGame);
             if (response.status !== 200) {
@@ -220,7 +220,7 @@ function start( [ evtWindow, UI, Oauth, AsyncEvents ] ) {
       const btnPlayerListRefresh = objGameInfo.addAction({
         title: "Refresh",
       });
-      AsyncEvents.listen(btnPlayerListRefresh.clicked, function (evt) {
+      AsyncEvents.listen(btnPlayerListRefresh.clicked, (evt) => {
         objPlayersList.clearAll();
         populatePlayerList();
       });
